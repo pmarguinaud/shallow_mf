@@ -1,0 +1,265 @@
+#define ATTR_ARG
+
+USE MODI_SHALLOW_MF
+USE XRD_GETOPTIONS
+USE LOAD_MOD
+
+IMPLICIT NONE
+
+INTERFACE SETALL
+  PROCEDURE SETALLI1
+  PROCEDURE SETALLI2
+  PROCEDURE SETALLX1
+  PROCEDURE SETALLX2
+  PROCEDURE SETALLX3
+  PROCEDURE SETALLX4
+  PROCEDURE SETALLL3
+END INTERFACE
+
+INTEGER                       :: KKA          
+INTEGER                       :: KKU          
+INTEGER                       :: KKL          
+INTEGER                       :: KRR          
+INTEGER                       :: KRRL         
+INTEGER                       :: KRRI         
+CHARACTER (LEN=4)             :: HMF_UPDRAFT  
+CHARACTER (LEN=4)             :: HMF_CLOUD    
+CHARACTER*1                   :: HFRAC_ICE    
+LOGICAL                       :: OMIXUV    
+LOGICAL                       :: ONOMIXLG  
+INTEGER                       :: KSV_LGBEG 
+INTEGER                       :: KSV_LGEND 
+REAL                          :: PIMPL_MF     
+REAL                          :: PTSTEP   
+REAL                          :: PTSTEP_MET
+REAL                          :: PTSTEP_SV
+
+REAL, DIMENSION(:,:,:)   , POINTER  :: PZZ_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PDZZ_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRHODJ_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRHODREF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PPABSM_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PEXNM_ALL => NULL ()
+REAL, DIMENSION(:,:)     , POINTER  :: PSFTH_ALL => NULL ()
+REAL, DIMENSION(:,:)     , POINTER  :: PSFRV_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PTHM_ALL => NULL ()
+REAL, DIMENSION(:,:,:,:) , POINTER  :: PRM_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PUM_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PVM_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PTKEM_ALL => NULL ()
+REAL, DIMENSION(:,:,:,:) , POINTER  :: PSVM_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PDUDT_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PDVDT_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PDTHLDT_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PDRTDT_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:,:) , POINTER  :: PDSVDT_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PSIGMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRC_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRI_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PCF_MF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PFLXZTHVMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PFLXZTHMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PFLXZRMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PFLXZUMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PFLXZVMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PTHL_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRT_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRV_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PU_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PV_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRC_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PRI_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PTHV_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PW_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PFRAC_UP_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PEMF_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PDETR_ALL => NULL ()
+REAL, DIMENSION(:,:,:)   , POINTER  :: PENTR_ALL => NULL ()
+INTEGER,DIMENSION(:,:)   , POINTER  :: KKLCL_ALL => NULL ()
+INTEGER,DIMENSION(:,:)   , POINTER  :: KKETL_ALL => NULL ()
+INTEGER,DIMENSION(:,:)   , POINTER  :: KKCTL_ALL => NULL ()
+
+INTEGER :: IBL
+LOGICAL :: LLDIFF, LLPRINT
+CHARACTER (LEN=32) :: CLCASE
+INTEGER :: ICOUNT1, KLON1, ICOUNT, KLON, KFDIA, KLON0, ICOUNT0
+INTEGER, POINTER :: IDIFFBLOCK (:) => NULL ()
+INTEGER, ALLOCATABLE :: IFDIA (:)
+
+CALL INITOPTIONS ()
+CALL GETOPTION ("--case", CLCASE, MND = .TRUE.)
+CALL GETOPTION ("--diff", LLDIFF)
+CALL GETOPTION ("--diff-block-list", IDIFFBLOCK)
+ICOUNT1 = 0
+CALL GETOPTION ("--count", ICOUNT1)
+KLON1 = 0
+CALL GETOPTION ("--nproma", KLON1)
+CALL CHECKOPTIONS ()
+
+OPEN (77, FORM='FORMATTED', FILE=TRIM (CLCASE)//'/SHALLOW_MF.COUNT')
+READ (77, *) ICOUNT
+CLOSE (77)
+
+ALLOCATE (IFDIA (ICOUNT))
+
+CALL SHALLOW_MF_LOAD_ALL (TRIM (CLCASE)//'/SHALLOW_MF.CONST')
+
+CALL OPEN_LOAD (TRIM (CLCASE)//"/SHALLOW_MF")
+
+IF (ICOUNT1 == 0) ICOUNT1 = ICOUNT
+
+PRINT *, "-- READ"
+
+DO IBL = 1, ICOUNT
+
+  PRINT *, IBL
+
+  CALL LOAD (ILUN_IN, KLON)
+  IF (KLON1 == 0) KLON1 = KLON
+  IFDIA (IBL) = KLON
+
+  CALL LOAD (ILUN_IN, KKA)
+  CALL LOAD (ILUN_IN, KKU)
+  CALL LOAD (ILUN_IN, KKL)
+  CALL LOAD (ILUN_IN, KRR)
+  CALL LOAD (ILUN_IN, KRRL)
+  CALL LOAD (ILUN_IN, KRRI)
+  CALL LOAD (ILUN_IN, HMF_UPDRAFT)
+  CALL LOAD (ILUN_IN, HMF_CLOUD)
+  CALL LOAD (ILUN_IN, HFRAC_ICE)
+  CALL LOAD (ILUN_IN, OMIXUV)
+  CALL LOAD (ILUN_IN, ONOMIXLG)
+  CALL LOAD (ILUN_IN, KSV_LGBEG)
+  CALL LOAD (ILUN_IN, KSV_LGEND)
+  CALL LOAD (ILUN_IN, PIMPL_MF)
+  CALL LOAD (ILUN_IN, PTSTEP)
+  CALL LOAD (ILUN_IN, PTSTEP_MET)
+  CALL LOAD (ILUN_IN, PTSTEP_SV)
+
+#define SET(x) CALL SETALL (x##_ALL)
+
+  SET (PZZ)
+  SET (PDZZ)
+  SET (PRHODJ)
+  SET (PRHODREF)
+  SET (PPABSM)
+  SET (PEXNM)
+  SET (PSFTH)
+  SET (PSFRV)
+  SET (PTHM)
+  SET (PRM)
+  SET (PUM)
+  SET (PVM)
+  SET (PTKEM)
+  SET (PSVM)
+  SET (PDUDT_MF)
+  SET (PDVDT_MF)
+  SET (PDTHLDT_MF)
+  SET (PDRTDT_MF)
+  SET (PDSVDT_MF)
+  SET (PSIGMF)
+  SET (PRC_MF)
+  SET (PRI_MF)
+  SET (PCF_MF)
+  SET (PFLXZTHVMF)
+  SET (PFLXZTHMF)
+  SET (PFLXZRMF)
+  SET (PFLXZUMF)
+  SET (PFLXZVMF)
+  SET (PTHL_UP)
+  SET (PRT_UP)
+  SET (PRV_UP)
+  SET (PU_UP)
+  SET (PV_UP)
+  SET (PRC_UP)
+  SET (PRI_UP)
+  SET (PTHV_UP)
+  SET (PW_UP)
+  SET (PFRAC_UP)
+  SET (PEMF)
+  SET (PDETR)
+  SET (PENTR)
+  SET (KKLCL)
+  SET (KKETL)
+  SET (KKCTL)
+
+#undef SET
+
+ENDDO
+
+KLON0 = KLON; ICOUNT0 = ICOUNT
+KLON = KLON1; ICOUNT = ICOUNT1
+
+
+DO IBL = 1, ICOUNT
+
+CALL SHALLOW_MF(KKA,KKU,KKL,KRR,KRRL,KRRI,                            &
+                HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
+                ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
+                PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,              &
+                PDZZ_ALL (:,:,IBL), PZZ_ALL (:,:,IBL), PRHODJ_ALL (:,:,IBL),               &
+                PRHODREF_ALL (:,:,IBL), PPABSM_ALL (:,:,IBL),  PEXNM_ALL (:,:,IBL),        &
+                PSFTH_ALL (:,IBL), PSFRV_ALL (:,IBL), PTHM_ALL (:,:,IBL),                  &
+                PRM_ALL (:,:,:,IBL), PUM_ALL (:,:,IBL), PVM_ALL (:,:,IBL),                 &
+                PTKEM_ALL (:,:,IBL), PSVM_ALL (:,:,:,IBL), PDUDT_MF_ALL (:,:,IBL),         &
+                PDVDT_MF_ALL (:,:,IBL), PDTHLDT_MF_ALL (:,:,IBL), PDRTDT_MF_ALL (:,:,IBL), &
+                PDSVDT_MF_ALL (:,:,:,IBL), PSIGMF_ALL (:,:,IBL), PRC_MF_ALL (:,:,IBL),     &
+                PRI_MF_ALL (:,:,IBL), PCF_MF_ALL (:,:,IBL), PFLXZTHVMF_ALL (:,:,IBL),      &
+                PFLXZTHMF_ALL (:,:,IBL), PFLXZRMF_ALL (:,:,IBL), PFLXZUMF_ALL (:,:,IBL),   &
+                PFLXZVMF_ALL (:,:,IBL), PTHL_UP_ALL (:,:,IBL), PRT_UP_ALL (:,:,IBL),       &
+                PRV_UP_ALL (:,:,IBL), PRC_UP_ALL (:,:,IBL), PRI_UP_ALL (:,:,IBL),          &
+                PU_UP_ALL (:,:,IBL),  PV_UP_ALL (:,:,IBL),  PTHV_UP_ALL (:,:,IBL),         &
+                PW_UP_ALL (:,:,IBL), PFRAC_UP_ALL (:,:,IBL), PEMF_ALL (:,:,IBL),           &
+                PDETR_ALL (:,:,IBL), PENTR_ALL (:,:,IBL), KKLCL_ALL (:,IBL),               &
+                KKETL_ALL (:,IBL), KKCTL_ALL (:,IBL))
+
+ENDDO
+
+#ifdef UNDEF
+#define SAVEA(x) CALL SAVE (ILUN_OUT, x, LBOUND (x), UBOUND (x)); IDUM 
+
+IF (NSTEP == 10) THEN
+
+SAVEA (PDUDT_MF) = 0
+SAVEA (PDVDT_MF) = 0
+SAVEA (PDTHLDT_MF) = 0
+SAVEA (PDRTDT_MF) = 0
+SAVEA (PDSVDT_MF) = 0
+SAVEA (PSIGMF) = 0
+SAVEA (PRC_MF) = 0
+SAVEA (PRI_MF) = 0
+SAVEA (PCF_MF) = 0
+SAVEA (PFLXZTHVMF) = 0
+SAVEA (PFLXZTHMF) = 0
+SAVEA (PFLXZRMF) = 0
+SAVEA (PFLXZUMF) = 0
+SAVEA (PFLXZVMF) = 0
+SAVEA (PTHL_UP) = 0
+SAVEA (PRT_UP) = 0
+SAVEA (PRV_UP) = 0
+SAVEA (PU_UP) = 0
+SAVEA (PV_UP) = 0
+SAVEA (PRC_UP) = 0
+SAVEA (PRI_UP) = 0
+SAVEA (PTHV_UP) = 0
+SAVEA (PW_UP) = 0
+SAVEA (PFRAC_UP) = 0
+SAVEA (PEMF) = 0
+SAVEA (PDETR) = 0
+SAVEA (PENTR) = 0
+SAVEA (KKLCL) = 0
+SAVEA (KKETL) = 0
+SAVEA (KKCTL) = 0
+
+CALL CLOSE_SAVE 
+
+ENDIF
+
+#endif
+
+CONTAINS 
+
+#include "contains.h"
+
+END 
+
