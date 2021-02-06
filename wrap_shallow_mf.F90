@@ -25,6 +25,8 @@ INTERFACE DDIFF
 END INTERFACE
 
 
+INTEGER                       :: KLEV
+INTEGER                       :: KSV
 INTEGER                       :: KKA          
 INTEGER                       :: KKU          
 INTEGER                       :: KKL          
@@ -199,10 +201,13 @@ ENDDO
 KLON0 = KLON; ICOUNT0 = ICOUNT
 KLON = KLON1; ICOUNT = ICOUNT1
 
+KLEV = SIZE (PZZ_ALL, 2)
+KSV = SIZE (PSVM_ALL, 3)
+
 !$OMP PARALLEL DO PRIVATE (IBL)
 DO IBL = 1, ICOUNT
 
-CALL SHALLOW_MF(KKA,KKU,KKL,KRR,KRRL,KRRI,                            &
+CALL SHALLOW_MF(KLON,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,              &
                 HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,              &

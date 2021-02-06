@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE SHALLOW_MF(KKA,KKU,KKL,KRR,KRRL,KRRI,                &
+      SUBROUTINE SHALLOW_MF(KLON,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
                 HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,              &
@@ -77,6 +77,9 @@ IMPLICIT NONE
 !
 !
 !
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
+INTEGER,                INTENT(IN)   :: KSV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
 INTEGER,                INTENT(IN)   :: KKU          ! uppest atmosphere array index
 INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
@@ -97,48 +100,48 @@ REAL,              INTENT(IN)     ::  PTSTEP   ! Dynamical timestep
 REAL,              INTENT(IN)     ::  PTSTEP_MET! Timestep for meteorological variables                        
 REAL,              INTENT(IN)     ::  PTSTEP_SV! Timestep for tracer variables
 
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PZZ         ! Height of flux point
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PDZZ        ! Metric coefficients
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PRHODJ      ! dry density * Grid size
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PRHODREF    ! dry density of the
-                                                     ! reference state
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PPABSM      ! Pressure at time t-1
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PEXNM       ! Exner function at t-dt
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PZZ         ! Height of flux point
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PDZZ        ! Metric coefficients
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PRHODJ      ! dry density * Grid size
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PRHODREF    ! dry density of the
+                                                           ! reference state
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PPABSM      ! Pressure at time t-1
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PEXNM       ! Exner function at t-dt
 
-REAL, DIMENSION(:),   INTENT(IN)   ::  PSFTH,PSFRV ! normal surface fluxes of theta and Rv 
-REAL, DIMENSION(:,:), INTENT(IN)   ::  PTHM        ! Theta at t-dt
-REAL, DIMENSION(:,:,:), INTENT(IN) ::  PRM         ! water var. at t-dt
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PUM,PVM     ! wind components at t-dt
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PTKEM       ! tke at t-dt
+REAL, DIMENSION(KLON),   INTENT(IN)   ::  PSFTH,PSFRV ! normal surface fluxes of theta and Rv 
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   ::  PTHM        ! Theta at t-dt
+REAL, DIMENSION(KLON,KLEV,KRR), INTENT(IN) ::  PRM         ! water var. at t-dt
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PUM,PVM     ! wind components at t-dt
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PTKEM       ! tke at t-dt
 
-REAL, DIMENSION(:,:,:), INTENT(IN) ::  PSVM        ! scalar variable a t-dt
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN) ::  PSVM        ! scalar variable a t-dt
 
-REAL, DIMENSION(:,:),   INTENT(OUT)::  PDUDT_MF     ! tendency of U   by massflux scheme
-REAL, DIMENSION(:,:),   INTENT(OUT)::  PDVDT_MF     ! tendency of V   by massflux scheme
-REAL, DIMENSION(:,:),   INTENT(OUT)::  PDTHLDT_MF   ! tendency of thl by massflux scheme
-REAL, DIMENSION(:,:),   INTENT(OUT)::  PDRTDT_MF    ! tendency of rt  by massflux scheme
-REAL, DIMENSION(:,:,:), INTENT(OUT)::  PDSVDT_MF    ! tendency of Sv  by massflux scheme
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)::  PDUDT_MF     ! tendency of U   by massflux scheme
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)::  PDVDT_MF     ! tendency of V   by massflux scheme
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)::  PDTHLDT_MF   ! tendency of thl by massflux scheme
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)::  PDRTDT_MF    ! tendency of rt  by massflux scheme
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PDSVDT_MF    ! tendency of Sv  by massflux scheme
 
-REAL, DIMENSION(:,:), INTENT(OUT)     ::  PSIGMF,PRC_MF,PRI_MF,PCF_MF ! cloud info for the cloud scheme
-REAL, DIMENSION(:,:), INTENT(OUT)     ::  PFLXZTHVMF           ! Thermal production for TKE scheme
-REAL, DIMENSION(:,:), INTENT(OUT)     ::  PFLXZTHMF
-REAL, DIMENSION(:,:), INTENT(OUT)     ::  PFLXZRMF
-REAL, DIMENSION(:,:), INTENT(OUT)     ::  PFLXZUMF
-REAL, DIMENSION(:,:), INTENT(OUT)     ::  PFLXZVMF
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PTHL_UP   ! Thl updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PRT_UP    ! Rt  updraft characteristics
-REAL, DIMENSION(:,:), INTENT(OUT) ::  PRV_UP    ! Vapor updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PU_UP     ! U wind updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PV_UP     ! V wind updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PRC_UP    ! cloud content updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PRI_UP    ! ice content   updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PTHV_UP   ! Thv   updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PW_UP     ! vertical speed updraft characteristics
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PFRAC_UP  ! updraft fraction
-REAL, DIMENSION(:,:), INTENT(INOUT) ::  PEMF      ! updraft mass flux
-REAL, DIMENSION(:,:), INTENT(OUT) ::  PDETR     ! updraft detrainment
-REAL, DIMENSION(:,:), INTENT(OUT) ::  PENTR     ! updraft entrainment
-INTEGER,DIMENSION(:), INTENT(OUT) :: KKLCL,KKETL,KKCTL ! level of LCL,ETL and CTL
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)     ::  PSIGMF,PRC_MF,PRI_MF,PCF_MF ! cloud info for the cloud scheme
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)     ::  PFLXZTHVMF           ! Thermal production for TKE scheme
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)     ::  PFLXZTHMF
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)     ::  PFLXZRMF
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)     ::  PFLXZUMF
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)     ::  PFLXZVMF
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PTHL_UP   ! Thl updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PRT_UP    ! Rt  updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PRV_UP    ! Vapor updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PU_UP     ! U wind updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PV_UP     ! V wind updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PRC_UP    ! cloud content updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PRI_UP    ! ice content   updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PTHV_UP   ! Thv   updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PW_UP     ! vertical speed updraft characteristics
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PFRAC_UP  ! updraft fraction
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PEMF      ! updraft mass flux
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PDETR     ! updraft detrainment
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PENTR     ! updraft entrainment
+INTEGER,DIMENSION(KLON), INTENT(OUT) :: KKLCL,KKETL,KKCTL ! level of LCL,ETL and CTL
 !
 !                     0.2  Declaration of local variables
 !

@@ -5,3 +5,5 @@
 *.IN
 *.COUNT
 *.OUT
+.*.swp
+*.F90.xml
