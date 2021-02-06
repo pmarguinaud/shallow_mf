@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_FRAC_ICE1D(HFRAC_ICE,PFRAC_ICE,PT)
+      SUBROUTINE COMPUTE_FRAC_ICE1D(KLON,HFRAC_ICE,PFRAC_ICE,PT)
 !    ##########################################################
 !
 !
@@ -45,9 +45,10 @@ IMPLICIT NONE
 !
 !*      0.1  declarations of arguments
 !
+INTEGER           , INTENT(IN)    :: KLON
 CHARACTER*1       , INTENT(IN)    :: HFRAC_ICE  ! scheme to use
-REAL, DIMENSION(:), INTENT(IN)    :: PT         ! temperature
-REAL, DIMENSION(:), INTENT(INOUT) :: PFRAC_ICE  ! Ice fraction (1 for ice only, 0 for liquid only)
+REAL, DIMENSION(KLON), INTENT(IN)    :: PT         ! temperature
+REAL, DIMENSION(KLON), INTENT(INOUT) :: PFRAC_ICE  ! Ice fraction (1 for ice only, 0 for liquid only)
 !
 !               0.2  declaration of local variables
 ! 

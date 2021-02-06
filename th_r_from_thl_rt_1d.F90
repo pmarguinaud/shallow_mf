@@ -120,7 +120,7 @@ DO II=1,JITER
       PFRAC_ICE(J) = PRI(J) / (PRL(J)+PRI(J))
     ENDIF
   ENDDO
-  CALL COMPUTE_FRAC_ICE1D(HFRAC_ICE,PFRAC_ICE(:),ZT(:))
+  CALL COMPUTE_FRAC_ICE1D(KLON,HFRAC_ICE,PFRAC_ICE(:),ZT(:))
 
   !Computation of Rvsat and dRsat/dT
   !In this version QSAT, QSATI, DQSAT and DQASATI functions are not used
