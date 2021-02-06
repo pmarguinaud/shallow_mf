@@ -157,6 +157,7 @@ REAL, DIMENSION(KLON,KLEV,KSV) ::  &
 REAL, DIMENSION(KLON) :: ZDEPTH             ! Deepness of cloud
 REAL, DIMENSION(KLON,KLEV) :: ZFRAC_ICE_UP ! liquid/solid fraction in updraft
 REAL, DIMENSION(KLON,KLEV) :: ZRSAT_UP ! Rsat in updraft
+REAL, DIMENSION(KLON,KLEV) :: ZTHMXEXNM
 
 LOGICAL :: GENTR_DETR  ! flag to recompute entrainment, detrainment and mass flux
 INTEGER :: IKB         ! near ground physical index
@@ -183,7 +184,10 @@ ZFRAC_ICE(:,:) = 0.
 WHERE(PRM(:,:,2)+PRM(:,:,4) > 1.E-20)
   ZFRAC_ICE(:,:) = PRM(:,:,4) / (PRM(:,:,2)+PRM(:,:,4))
 ENDWHERE
-CALL COMPUTE_FRAC_ICE2D(HFRAC_ICE,ZFRAC_ICE(:,:),PTHM(:,:)*PEXNM(:,:))
+
+ZTHMXEXNM = PTHM * PEXNM
+
+CALL COMPUTE_FRAC_ICE2D(KLON,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM)
 
 ! Conservative variables at t-dt
 CALL THL_RT_FROM_TH_R_MF(KLON,KLEV,KRR,KRRL,KRRI,    &

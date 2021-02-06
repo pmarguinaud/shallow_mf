@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_FRAC_ICE2D(HFRAC_ICE,PFRAC_ICE,PT)
+      SUBROUTINE COMPUTE_FRAC_ICE2D(KLON,KLEV,HFRAC_ICE,PFRAC_ICE,PT)
 !    ##########################################################
 !
 !
@@ -43,9 +43,11 @@ IMPLICIT NONE
 !
 !*      0.1  declarations of arguments
 !
+INTEGER             , INTENT(IN)    :: KLON
+INTEGER             , INTENT(IN)    :: KLEV
 CHARACTER*1         , INTENT(IN)    :: HFRAC_ICE ! scheme to use
-REAL, DIMENSION(:,:), INTENT(IN)    :: PT        ! Temperature
-REAL, DIMENSION(:,:), INTENT(INOUT) :: PFRAC_ICE ! Ice fraction (1 for ice only, 0 for liquid only)
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)    :: PT        ! Temperature
+REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) :: PFRAC_ICE ! Ice fraction (1 for ice only, 0 for liquid only)
 !-------------------------------------------------------------------------
 !
 !       0.2  declaration of local variables

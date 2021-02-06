@@ -38,8 +38,6 @@ for my $call (@call)
 
     my $file = lc ($name) . '.F90';
     next unless (@actual && -f $file);
-    print "name=$name\n";
-    next;
 
 
     my $doc = &Fxtran::fxtran (location => $file);
@@ -59,7 +57,7 @@ for my $call (@call)
             my $stmt = &Fxtran::stmt ($en);
             my @ssd = &f ('.//f:array-spec//f:shape-spec', $stmt);
 
-            die unless ($actual[$iarg]->nodeName eq 'named-E');
+            die $call->textContent unless ($actual[$iarg]->nodeName eq 'named-E');
             my ($ref) = &f ('.//f:R-LT', $actual[$iarg]);
 
             if ($ref) # Handle (:,:,10)
