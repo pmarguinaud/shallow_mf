@@ -58,10 +58,7 @@ shuman_mf.o: shuman_mf.F90
 compute_frac_ice1d.o: compute_frac_ice1d.F90 modd_neb.o modd_cst.o
 	$(FC) -o $@ -c $< 
 
-th_r_from_thl_rt_1d.o: th_r_from_thl_rt_1d.F90 modi_compute_frac_ice1d.o modd_cst.o mode_thermo_mono.o
-	$(FC) -o $@ -c $< 
-
-mode_thermo_mono.o: mode_thermo_mono.F90 mode_fm.o
+th_r_from_thl_rt_1d.o: th_r_from_thl_rt_1d.F90 modi_compute_frac_ice1d.o modd_cst.o 
 	$(FC) -o $@ -c $< 
 
 tridiag_massflux.o: tridiag_massflux.F90 modd_parameters.o modi_shuman_mf.o modd_cturb.o modd_parameters.o 
@@ -70,7 +67,7 @@ tridiag_massflux.o: tridiag_massflux.F90 modd_parameters.o modi_shuman_mf.o modd
 compute_bl89_ml.o: compute_bl89_ml.F90
 	$(FC) -o $@ -c $< 
 
-compute_entr_detr.o: compute_entr_detr.F90 modd_cst.o modd_cmfshall.o mode_thermo_mono.o modi_th_r_from_thl_rt_1d.o
+compute_entr_detr.o: compute_entr_detr.F90 modd_cst.o modd_cmfshall.o modi_th_r_from_thl_rt_1d.o
 	$(FC) -o $@ -c $< 
 
 compute_mf_cloud_direct.o: compute_mf_cloud_direct.F90 modd_cmfshall.o

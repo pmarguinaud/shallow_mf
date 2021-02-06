@@ -64,8 +64,6 @@ USE MODD_CMFSHALL
 !
 USE MODI_TH_R_FROM_THL_RT_1D 
 
-USE MODE_THERMO
-
 IMPLICIT NONE
 !
 !                         
