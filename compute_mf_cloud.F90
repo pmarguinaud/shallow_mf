@@ -48,8 +48,6 @@
 !          ------------
 !
 USE MODI_COMPUTE_MF_CLOUD_DIRECT
-USE MODI_COMPUTE_MF_CLOUD_STAT
-USE MODI_COMPUTE_MF_CLOUD_BIGAUS
 !
 USE PARKIND1, ONLY : JPRB
 
@@ -108,27 +106,6 @@ IF (HMF_CLOUD == 'DIRE') THEN
                               &KKLCL(:), PFRAC_UP(:,:), PRC_UP(:,:), PRI_UP(:,:),&
                               &PRC_MF(:,:), PRI_MF(:,:), PCF_MF(:,:))
   !
-ELSEIF (HMF_CLOUD == 'STAT') THEN
-  !Statistical scheme using the PDF proposed by Bougeault (81, 82) and
-  !Bechtold et al (95).
-  CALL COMPUTE_MF_CLOUD_STAT(KKA, KKB, KKE, KKU, KKL, KRR, KRRL, KRRI,&
-                            &PFRAC_ICE,&
-                            &PTHLM, PRTM, PPABSM, PRM,&
-                            &PDZZ, PTHM, PEXNM,&
-                            &PEMF, PTHL_UP, PRT_UP,&
-                            &PSIGMF)
-ELSEIF (HMF_CLOUD == 'BIGA') THEN
-  !Statistical scheme using the bi-gaussian PDF proposed by E. Perraud.
-  CALL COMPUTE_MF_CLOUD_BIGAUS(KKA, KKB, KKE, KKU, KKL,&
-                              &PRC_UP, PRI_UP, PEMF, PDEPTH,&
-                              &PRT_UP, PTHV_UP, PFRAC_ICE_UP, PRSAT_UP,&
-                              &PRTM, PTHM, PTHVM,&
-                              &PDZZ, PZZ, PRHODREF,&
-                              &PRC_MF, PRI_MF, PCF_MF)
-  !
-ELSEIF  (HMF_CLOUD == 'NONE') THEN
-  ! No CONVECTIVE CLOUD SCHEME
-  ! Nothing to do: PRC_MF, PRI_MF, PCF_MF, PSIGMF are already filled with zero
 ELSE
   WRITE(*,*) ' STOP'
   WRITE(*,*) ' Shallow convection cloud scheme not valid : HMF_CLOUD =',TRIM(HMF_CLOUD)

@@ -64,8 +64,6 @@ USE MODD_CMFSHALL
 
 USE MODI_THL_RT_FROM_TH_R_MF
 USE MODI_COMPUTE_UPDRAFT
-USE MODI_COMPUTE_UPDRAFT_RHCJ10
-USE MODI_COMPUTE_UPDRAFT_RAHA
 USE MODI_MF_TURB
 USE MODI_MF_TURB_EXPL
 USE MODI_COMPUTE_MF_CLOUD
@@ -212,30 +210,6 @@ IF (HMF_UPDRAFT == 'EDKF') THEN
                        PTHV_UP, PW_UP, PU_UP, PV_UP, ZSV_UP,     &
                        PFRAC_UP,ZFRAC_ICE_UP,ZRSAT_UP,PEMF,PDETR,&
                        PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH )
-ELSEIF (HMF_UPDRAFT == 'RHCJ') THEN
-   CALL COMPUTE_UPDRAFT_RHCJ10(KKA,IKB,IKE,KKU,KKL,HFRAC_ICE,GENTR_DETR,OMIXUV,&
-                       ONOMIXLG,KSV_LGBEG,KSV_LGEND,             &
-                       PZZ,PDZZ,                                 &
-                       PSFTH,PSFRV,PPABSM,PRHODREF,              &
-                       PUM,PVM,PTKEM,                            &
-                       PEXNM,PTHM,PRM(:,:,1),ZTHLM,ZRTM,PSVM,    &
-                       PTHL_UP,PRT_UP,PRV_UP,PRC_UP,PRI_UP,      &
-                       PTHV_UP, PW_UP, PU_UP, PV_UP, ZSV_UP,     &
-                       PFRAC_UP,ZFRAC_ICE_UP,ZRSAT_UP,PEMF,PDETR,&
-                       PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH )
-ELSEIF (HMF_UPDRAFT == 'RAHA') THEN
-   CALL COMPUTE_UPDRAFT_RAHA(KKA,IKB,IKE,KKU,KKL,HFRAC_ICE,GENTR_DETR,OMIXUV,&
-                       ONOMIXLG,KSV_LGBEG,KSV_LGEND,             &
-                       PZZ,PDZZ,                                 &
-                       PSFTH,PSFRV,PPABSM,PRHODREF,              &
-                       PUM,PVM,PTKEM,                            &
-                       PEXNM,PTHM,PRM(:,:,1),ZTHLM,ZRTM,PSVM,    &
-                       PTHL_UP,PRT_UP,PRV_UP,PRC_UP,PRI_UP,      &
-                       PTHV_UP, PW_UP, PU_UP, PV_UP, ZSV_UP,     &
-                       PFRAC_UP,ZFRAC_ICE_UP,ZRSAT_UP,PEMF,PDETR,&
-                       PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH )
-ELSEIF (HMF_UPDRAFT == 'DUAL') THEN
-  !Updraft characteristics are already computed and received by interface
 ELSE
   WRITE(*,*) ' STOP'                                                     
   WRITE(*,*) ' NO UPDRAFT MODEL FOR EDKF : CMF_UPDRAFT =',HMF_UPDRAFT 
