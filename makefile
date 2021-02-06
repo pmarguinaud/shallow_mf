@@ -76,11 +76,8 @@ compute_entr_detr.o: compute_entr_detr.F90 modd_cst.o modd_cmfshall.o mode_therm
 compute_mf_cloud_direct.o: compute_mf_cloud_direct.F90 modd_cmfshall.o
 	$(FC) -o $@ -c $< 
 
-compute_function_thermo_mf.o: compute_function_thermo_mf.F90 modd_cst.o
-	$(FC) -o $@ -c $< 
-
-wrap_shallow_mf.x: wrap_shallow_mf.o shallow_mf_load_all.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o compute_function_thermo_mf.o shuman_mf.o
-	$(FC) -o wrap_shallow_mf.x wrap_shallow_mf.o xrd_getoptions.o xrd_unix_env.o load_mod.o shallow_mf_load_all.o modd_cturb.o modd_cmfshall.o modd_cst.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o shuman_mf.o modd_neb.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o compute_function_thermo_mf.o
+wrap_shallow_mf.x: wrap_shallow_mf.o shallow_mf_load_all.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o shuman_mf.o
+	$(FC) -o wrap_shallow_mf.x wrap_shallow_mf.o xrd_getoptions.o xrd_unix_env.o load_mod.o shallow_mf_load_all.o modd_cturb.o modd_cmfshall.o modd_cst.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o shuman_mf.o modd_neb.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o 
 
 clean:
 	\rm -f *.o *.x *.mod *.xml *.optrpt
