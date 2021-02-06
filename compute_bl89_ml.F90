@@ -79,13 +79,13 @@ REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 !              --------------
 IIJU=KLON
 !
-ZDELTVPT(:,:)=DZM_MF(KKA,KKU,KKL,PVPT(:,:))
+ZDELTVPT(:,:)=DZM_MF(KLON,KLEV,KKA,KKU,KKL,PVPT(:,:))
 ZDELTVPT(:,KKA)=0.
 WHERE (ABS(ZDELTVPT(:,:))<XLINF)
   ZDELTVPT(:,:)=XLINF
 END WHERE
 !
-ZHLVPT(:,:)=MZM_MF(KKA,KKU,KKL,PVPT(:,:))
+ZHLVPT(:,:)=MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVPT(:,:))
 !
 !We consider that gradient between mass levels KKB and KKB+KKL is the same as
 !the gradient between flux level KKB and mass level KKB

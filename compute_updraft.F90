@@ -228,15 +228,15 @@ END IF
 
 ! Initialisation of environment variables at t-dt
 ! variables at flux level
-ZTHLM_F(:,:) = MZM_MF(KKA,KKU,KKL,PTHLM(:,:))
-ZRTM_F (:,:) = MZM_MF(KKA,KKU,KKL,PRTM(:,:))
-ZUM_F  (:,:) = MZM_MF(KKA,KKU,KKL,PUM(:,:))
-ZVM_F  (:,:) = MZM_MF(KKA,KKU,KKL,PVM(:,:))
-ZTKEM_F(:,:) = MZM_MF(KKA,KKU,KKL,PTKEM(:,:))
+ZTHLM_F(:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHLM(:,:))
+ZRTM_F (:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRTM(:,:))
+ZUM_F  (:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PUM(:,:))
+ZVM_F  (:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVM(:,:))
+ZTKEM_F(:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTKEM(:,:))
 
 DO JSV=1,ISV
   IF (ONOMIXLG .AND. JSV >= KSV_LGBEG .AND. JSV<= KSV_LGEND) CYCLE
-  ZSVM_F(:,:,JSV) = MZM_MF(KKA,KKU,KKL,PSVM(:,:,JSV))
+  ZSVM_F(:,:,JSV) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PSVM(:,:,JSV))
 END DO
 !                     
 !          Initialisation of updraft characteristics 
@@ -255,10 +255,10 @@ PRT_UP(:,KKB) = ZRTM_F(:,KKB)+MAX(0.,MIN(ZRMAX,(PSFRV(:)/SQRT(ZTKEM_F(:,KKB)))*X
 
 
 IF (OENTR_DETR) THEN
-  ZTHM_F (:,:) = MZM_MF(KKA,KKU,KKL,PTHM (:,:))
-  ZPRES_F(:,:) = MZM_MF(KKA,KKU,KKL,PPABSM(:,:))
-  ZRHO_F (:,:) = MZM_MF(KKA,KKU,KKL,PRHODREF(:,:))
-  ZRVM_F (:,:) = MZM_MF(KKA,KKU,KKL,PRVM(:,:))
+  ZTHM_F (:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHM (:,:))
+  ZPRES_F(:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PPABSM(:,:))
+  ZRHO_F (:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRHODREF(:,:))
+  ZRVM_F (:,:) = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRVM(:,:))
 
   ! thetav at mass and flux levels
   ZTHVM_F(:,:)=ZTHM_F(:,:)*((1.+ZRVORD*ZRVM_F(:,:))/(1.+ZRTM_F(:,:)))

@@ -153,15 +153,15 @@ PSVDT = 0.
 !   ( Resulting fluxes are in flux level (w-point) as PEMF and PTHL_UP )
 !
 
-PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KKA,KKU,KKL,PTHLM(:,:)))
+PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHLM(:,:)))
 
-PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KKA,KKU,KKL,PRTM(:,:)))
+PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRTM(:,:)))
 
-PFLXZTHVMF(:,:) = PEMF(:,:)*(PTHV_UP(:,:)-MZM_MF(KKA,KKU,KKL,PTHVM(:,:)))
+PFLXZTHVMF(:,:) = PEMF(:,:)*(PTHV_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHVM(:,:)))
 
 IF (OMIXUV) THEN
-  PFLXZUMF(:,:) =  PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KKA,KKU,KKL,PUM(:,:)))
-  PFLXZVMF(:,:) =  PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KKA,KKU,KKL,PVM(:,:)))
+  PFLXZUMF(:,:) =  PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PUM(:,:)))
+  PFLXZVMF(:,:) =  PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVM(:,:)))
 ELSE
   PFLXZUMF(:,:) = 0.
   PFLXZVMF(:,:) = 0.
@@ -185,7 +185,7 @@ ZMEMF = - PEMF
 CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PTHLM,PFLXZTHMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                       PDZZ,PRHODJ,ZVARS )
 ! compute new flux
-PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
+PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
 
 !!! compute THL tendency
 !
@@ -197,7 +197,7 @@ PTHLDT(:,:)= (ZVARS(:,:)-PTHLM(:,:))/PTSTEP_MET
 CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PRTM(:,:),PFLXZRMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
 ! compute new flux
-PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
+PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
 
 !!! compute RT tendency
 PRTDT(:,:) = (ZVARS(:,:)-PRTM(:,:))/PTSTEP_MET
@@ -212,7 +212,7 @@ IF (OMIXUV) THEN
   CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PUM,PFLXZUMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  PFLXZUMF(:,:) = PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
+  PFLXZUMF(:,:) = PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
 
   ! compute U tendency
   PUDT(:,:)= (ZVARS(:,:)-PUM(:,:))/PTSTEP
@@ -226,7 +226,7 @@ IF (OMIXUV) THEN
   CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVM,PFLXZVMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  PFLXZVMF(:,:) = PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
+  PFLXZVMF(:,:) = PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
 
   ! compute V tendency
   PVDT(:,:)= (ZVARS(:,:)-PVM(:,:))/PTSTEP
@@ -242,7 +242,7 @@ DO JSV=1,ISV
   !*     compute mean flux of scalar variables at time t-dt
   !   ( Resulting fluxes are in flux level (w-point) as PEMF and PTHL_UP )
 
-  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KKA,KKU,KKL,PSVM(:,:,JSV)))
+  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PSVM(:,:,JSV)))
   
   !
   ! 3.5 Compute the tendency for scalar variables
@@ -251,7 +251,7 @@ DO JSV=1,ISV
   CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PSVM(:,:,JSV),PFLXZSVMF(:,:,JSV),&
                         ZMEMF,PTSTEP_SV,PIMPL,PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KKA,KKU,KKL,ZVARS))
+  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS))
 
   ! compute Sv tendency
   PSVDT(:,:,JSV)= (ZVARS(:,:)-PSVM(:,:,JSV))/PTSTEP_SV
