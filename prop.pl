@@ -79,12 +79,13 @@ for my $call (@call)
             my $stmt = &Fxtran::stmt ($en);
             my @ssd = &f ('.//f:array-spec//f:shape-spec', $stmt);
 
+            next unless (@ssd);
  
             next if ($actual[$iarg]->nodeName eq 'literal-E');
 
             unless ($actual[$iarg]->nodeName eq 'named-E')
               {
-                die $call->textContent 
+                die $call->textContent . ' ' . $actual[$iarg]->textContent;
               }
 
             my ($ref) = &f ('.//f:R-LT', $actual[$iarg]);

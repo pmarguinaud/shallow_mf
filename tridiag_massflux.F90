@@ -1,5 +1,5 @@
 !     ######spl
-       SUBROUTINE TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
+       SUBROUTINE TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,PVARP             )
 
        USE PARKIND1, ONLY : JPRB
@@ -122,30 +122,32 @@ IMPLICIT NONE
 !
 !*       0.1 declarations of arguments
 !
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
 INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
 INTEGER,                INTENT(IN)   :: KKU          ! uppest atmosphere array index
 INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
-REAL, DIMENSION(:,:), INTENT(IN) :: PVARM   ! variable at t-1      at mass point
-REAL, DIMENSION(:,:), INTENT(IN) :: PF      ! flux in dT/dt=-dF/dz at flux point
-REAL, DIMENSION(:,:), INTENT(IN) :: PDFDT   ! dF/dT                at flux point
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PVARM   ! variable at t-1      at mass point
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PF      ! flux in dT/dt=-dF/dz at flux point
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PDFDT   ! dF/dT                at flux point
 REAL,                   INTENT(IN) :: PTSTEP  ! Double time step
 REAL,                   INTENT(IN) :: PIMPL   ! implicit weight
-REAL, DIMENSION(:,:), INTENT(IN) :: PDZZ    ! Dz                   at flux point
-REAL, DIMENSION(:,:), INTENT(IN) :: PRHODJ  ! (dry rho)*J          at mass point
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PDZZ    ! Dz                   at flux point
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PRHODJ  ! (dry rho)*J          at mass point
 !
-REAL, DIMENSION(:,:), INTENT(OUT):: PVARP   ! variable at t+1      at mass point
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT):: PVARP   ! variable at t+1      at mass point
 !
 !
 !*       0.2 declarations of local variables
 !
-REAL, DIMENSION(SIZE(PVARM,1),SIZE(PVARM,2))  :: ZRHODJ_DFDT_O_DZ
-REAL, DIMENSION(SIZE(PVARM,1),SIZE(PVARM,2))  :: ZMZM_RHODJ
-REAL, DIMENSION(SIZE(PVARM,1),SIZE(PVARM,2))  :: ZA, ZB, ZC
-REAL, DIMENSION(SIZE(PVARM,1),SIZE(PVARM,2))  :: ZY ,ZGAM 
+REAL, DIMENSION(KLON,KLEV)  :: ZRHODJ_DFDT_O_DZ
+REAL, DIMENSION(KLON,KLEV)  :: ZMZM_RHODJ
+REAL, DIMENSION(KLON,KLEV)  :: ZA, ZB, ZC
+REAL, DIMENSION(KLON,KLEV)  :: ZY ,ZGAM 
                                          ! RHS of the equation, 3D work array
-REAL, DIMENSION(SIZE(PVARM,1))                :: ZBET
+REAL, DIMENSION(KLON)                :: ZBET
                                          ! 2D work array
 INTEGER                              :: JK            ! loop counter
 !
@@ -251,7 +253,7 @@ IF ( PIMPL > 1.E-10 ) THEN
 ELSE
   !!! EXPLICIT FORMULATION
   !
-  DO JK=1+JPVEXT,SIZE(PVARP,2)-JPVEXT
+  DO JK=1+JPVEXT,KLEV-JPVEXT
     PVARP(:,JK) = ZY(:,JK) * PTSTEP / PRHODJ(:,JK)
   ENDDO
   !

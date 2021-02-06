@@ -1,28 +1,27 @@
-!     ######spl
-      MODULE MODI_TRIDIAG_MASSFLUX
-!     ###################
+MODULE MODI_TRIDIAG_MASSFLUX
+
 INTERFACE
-!
-       SUBROUTINE TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
+SUBROUTINE TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,PVARP             )
-!
-INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
-INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
-INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
-INTEGER,                INTENT(IN)   :: KKU          ! uppest atmosphere array index
-INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
-REAL, DIMENSION(:,:), INTENT(IN) :: PVARM   ! variable at t-1      at mass point
-REAL, DIMENSION(:,:), INTENT(IN) :: PF      ! flux in dT/dt=-dF/dz at flux point
-REAL, DIMENSION(:,:), INTENT(IN) :: PDFDT   ! dF/dT                at flux point
-REAL,                   INTENT(IN) :: PTSTEP  ! Double time step
-REAL,                   INTENT(IN) :: PIMPL   ! implicit weight
-REAL, DIMENSION(:,:), INTENT(IN) :: PDZZ    ! Dz                   at flux point
-REAL, DIMENSION(:,:), INTENT(IN) :: PRHODJ  ! (dry rho)*J          at mass point
-!
-REAL, DIMENSION(:,:), INTENT(OUT):: PVARP   ! variable at t+1      at mass point
-!
+
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
+INTEGER,                INTENT(IN)   :: KKA          
+INTEGER,                INTENT(IN)   :: KKB          
+INTEGER,                INTENT(IN)   :: KKE          
+INTEGER,                INTENT(IN)   :: KKU          
+INTEGER,                INTENT(IN)   :: KKL          
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PVARM   
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PF      
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PDFDT   
+REAL,                   INTENT(IN) :: PTSTEP  
+REAL,                   INTENT(IN) :: PIMPL   
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PDZZ    
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PRHODJ  
+
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT):: PVARP   
+
 END SUBROUTINE TRIDIAG_MASSFLUX
-!
 END INTERFACE
-!
-END MODULE MODI_TRIDIAG_MASSFLUX 
+
+END MODULE

@@ -125,6 +125,7 @@ REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
 !
 
 REAL, DIMENSION(KLON,KLEV) :: ZVARS
+REAL, DIMENSION(KLON,KLEV) :: ZMEMF
 
 !
 INTEGER :: ISV,JSV          !number of scalar variables and Loop counter
@@ -174,12 +175,14 @@ ENDIF
 !          --------------------------------------------
 !
 
+ZMEMF = - PEMF
+
 !
 !
 ! 3.1 Compute the tendency for the conservative potential temperature
 !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
 !
-CALL TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PTHLM,PFLXZTHMF,-PEMF,PTSTEP_MET,PIMPL,  &
+CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PTHLM,PFLXZTHMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                       PDZZ,PRHODJ,ZVARS )
 ! compute new flux
 PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
@@ -191,7 +194,7 @@ PTHLDT(:,:)= (ZVARS(:,:)-PTHLM(:,:))/PTSTEP_MET
 !
 ! 3.2 Compute the tendency for the conservative mixing ratio
 !
-CALL TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PRTM(:,:),PFLXZRMF,-PEMF,PTSTEP_MET,PIMPL,  &
+CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PRTM(:,:),PFLXZRMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
 ! compute new flux
 PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
@@ -206,7 +209,7 @@ IF (OMIXUV) THEN
   !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
   !
 
-  CALL TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PUM,PFLXZUMF,-PEMF,PTSTEP,PIMPL,  &
+  CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PUM,PFLXZUMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
   PFLXZUMF(:,:) = PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
@@ -220,7 +223,7 @@ IF (OMIXUV) THEN
   !                                  meridian momentum
   !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
   !
-  CALL TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PVM,PFLXZVMF,-PEMF,PTSTEP,PIMPL,  &
+  CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVM,PFLXZVMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
   PFLXZVMF(:,:) = PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KKA,KKU,KKL,ZVARS(:,:)))
@@ -245,8 +248,8 @@ DO JSV=1,ISV
   ! 3.5 Compute the tendency for scalar variables
   !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
   !
-  CALL TRIDIAG_MASSFLUX(KKA,KKB,KKE,KKU,KKL,PSVM(:,:,JSV),PFLXZSVMF(:,:,JSV),&
-                        -PEMF,PTSTEP_SV,PIMPL,PDZZ,PRHODJ,ZVARS )
+  CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PSVM(:,:,JSV),PFLXZSVMF(:,:,JSV),&
+                        ZMEMF,PTSTEP_SV,PIMPL,PDZZ,PRHODJ,ZVARS )
   ! compute new flux
   PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KKA,KKU,KKL,ZVARS))
 
