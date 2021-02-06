@@ -104,7 +104,7 @@ PSIGMF = 0.
 
 IF (HMF_CLOUD == 'DIRE') THEN
   !Direct cloud scheme
-  CALL COMPUTE_MF_CLOUD_DIRECT(KKB, KKE, KKL, &
+  CALL COMPUTE_MF_CLOUD_DIRECT(KLON, KLEV, KKB, KKE, KKL, &
                               &KKLCL(:), PFRAC_UP(:,:), PRC_UP(:,:), PRI_UP(:,:),&
                               &PRC_MF(:,:), PRI_MF(:,:), PCF_MF(:,:))
   !

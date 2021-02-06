@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KKB, KKE, KKL, &
+      SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON, KLEV, KKB, KKE, KKL, &
                                         &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
                                         &PRC_MF, PRI_MF, PCF_MF)
 !     #################################################################
@@ -51,14 +51,16 @@ IMPLICIT NONE
 !
 !*                    0.1  Declaration of Arguments
 !
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKB            ! near ground physical index
 INTEGER,                INTENT(IN)   :: KKE            ! uppest atmosphere physical index
 INTEGER,                INTENT(IN)   :: KKL            ! +1 if grid goes from ground to atmosphere top, -1 otherwise
-INTEGER, DIMENSION(:),  INTENT(IN)   :: KKLCL          ! index of updraft condensation level
-REAL, DIMENSION(:,:),   INTENT(IN)   :: PFRAC_UP       ! Updraft Fraction
-REAL, DIMENSION(:,:),   INTENT(IN)   :: PRC_UP,PRI_UP  ! updraft characteritics
-REAL, DIMENSION(:,:),   INTENT(OUT)  :: PRC_MF, PRI_MF ! cloud content
-REAL, DIMENSION(:,:),   INTENT(OUT)  :: PCF_MF         ! and cloud fraction for MF scheme
+INTEGER, DIMENSION(KLON),  INTENT(IN)   :: KKLCL          ! index of updraft condensation level
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   :: PFRAC_UP       ! Updraft Fraction
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   :: PRC_UP,PRI_UP  ! updraft characteritics
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  :: PRC_MF, PRI_MF ! cloud content
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  :: PCF_MF         ! and cloud fraction for MF scheme
 !
 !*                    0.1  Declaration of local variables
 !
@@ -77,7 +79,7 @@ PRC_MF(:,:)=0.
 PRI_MF(:,:)=0.
 PCF_MF(:,:)=0.
 
-DO JI=1,SIZE(PCF_MF,1)
+DO JI=1,KLON
   JK0=KKLCL(JI)-KKL ! first mass level with cloud
   JK0=MAX(JK0, MIN(KKB,KKE)) !protection if KKL=1
   JK0=MIN(JK0, MAX(KKB,KKE)) !protection if KKL=-1
