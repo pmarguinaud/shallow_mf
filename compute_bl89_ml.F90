@@ -60,12 +60,12 @@ REAL, DIMENSION(KLON),     INTENT(OUT) :: PLWORK        ! Resulting mixing lengt
 
 !          0.2 Local variable
 !
-REAL, DIMENSION(SIZE(PVPT,1)) :: ZLWORK1,ZLWORK2 ! Temporary mixing length
-REAL, DIMENSION(SIZE(PVPT,1)) :: ZINTE,ZPOTE     ! TKE and potential energy
+REAL, DIMENSION(KLON) :: ZLWORK1,ZLWORK2 ! Temporary mixing length
+REAL, DIMENSION(KLON) :: ZINTE,ZPOTE     ! TKE and potential energy
                                                  !   between 2 levels
-REAL, DIMENSION(SIZE(PVPT,1)) :: ZVPT_DEP        ! Thetav on departure point
+REAL, DIMENSION(KLON) :: ZVPT_DEP        ! Thetav on departure point
 !
-REAL, DIMENSION(SIZE(PVPT,1),SIZE(PVPT,2)) :: ZDELTVPT,ZHLVPT                                
+REAL, DIMENSION(KLON,KLEV) :: ZDELTVPT,ZHLVPT                                
                       !Virtual Potential Temp at Half level and DeltaThv between
                       !2 mass levels
 
@@ -77,7 +77,7 @@ REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 !
 !*       1.    INITIALISATION
 !              --------------
-IIJU=SIZE(PVPT,1)
+IIJU=KLON
 !
 ZDELTVPT(:,:)=DZM_MF(KKA,KKU,KKL,PVPT(:,:))
 ZDELTVPT(:,KKA)=0.

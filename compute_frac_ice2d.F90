@@ -63,7 +63,7 @@ INTEGER :: JK
 !       1 Compute FRAC_ICE
 !         ----------------
 !
-DO JK=1, SIZE(PT,2)
+DO JK=1, KLEV
   CALL COMPUTE_FRAC_ICE1D(HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK))
 ENDDO
 

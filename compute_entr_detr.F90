@@ -119,34 +119,34 @@ REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PPART_DRY ! ratio of dry part at the
 !
 
 ! Variables for cloudy part
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZKIC, ZKIC_F2  ! fraction of env. mass in the muxtures
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZEPSI,ZDELTA   ! factor entrainment detrainment
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZEPSI_CLOUD    ! factor entrainment detrainment
+REAL, DIMENSION(KLON) :: ZKIC, ZKIC_F2  ! fraction of env. mass in the muxtures
+REAL, DIMENSION(KLON) :: ZEPSI,ZDELTA   ! factor entrainment detrainment
+REAL, DIMENSION(KLON) :: ZEPSI_CLOUD    ! factor entrainment detrainment
 REAL                           :: ZCOEFFMF_CLOUD ! factor for compputing entr. detr.
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZMIXTHL,ZMIXRT ! Thetal and rt in the mixtures
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZTHMIX         ! Theta and Thetav  of mixtures
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZRVMIX,ZRCMIX,ZRIMIX ! mixing ratios in mixtures
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZTHVMIX, ZTHVMIX_F2 ! Theta and Thetav  of mixtures
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZTHV_UP_F2     ! thv_up at flux point kk+kkl
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZRSATW, ZRSATI ! working arrays (mixing ratio at saturation)
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZTHV           ! theta V of environment at the bottom of cloudy part  
+REAL, DIMENSION(KLON) :: ZMIXTHL,ZMIXRT ! Thetal and rt in the mixtures
+REAL, DIMENSION(KLON) :: ZTHMIX         ! Theta and Thetav  of mixtures
+REAL, DIMENSION(KLON) :: ZRVMIX,ZRCMIX,ZRIMIX ! mixing ratios in mixtures
+REAL, DIMENSION(KLON) :: ZTHVMIX, ZTHVMIX_F2 ! Theta and Thetav  of mixtures
+REAL, DIMENSION(KLON) :: ZTHV_UP_F2     ! thv_up at flux point kk+kkl
+REAL, DIMENSION(KLON) :: ZRSATW, ZRSATI ! working arrays (mixing ratio at saturation)
+REAL, DIMENSION(KLON) :: ZTHV           ! theta V of environment at the bottom of cloudy part  
 REAL                           :: ZKIC_INIT      !Initial value of ZKIC
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZCOTHVU              ! Variation of Thvup between bottom and top of cloudy part
+REAL, DIMENSION(KLON) :: ZCOTHVU              ! Variation of Thvup between bottom and top of cloudy part
 
 ! Variables for dry part
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZFOESW, ZFOESI       ! saturating vapor pressure
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZDRSATODP            ! d.Rsat/dP
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZT                   ! Temperature
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZWK                  ! Work array
+REAL, DIMENSION(KLON) :: ZFOESW, ZFOESI       ! saturating vapor pressure
+REAL, DIMENSION(KLON) :: ZDRSATODP            ! d.Rsat/dP
+REAL, DIMENSION(KLON) :: ZT                   ! Temperature
+REAL, DIMENSION(KLON) :: ZWK                  ! Work array
 
 ! Variables for dry and cloudy parts
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZCOEFF_MINUS_HALF,&  ! Variation of Thv between mass points kk-kkl and kk
+REAL, DIMENSION(KLON) :: ZCOEFF_MINUS_HALF,&  ! Variation of Thv between mass points kk-kkl and kk
                                   ZCOEFF_PLUS_HALF     ! Variation of Thv between mass points kk and kk+kkl
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZPRE                 ! pressure at the bottom of the cloudy part
-REAL, DIMENSION(SIZE(PTHVM,1)) :: ZG_O_THVREF
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZFRAC_ICE            ! fraction of ice
+REAL, DIMENSION(KLON) :: ZPRE                 ! pressure at the bottom of the cloudy part
+REAL, DIMENSION(KLON) :: ZG_O_THVREF
+REAL, DIMENSION(KLON) :: ZFRAC_ICE            ! fraction of ice
 REAL                           :: ZRVORD               ! RV/RD
-REAL, DIMENSION(SIZE(PTHLM,1)) :: ZDZ_STOP,&           ! Exact Height of the LCL above flux level KK
+REAL, DIMENSION(KLON) :: ZDZ_STOP,&           ! Exact Height of the LCL above flux level KK
                                   ZTHV_MINUS_HALF,&    ! Thv at flux point(kk)  
                                   ZTHV_PLUS_HALF,&     ! Thv at flux point(kk+kkl)
                                   ZDZ                  ! Delta Z used in computations
