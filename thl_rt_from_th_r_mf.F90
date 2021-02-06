@@ -68,8 +68,8 @@ REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PRT      ! total non precip. water
 !
 
 !----------------------------------------------------------------------------
-REAL, DIMENSION(SIZE(PTH,1),SIZE(PTH,2)) :: ZCP, ZT
-REAL, DIMENSION(SIZE(PTH,1),SIZE(PTH,2)) :: ZLVOCPEXN, ZLSOCPEXN
+REAL, DIMENSION(KLON,KLEV) :: ZCP, ZT
+REAL, DIMENSION(KLON,KLEV) :: ZLVOCPEXN, ZLSOCPEXN
 INTEGER :: JRR
 !----------------------------------------------------------------------------
 !

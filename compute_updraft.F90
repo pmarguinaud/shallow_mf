@@ -121,10 +121,10 @@ REAL, DIMENSION(KLON),     INTENT(OUT)   :: PDEPTH           ! Deepness of cloud
 !
 !
 ! Mean environment variables at t-dt at flux point
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) ::    &
+REAL, DIMENSION(KLON,KLEV) ::    &
                         ZTHM_F,ZRVM_F                 ! Theta,rv of
                                                       ! updraft environnement
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) ::    &
+REAL, DIMENSION(KLON,KLEV) ::    &
                         ZRTM_F, ZTHLM_F, ZTKEM_F,&    ! rt, thetal,TKE,pressure,
                         ZUM_F,ZVM_F,ZRHO_F,      &    ! density,momentum
                         ZPRES_F,ZTHVM_F,ZTHVM,   &    ! interpolated at the flux point
@@ -133,39 +133,39 @@ REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) ::    &
                         ZBUO_INTEG_DRY, ZBUO_INTEG_CLD,&! Integrated Buoyancy
                         ZENTR_CLD,ZDETR_CLD           ! wet entrainment and detrainment
 
-REAL, DIMENSION(SIZE(PSVM,1),SIZE(PTHM,2),SIZE(PSVM,3)) :: &
+REAL, DIMENSION(KLON,KLEV,KSV) :: &
                         ZSVM_F ! scalar variables 
 
                         
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) ::  &
+REAL, DIMENSION(KLON,KLEV) ::  &
                         ZTH_UP,                  &    ! updraft THETA 
                         ZRC_MIX, ZRI_MIX              ! guess of Rc and Ri for KF mixture
 
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) ::  ZCOEF  ! diminution coefficient for too high clouds 
+REAL, DIMENSION(KLON,KLEV) ::  ZCOEF  ! diminution coefficient for too high clouds 
                         
-REAL, DIMENSION(SIZE(PSFTH,1) )            ::  ZWTHVSURF  ! Surface w'thetav'
+REAL, DIMENSION(KLON )            ::  ZWTHVSURF  ! Surface w'thetav'
 
 REAL  :: ZRDORV       ! RD/RV
 REAL  :: ZRVORD       ! RV/RD
 
 
-REAL, DIMENSION(SIZE(PTHM,1)) :: ZMIX1,ZMIX2,ZMIX3_CLD,ZMIX2_CLD
+REAL, DIMENSION(KLON) :: ZMIX1,ZMIX2,ZMIX3_CLD,ZMIX2_CLD
 
-REAL, DIMENSION(SIZE(PTHM,1)) :: ZLUP         ! Upward Mixing length from the ground
+REAL, DIMENSION(KLON) :: ZLUP         ! Upward Mixing length from the ground
 
 INTEGER  :: ISV                ! Number of scalar variables                               
 INTEGER  :: JK,JI,JSV          ! loop counters
 
-LOGICAL, DIMENSION(SIZE(PTHM,1)) ::  GTEST,GTESTLCL,GTESTETL
+LOGICAL, DIMENSION(KLON) ::  GTEST,GTESTLCL,GTESTETL
                                ! Test if the ascent continue, if LCL or ETL is reached
 LOGICAL                          ::  GLMIX 
                                ! To choose upward or downward mixing length
-LOGICAL, DIMENSION(SIZE(PTHM,1))              :: GWORK1
-LOGICAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) :: GWORK2
+LOGICAL, DIMENSION(KLON)              :: GWORK1
+LOGICAL, DIMENSION(KLON,KLEV) :: GWORK2
 
 INTEGER  :: ITEST
 
-REAL, DIMENSION(SIZE(PTHM,1)) :: ZRC_UP, ZRI_UP, ZRV_UP,&
+REAL, DIMENSION(KLON) :: ZRC_UP, ZRI_UP, ZRV_UP,&
                                  ZRSATW, ZRSATI,&
                                  ZPART_DRY
 
@@ -190,7 +190,7 @@ ZDEPTH_MAX2=4000. ! clouds with depth superior to this value are suppressed
 
 !                 Local variables, internal domain
 !number of scalar variables
-ISV=SIZE(PSVM,3)
+ISV=KSV
 
 IF (OENTR_DETR) THEN
   ! Initialisation of intersesting Level :LCL,ETL,CTL
@@ -521,7 +521,7 @@ IF(OENTR_DETR) THEN
 ! This way, all MF fluxes are diminished by this amount.
 ! Diagnosed cloud fraction is also multiplied by the same coefficient.
 !
-  DO JI=1,SIZE(PTHM,1) 
+  DO JI=1,KLON 
      PDEPTH(JI) = MAX(0., PZZ(JI,KKCTL(JI)) -  PZZ(JI,KKLCL(JI)) )
   END DO
 

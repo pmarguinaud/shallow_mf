@@ -124,7 +124,7 @@ REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
 !       0.2  declaration of local variables
 !
 
-REAL, DIMENSION(SIZE(PTHLM,1),SIZE(PTHLM,2)) :: ZVARS
+REAL, DIMENSION(KLON,KLEV) :: ZVARS
 
 !
 INTEGER :: ISV,JSV          !number of scalar variables and Loop counter
@@ -136,7 +136,7 @@ INTEGER :: ISV,JSV          !number of scalar variables and Loop counter
 !
 !
 ! number of scalar var
-ISV=SIZE(PSVM,3)
+ISV=KSV
 
 !
 PFLXZSVMF = 0.
