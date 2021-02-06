@@ -70,12 +70,12 @@ REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATI ! estimated mixing ration at satur
 INTEGER                       :: II ! Loop control
 INTEGER                       :: JITER ! number of iterations
 INTEGER                       :: J
-REAL, DIMENSION(SIZE(PTHL,1))   :: ZEXN
-REAL, DIMENSION(SIZE(PTHL,1)) :: ZRVSAT,ZCPH,ZRLTEMP,ZCPH2
-REAL, DIMENSION(SIZE(PTHL,1)) :: ZT,ZLVOCPEXN,ZLSOCPEXN
-REAL, DIMENSION(SIZE(PTHL,1)) :: ZDRSATODT,ZDRSATODTW,ZDRSATODTI
-REAL, DIMENSION(SIZE(PTHL,1)) :: ZFOESW, ZFOESI
-REAL, DIMENSION(SIZE(PTHL,1)) :: ZLOGT, Z99PP, Z1PRT
+REAL, DIMENSION(KLON)   :: ZEXN
+REAL, DIMENSION(KLON) :: ZRVSAT,ZCPH,ZRLTEMP,ZCPH2
+REAL, DIMENSION(KLON) :: ZT,ZLVOCPEXN,ZLSOCPEXN
+REAL, DIMENSION(KLON) :: ZDRSATODT,ZDRSATODTW,ZDRSATODTI
+REAL, DIMENSION(KLON) :: ZFOESW, ZFOESI
+REAL, DIMENSION(KLON) :: ZLOGT, Z99PP, Z1PRT
 REAL(KIND=JPRB) :: ZVAR1, ZVAR2, ZTPOW2, ZDELT
 
 !----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ ZCPH2(:)=0
 !Computation of an approximate state thanks to PRL and PRI guess
 ZEXN(:)=(PP(:)/XP00) ** RDSCPD
 
-DO J=1,SIZE(PTHL,1)
+DO J=1,KLON
 Z99PP(J)=0.99*PP(J)
 PRV(J)=PRT(J)-PRL(J)-PRI(J)
 ZCPH(J)=XCPD+ XCPV * PRV(J)+ XCL * PRL(J) + XCI * PRI(J) + ZCPH2(J)
@@ -115,7 +115,7 @@ DO II=1,JITER
 
   !Computation of liquid/ice fractions
   PFRAC_ICE(:) = 0.
-  DO J=1, SIZE(PFRAC_ICE, 1)
+  DO J=1, KLON
     IF(PRL(J)+PRI(J) > 1.E-20) THEN
       PFRAC_ICE(J) = PRI(J) / (PRL(J)+PRI(J))
     ENDIF
@@ -129,7 +129,7 @@ DO II=1,JITER
   ! Log does not vectorize on all compilers:
   ZLOGT(:)=LOG(ZT(:))
 
-  DO J=1,SIZE(PTHL,1)
+  DO J=1,KLON
 
   ZFOESW(J) = MIN(EXP( XALPW - XBETAW/ZT(J) - XGAMW*ZLOGT(J)  ), Z99PP(J))
   ZFOESI(J) = MIN(EXP( XALPI - XBETAI/ZT(J) - XGAMI*ZLOGT(J)  ), Z99PP(J))
