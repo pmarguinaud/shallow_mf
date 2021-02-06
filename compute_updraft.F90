@@ -274,7 +274,7 @@ IF (OENTR_DETR) THEN
   ! (all or nothing ajustement)
   PRC_UP(:,KKB)=0.
   PRI_UP(:,KKB)=0.
-  CALL TH_R_FROM_THL_RT_1D(HFRAC_ICE,PFRAC_ICE_UP(:,KKB),ZPRES_F(:,KKB), &
+  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,PFRAC_ICE_UP(:,KKB),ZPRES_F(:,KKB), &
              PTHL_UP(:,KKB),PRT_UP(:,KKB),ZTH_UP(:,KKB), &
              PRV_UP(:,KKB),PRC_UP(:,KKB),PRI_UP(:,KKB),ZRSATW(:),ZRSATI(:))
 
@@ -292,7 +292,7 @@ IF (OENTR_DETR) THEN
   GLMIX=.TRUE.
   ZTKEM_F(:,KKB)=0.
 
-  CALL COMPUTE_BL89_ML(KKA,KKB,KKE,KKU,KKL,PDZZ,ZTKEM_F(:,KKB),ZG_O_THVREF(:,KKB),ZTHVM,KKB,GLMIX,.TRUE.,ZLUP)
+  CALL COMPUTE_BL89_ML(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PDZZ,ZTKEM_F(:,KKB),ZG_O_THVREF(:,KKB),ZTHVM,KKB,GLMIX,.TRUE.,ZLUP)
   ZLUP(:)=MAX(ZLUP(:),1.E-10)
 
   ! Compute Buoyancy flux at the ground
@@ -349,7 +349,7 @@ DO JK=KKB,KKE-KKL,KKL
       ZRC_MIX(:,JK) = ZRC_MIX(:,JK-KKL) ! guess of Rc of mixture
       ZRI_MIX(:,JK) = ZRI_MIX(:,JK-KKL) ! guess of Ri of mixture
     ENDIF
-    CALL COMPUTE_ENTR_DETR(JK,KKB,KKE,KKL,GTEST,GTESTLCL,HFRAC_ICE,PFRAC_ICE_UP(:,JK),&
+    CALL COMPUTE_ENTR_DETR(KLON,KLEV,JK,KKB,KKE,KKL,GTEST,GTESTLCL,HFRAC_ICE,PFRAC_ICE_UP(:,JK),&
                            PRHODREF(:,JK),ZPRES_F(:,JK),ZPRES_F(:,JK+KKL),&
                            PZZ(:,:),PDZZ(:,:),ZTHVM(:,:),  &
                            PTHLM(:,:),PRTM(:,:),ZW_UP2(:,:),ZTH_UP(:,JK),   &
@@ -440,7 +440,7 @@ DO JK=KKB,KKE-KKL,KKL
 ! Compute non cons. var. at level JK+KKL
   ZRC_UP(:)=PRC_UP(:,JK) ! guess = level just below
   ZRI_UP(:)=PRI_UP(:,JK) ! guess = level just below
-  CALL TH_R_FROM_THL_RT_1D(HFRAC_ICE,PFRAC_ICE_UP(:,JK+KKL),ZPRES_F(:,JK+KKL), &
+  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,PFRAC_ICE_UP(:,JK+KKL),ZPRES_F(:,JK+KKL), &
           PTHL_UP(:,JK+KKL),PRT_UP(:,JK+KKL),ZTH_UP(:,JK+KKL),              &
           ZRV_UP(:),ZRC_UP(:),ZRI_UP(:),ZRSATW(:),ZRSATI(:))
   WHERE(GTEST)

@@ -46,8 +46,30 @@ for my $call (@call)
     my $pu = $pu[0];
     my $stmt = $pu->firstChild;
     my @dummy = &f ('./f:dummy-arg-LT/f:arg-N/f:N/f:n/text ()', $stmt, 1);
+    my @optional;
 
-    die unless (scalar (@actual) == scalar (@dummy));
+    
+    for my $iarg (0 .. $#dummy)
+      {
+        my @en = &f ('.//f:EN-decl[./f:EN-N/f:N/f:n[text ()="' . $dummy[$iarg] . '"]]', $pu);
+        for my $en (@en)
+          {
+            my $stmt = &Fxtran::stmt ($en);
+            $optional[$iarg] = &f ('./f:attribute/f:attribute-N[text ()="OPTIONAL"]', $stmt) ? 1 : 0;
+          }
+      }
+
+    if (scalar (@actual) < scalar (grep { ! $_ } @optional))
+      {
+        die $call->textContent;
+      }
+
+    if (scalar (@actual) > scalar (@optional))
+      {
+        die $call->textContent;
+      }
+
+    die if (grep { $_ } @optional);
 
     for my $iarg (0 .. $#dummy)
       {
@@ -57,7 +79,14 @@ for my $call (@call)
             my $stmt = &Fxtran::stmt ($en);
             my @ssd = &f ('.//f:array-spec//f:shape-spec', $stmt);
 
-            die $call->textContent unless ($actual[$iarg]->nodeName eq 'named-E');
+ 
+            next if ($actual[$iarg]->nodeName eq 'literal-E');
+
+            unless ($actual[$iarg]->nodeName eq 'named-E')
+              {
+                die $call->textContent 
+              }
+
             my ($ref) = &f ('.//f:R-LT', $actual[$iarg]);
 
             if ($ref) # Handle (:,:,10)
@@ -74,7 +103,7 @@ for my $call (@call)
 
             my ($actual) = &f ('./f:N/f:n/text ()', $actual[$iarg], 1);
 
-            die unless ($actual);
+            die $call->textContent unless ($actual);
 
             my @ssa = @{ $dims{$actual} };
 

@@ -1,7 +1,7 @@
 !     ######spl
-      SUBROUTINE TH_R_FROM_THL_RT_1D(HFRAC_ICE,PFRAC_ICE,PP,             &
+      SUBROUTINE TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,PFRAC_ICE,PP,        &
                                   PTHL, PRT, PTH, PRV, PRL, PRI,         &
-                                  PRSATW, PRSATI, PRR, PRS, PRG, PRH     )
+                                  PRSATW, PRSATI)
 !     #################################################################
 !
 !
@@ -51,18 +51,18 @@ IMPLICIT NONE
 !
 !*      0.1  declarations of arguments
 !
+INTEGER             , INTENT(IN) :: KLON
 CHARACTER*1         , INTENT(IN) :: HFRAC_ICE
-REAL, DIMENSION(:), INTENT(INOUT) :: PFRAC_ICE
-REAL, DIMENSION(:), INTENT(IN) :: PP          ! Pressure
-REAL, DIMENSION(:), INTENT(IN) :: PTHL    ! thetal to transform into th
-REAL, DIMENSION(:),INTENT(IN)  :: PRT    ! Total mixing ratios to transform into rv,rc and ri
-REAL, DIMENSION(:),OPTIONAL,INTENT(IN) :: PRR, PRS, PRG, PRH
-REAL, DIMENSION(:), INTENT(OUT):: PTH    ! th
-REAL, DIMENSION(:), INTENT(OUT):: PRV    ! vapor mixing ratio
-REAL, DIMENSION(:), INTENT(INOUT):: PRL    ! vapor mixing ratio
-REAL, DIMENSION(:), INTENT(INOUT):: PRI    ! vapor mixing ratio
-REAL, DIMENSION(:), INTENT(OUT)  :: PRSATW ! estimated mixing ration at saturation over water
-REAL, DIMENSION(:), INTENT(OUT)  :: PRSATI ! estimated mixing ration at saturation over ice
+REAL, DIMENSION(KLON), INTENT(INOUT) :: PFRAC_ICE
+REAL, DIMENSION(KLON), INTENT(IN) :: PP          ! Pressure
+REAL, DIMENSION(KLON), INTENT(IN) :: PTHL    ! thetal to transform into th
+REAL, DIMENSION(KLON),INTENT(IN)  :: PRT    ! Total mixing ratios to transform into rv,rc and ri
+REAL, DIMENSION(KLON), INTENT(OUT):: PTH    ! th
+REAL, DIMENSION(KLON), INTENT(OUT):: PRV    ! vapor mixing ratio
+REAL, DIMENSION(KLON), INTENT(INOUT):: PRL    ! vapor mixing ratio
+REAL, DIMENSION(KLON), INTENT(INOUT):: PRI    ! vapor mixing ratio
+REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATW ! estimated mixing ration at saturation over water
+REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATI ! estimated mixing ration at saturation over ice
 !
 !-------------------------------------------------------------------------------
 !
@@ -90,10 +90,6 @@ JITER=2
 !
 !Computation of ZCPH2 depending on dummy arguments received
 ZCPH2(:)=0
-IF(PRESENT(PRR)) ZCPH2(:)=ZCPH2(:) + XCL*PRR(:)
-IF(PRESENT(PRS)) ZCPH2(:)=ZCPH2(:) + XCI*PRS(:)
-IF(PRESENT(PRG)) ZCPH2(:)=ZCPH2(:) + XCI*PRG(:)
-IF(PRESENT(PRH)) ZCPH2(:)=ZCPH2(:) + XCI*PRH(:)
 !
 !Computation of an approximate state thanks to PRL and PRI guess
 ZEXN(:)=(PP(:)/XP00) ** RDSCPD

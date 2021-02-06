@@ -1,5 +1,5 @@
 !     ######spl
-          SUBROUTINE COMPUTE_ENTR_DETR(KK,KKB,KKE,KKL,OTEST,OTESTLCL,&
+          SUBROUTINE COMPUTE_ENTR_DETR(KLON,KLEV,KK,KKB,KKE,KKL,OTEST,OTESTLCL,&
                             HFRAC_ICE,PFRAC_ICE,PRHODREF,&
                             PPRE_MINUS_HALF,&
                             PPRE_PLUS_HALF,PZZ,PDZZ,&
@@ -72,44 +72,46 @@ IMPLICIT NONE
 !*                    1.1  Declaration of Arguments
 !
 !
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KK
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
 INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
 INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
-LOGICAL,DIMENSION(:),   INTENT(IN)   :: OTEST ! test to see if updraft is running
-LOGICAL,DIMENSION(:),   INTENT(IN)   :: OTESTLCL !test of condensation 
+LOGICAL,DIMENSION(KLON),   INTENT(IN)   :: OTEST ! test to see if updraft is running
+LOGICAL,DIMENSION(KLON),   INTENT(IN)   :: OTESTLCL !test of condensation 
 CHARACTER*1,            INTENT(IN)   :: HFRAC_ICE ! frac_ice can be compute using
                                               ! Temperature (T) or prescribed
                                               ! (Y)
-REAL, DIMENSION(:), INTENT(IN)      :: PFRAC_ICE ! fraction of ice
+REAL, DIMENSION(KLON), INTENT(IN)      :: PFRAC_ICE ! fraction of ice
 !
 !    prognostic variables at t- deltat
 !
-REAL, DIMENSION(:),     INTENT(IN) ::  PRHODREF  !rhodref
-REAL, DIMENSION(:),     INTENT(IN) ::  PPRE_MINUS_HALF ! Pressure at flux level KK
-REAL, DIMENSION(:),     INTENT(IN) ::  PPRE_PLUS_HALF ! Pressure at flux level KK+KKL
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PZZ       !  Height at the flux point
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PDZZ       !  metrics coefficient
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PTHVM      ! ThetaV environment 
+REAL, DIMENSION(KLON),     INTENT(IN) ::  PRHODREF  !rhodref
+REAL, DIMENSION(KLON),     INTENT(IN) ::  PPRE_MINUS_HALF ! Pressure at flux level KK
+REAL, DIMENSION(KLON),     INTENT(IN) ::  PPRE_PLUS_HALF ! Pressure at flux level KK+KKL
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PZZ       !  Height at the flux point
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PDZZ       !  metrics coefficient
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PTHVM      ! ThetaV environment 
 
 !
 !   thermodynamical variables which are transformed in conservative var.
 !
-REAL, DIMENSION(:,:), INTENT(IN)     ::  PTHLM     ! Thetal
-REAL, DIMENSION(:,:), INTENT(IN)     ::  PRTM      ! total mixing ratio 
-REAL, DIMENSION(:,:), INTENT(IN)     ::  PW_UP2    ! Vertical velocity^2
-REAL, DIMENSION(:),   INTENT(IN)     ::  PTH_UP,PTHL_UP,PRT_UP  ! updraft properties
-REAL, DIMENSION(:),   INTENT(IN)     ::  PLUP      ! LUP compute from the ground
-REAL, DIMENSION(:),   INTENT(IN)     ::  PRC_UP,PRI_UP   ! Updraft cloud content
-REAL, DIMENSION(:),   INTENT(IN)     ::  PTHV_UP ! Thetav of updraft
-REAL, DIMENSION(:),   INTENT(IN)     ::  PRSAT_UP ! Mixing ratio at saturation in updraft
-REAL, DIMENSION(:),   INTENT(INOUT)  ::  PRC_MIX, PRI_MIX      ! Mixture cloud content
-REAL, DIMENSION(:),   INTENT(OUT)    ::  PENTR     ! Mass flux entrainment of the updraft
-REAL, DIMENSION(:),   INTENT(OUT)    ::  PDETR     ! Mass flux detrainment of the updraft
-REAL, DIMENSION(:),   INTENT(OUT)    ::  PENTR_CLD ! Mass flux entrainment of the updraft in cloudy part
-REAL, DIMENSION(:),   INTENT(OUT)    ::  PDETR_CLD ! Mass flux detrainment of the updraft in cloudy part
-REAL, DIMENSION(:),   INTENT(OUT)    ::  PBUO_INTEG_DRY, PBUO_INTEG_CLD! Integral Buoyancy
-REAL, DIMENSION(:),   INTENT(OUT)    ::  PPART_DRY ! ratio of dry part at the transition level
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)     ::  PTHLM     ! Thetal
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)     ::  PRTM      ! total mixing ratio 
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)     ::  PW_UP2    ! Vertical velocity^2
+REAL, DIMENSION(KLON),   INTENT(IN)     ::  PTH_UP,PTHL_UP,PRT_UP  ! updraft properties
+REAL, DIMENSION(KLON),   INTENT(IN)     ::  PLUP      ! LUP compute from the ground
+REAL, DIMENSION(KLON),   INTENT(IN)     ::  PRC_UP,PRI_UP   ! Updraft cloud content
+REAL, DIMENSION(KLON),   INTENT(IN)     ::  PTHV_UP ! Thetav of updraft
+REAL, DIMENSION(KLON),   INTENT(IN)     ::  PRSAT_UP ! Mixing ratio at saturation in updraft
+REAL, DIMENSION(KLON),   INTENT(INOUT)  ::  PRC_MIX, PRI_MIX      ! Mixture cloud content
+REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PENTR     ! Mass flux entrainment of the updraft
+REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PDETR     ! Mass flux detrainment of the updraft
+REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PENTR_CLD ! Mass flux entrainment of the updraft in cloudy part
+REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PDETR_CLD ! Mass flux detrainment of the updraft in cloudy part
+REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PBUO_INTEG_DRY, PBUO_INTEG_CLD! Integral Buoyancy
+REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PPART_DRY ! ratio of dry part at the transition level
 !
 !
 !                       1.2  Declaration of local variables
@@ -260,7 +262,7 @@ INTEGER :: JI
   !but we are dealing with updraft and not mixture
   ZRCMIX(:)=PRC_UP(:)
   ZRIMIX(:)=PRI_UP(:)
-  CALL TH_R_FROM_THL_RT_1D(HFRAC_ICE,ZFRAC_ICE,&
+  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,ZFRAC_ICE,&
                PPRE_PLUS_HALF,PTHL_UP,PRT_UP,&
                ZTHMIX,ZRVMIX,ZRCMIX,ZRIMIX,&
                ZRSATW, ZRSATI)
@@ -327,7 +329,7 @@ INTEGER :: JI
                  (PRTM(:,KK)-ZDZ(:)*(PRTM(:,KK)-PRTM(:,JI))/PDZZ(:,KK)) + &
                  (1. - ZKIC_INIT)*PRT_UP(:)
   ENDWHERE
-  CALL TH_R_FROM_THL_RT_1D(HFRAC_ICE,ZFRAC_ICE,&
+  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,ZFRAC_ICE,&
                ZPRE,ZMIXTHL,ZMIXRT,&
                ZTHMIX,ZRVMIX,PRC_MIX,PRI_MIX,&
                ZRSATW, ZRSATI)
@@ -336,7 +338,7 @@ INTEGER :: JI
   !  Compute cons then non cons. var. of mixture at the flux level KK+KKL  with initial ZKIC
   ZMIXTHL(:) = ZKIC_INIT * 0.5*(PTHLM(:,KK)+PTHLM(:,KK+KKL))+(1. - ZKIC_INIT)*PTHL_UP(:)
   ZMIXRT(:)  = ZKIC_INIT * 0.5*(PRTM(:,KK)+PRTM(:,KK+KKL))+(1. - ZKIC_INIT)*PRT_UP(:)
-  CALL TH_R_FROM_THL_RT_1D(HFRAC_ICE,ZFRAC_ICE,&
+  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,ZFRAC_ICE,&
                PPRE_PLUS_HALF,ZMIXTHL,ZMIXRT,&
                ZTHMIX,ZRVMIX,PRC_MIX,PRI_MIX,&
                ZRSATW, ZRSATI)
