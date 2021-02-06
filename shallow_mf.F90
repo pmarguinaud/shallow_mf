@@ -65,7 +65,6 @@ USE MODD_CMFSHALL
 USE MODI_THL_RT_FROM_TH_R_MF
 USE MODI_COMPUTE_UPDRAFT
 USE MODI_MF_TURB
-USE MODI_MF_TURB_EXPL
 USE MODI_COMPUTE_MF_CLOUD
 USE MODI_COMPUTE_FRAC_ICE
 !
@@ -249,12 +248,7 @@ CALL MF_TURB(KKA, IKB, IKE, KKU, KKL, OMIXUV,                         &
              PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,         &
              ZFLXZSVMF                                                )
 ELSE
-  CALL MF_TURB_EXPL(KKA, IKB, IKE, KKU, KKL, OMIXUV,                     &
-           PRHODJ,                                                       &
-           ZTHLM,ZTHVM,ZRTM,PUM,PVM,                                     &
-           PDTHLDT_MF,PDRTDT_MF,PDUDT_MF,PDVDT_MF,                       &
-           ZEMF_O_RHODREF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP,            &
-           PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF)
+  CALL ABORT
 ENDIF
 
 ! security in the case HMF_UPDRAFT = 'DUAL'
