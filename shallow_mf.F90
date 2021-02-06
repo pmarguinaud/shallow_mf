@@ -143,21 +143,21 @@ INTEGER,DIMENSION(KLON), INTENT(OUT) :: KKLCL,KKETL,KKCTL ! level of LCL,ETL and
 !
 !                     0.2  Declaration of local variables
 !
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) ::     &
+REAL, DIMENSION(KLON,KLEV) ::     &
           ZTHLM,                                  & !
           ZRTM,                                   & !
           ZTHVM,                                  & !
           ZEMF_O_RHODREF,                         & ! entrainment/detrainment
           ZTHVDT,ZTHDT,ZRVDT,                     & ! tendencies
           ZBUO_INTEG                                ! integrated buoyancy
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) :: ZFRAC_ICE
+REAL, DIMENSION(KLON,KLEV) :: ZFRAC_ICE
 
-REAL, DIMENSION(SIZE(PSVM,1),SIZE(PSVM,2),SIZE(PSVM,3)) ::  &
+REAL, DIMENSION(KLON,KLEV,KSV) ::  &
                                           ZSV_UP,&  ! updraft scalar var.
                                           ZFLXZSVMF ! Flux     
-REAL, DIMENSION(SIZE(PTHM,1)) :: ZDEPTH             ! Deepness of cloud
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) :: ZFRAC_ICE_UP ! liquid/solid fraction in updraft
-REAL, DIMENSION(SIZE(PTHM,1),SIZE(PTHM,2)) :: ZRSAT_UP ! Rsat in updraft
+REAL, DIMENSION(KLON) :: ZDEPTH             ! Deepness of cloud
+REAL, DIMENSION(KLON,KLEV) :: ZFRAC_ICE_UP ! liquid/solid fraction in updraft
+REAL, DIMENSION(KLON,KLEV) :: ZRSAT_UP ! Rsat in updraft
 
 LOGICAL :: GENTR_DETR  ! flag to recompute entrainment, detrainment and mass flux
 INTEGER :: IKB         ! near ground physical index
