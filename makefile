@@ -43,13 +43,13 @@ compute_frac_ice2d.o: compute_frac_ice2d.F90 modi_compute_frac_ice1d.o
 thl_rt_from_th_r_mf.o: thl_rt_from_th_r_mf.F90
 	$(FC) -o $@ -c $< 
 
-compute_updraft.o: compute_updraft.F90 modd_cst.o modd_cmfshall.o modi_compute_entr_detr.o modi_th_r_from_thl_rt_1d.o modi_compute_bl89_ml.o shuman_mf.o
+compute_updraft.o: compute_updraft.F90 modd_cst.o modd_cmfshall.o modi_compute_entr_detr.o modi_th_r_from_thl_rt_1d.o modi_compute_bl89_ml.o modi_shuman_mf.o
 	$(FC) -o $@ -c $< 
 
 compute_mf_cloud.o: compute_mf_cloud.F90 modi_compute_mf_cloud_direct.o 
 	$(FC) -o $@ -c $< 
 
-mf_turb.o: mf_turb.F90 modd_cmfshall.o shuman_mf.o modi_tridiag_massflux.o
+mf_turb.o: mf_turb.F90 modd_cmfshall.o modi_shuman_mf.o modi_tridiag_massflux.o
 	$(FC) -o $@ -c $< 
 
 shuman_mf.o: shuman_mf.F90
@@ -64,7 +64,7 @@ th_r_from_thl_rt_1d.o: th_r_from_thl_rt_1d.F90 modi_compute_frac_ice1d.o modd_cs
 mode_thermo_mono.o: mode_thermo_mono.F90 mode_fm.o
 	$(FC) -o $@ -c $< 
 
-tridiag_massflux.o: tridiag_massflux.F90 modd_parameters.o shuman_mf.o modd_cturb.o modd_parameters.o shuman_mf.o
+tridiag_massflux.o: tridiag_massflux.F90 modd_parameters.o modi_shuman_mf.o modd_cturb.o modd_parameters.o 
 	$(FC) -o $@ -c $< 
 
 compute_bl89_ml.o: compute_bl89_ml.F90
@@ -79,7 +79,7 @@ compute_mf_cloud_direct.o: compute_mf_cloud_direct.F90 modd_cmfshall.o
 compute_function_thermo_mf.o: compute_function_thermo_mf.F90 modd_cst.o
 	$(FC) -o $@ -c $< 
 
-wrap_shallow_mf.x: wrap_shallow_mf.o shallow_mf_load_all.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o compute_function_thermo_mf.o
+wrap_shallow_mf.x: wrap_shallow_mf.o shallow_mf_load_all.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o compute_function_thermo_mf.o shuman_mf.o
 	$(FC) -o wrap_shallow_mf.x wrap_shallow_mf.o xrd_getoptions.o xrd_unix_env.o load_mod.o shallow_mf_load_all.o modd_cturb.o modd_cmfshall.o modd_cst.o shallow_mf.o compute_frac_ice2d.o thl_rt_from_th_r_mf.o compute_updraft.o compute_mf_cloud.o mf_turb.o compute_frac_ice1d.o shuman_mf.o modd_neb.o th_r_from_thl_rt_1d.o tridiag_massflux.o compute_bl89_ml.o compute_entr_detr.o compute_mf_cloud_direct.o compute_function_thermo_mf.o
 
 clean:
