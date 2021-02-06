@@ -60,7 +60,7 @@ my $text = $pu->textContent ();
 
 $text =~ s/^\s*\n$//goms;
 
-print << "EOF"
+'FileHandle'->new (">modi_$F90")->print (<< "EOF");
 MODULE MODI_${name}
 
 INTERFACE

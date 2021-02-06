@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE MF_TURB(KKA,KKB,KKE,KKU,KKL,OMIXUV,                  &
+      SUBROUTINE MF_TURB(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
                 PDZZ,                                                 &
@@ -66,6 +66,9 @@ IMPLICIT NONE
 !*      0.1  declarations of arguments
 !
 !
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
+INTEGER,                INTENT(IN)   :: KSV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
 INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
@@ -80,39 +83,39 @@ REAL,                 INTENT(IN)     ::  PTSTEP   ! Dynamical timestep
 REAL,                 INTENT(IN)     ::  PTSTEP_MET! Timestep for meteorological variables                        
 REAL,                 INTENT(IN)     ::  PTSTEP_SV! Timestep for tracer variables
 !
-REAL, DIMENSION(:,:), INTENT(IN)   :: PDZZ        ! metric coefficients
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PDZZ        ! metric coefficients
 
-REAL, DIMENSION(:,:), INTENT(IN)   :: PRHODJ      ! dry density * Grid size
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PRHODJ      ! dry density * Grid size
 
 !   Conservative var. at t-dt
-REAL, DIMENSION(:,:), INTENT(IN) ::  PTHLM        ! conservative pot. temp.
-REAL, DIMENSION(:,:), INTENT(IN) ::  PRTM         ! water var.  where 
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PTHLM        ! conservative pot. temp.
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PRTM         ! water var.  where 
 !  Virtual potential temperature at t-dt
-REAL, DIMENSION(:,:), INTENT(IN) ::  PTHVM 
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PTHVM 
 !  Momentum at t-dt
-REAL, DIMENSION(:,:), INTENT(IN) ::  PUM
-REAL, DIMENSION(:,:), INTENT(IN) ::  PVM
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PUM
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PVM
 !  scalar variables at t-dt
-REAL, DIMENSION(:,:,:), INTENT(IN) ::  PSVM
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN) ::  PSVM
 !
 ! Tendencies of conservative variables
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PTHLDT
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PTHLDT
 
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PRTDT 
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PRTDT 
 ! Tendencies of momentum
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PUDT
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PVDT
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PUDT
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PVDT
 ! Tendencies of scalar variables
-REAL, DIMENSION(:,:,:), INTENT(OUT) ::  PSVDT
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT) ::  PSVDT
 
 
 ! Updraft characteritics
-REAL, DIMENSION(:,:), INTENT(IN)   ::  PEMF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP
-REAL, DIMENSION(:,:,:), INTENT(IN) ::  PSV_UP
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   ::  PEMF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN) ::  PSV_UP
 ! Fluxes
-REAL, DIMENSION(:,:), INTENT(OUT)  ::  PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  ::  PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF
 
-REAL, DIMENSION(:,:,:), INTENT(OUT)::  PFLXZSVMF
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
 !
 !
 !

@@ -34,7 +34,7 @@ wrap_shallow_mf.o: wrap_shallow_mf.F90 xrd_getoptions.o modi_shallow_mf.o load_m
 shallow_mf_load_all.o: shallow_mf_load_all.F90 modd_cst.o modd_cmfshall.o modd_cturb.o load_mod.o modd_neb.o
 	$(FC) -c shallow_mf_load_all.F90
 
-shallow_mf.o: shallow_mf.F90 modd_cst.o modd_cmfshall.o modd_parameters.o modi_thl_rt_from_th_r_mf.o modi_compute_updraft.o modi_mf_turb.o modi_compute_mf_cloud.o modi_compute_frac_ice.o
+shallow_mf.o: shallow_mf.F90 modd_cst.o modd_cmfshall.o modd_parameters.o modi_thl_rt_from_th_r_mf.o modi_compute_updraft.o modi_mf_turb.o modi_compute_mf_cloud.o modi_compute_frac_ice.o modi_compute_frac_ice2d.o
 	$(FC) -c shallow_mf.F90
 
 compute_frac_ice2d.o: compute_frac_ice2d.F90 modi_compute_frac_ice1d.o

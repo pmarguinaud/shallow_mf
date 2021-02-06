@@ -1,10 +1,7 @@
-!     ######spl
-     MODULE MODI_MF_TURB
-!    ######################
-!
+MODULE MODI_MF_TURB
+
 INTERFACE
-!     #################################################################
-      SUBROUTINE MF_TURB(KKA,KKB,KKE,KKU,KKL,OMIXUV,                  &
+SUBROUTINE MF_TURB(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
                 PDZZ,                                                 &
@@ -15,63 +12,54 @@ INTERFACE
                 PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,      &
                 PFLXZSVMF                                             )
 
-!     #################################################################
-!
-!               
-!*               1.1  Declaration of Arguments
-!
-!
-INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
-INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
-INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
-INTEGER,                INTENT(IN)   :: KKU          ! uppest atmosphere array index
-INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
+INTEGER,                INTENT(IN)   :: KSV
+INTEGER,                INTENT(IN)   :: KKA          
+INTEGER,                INTENT(IN)   :: KKB          
+INTEGER,                INTENT(IN)   :: KKE          
+INTEGER,                INTENT(IN)   :: KKU          
+INTEGER,                INTENT(IN)   :: KKL          
+LOGICAL,                INTENT(IN)   :: OMIXUV      
+LOGICAL,                INTENT(IN)   :: ONOMIXLG  
+INTEGER,                INTENT(IN)   :: KSV_LGBEG 
+INTEGER,                INTENT(IN)   :: KSV_LGEND 
+REAL,                   INTENT(IN)   :: PIMPL       
+REAL,                 INTENT(IN)     ::  PTSTEP   
+REAL,                 INTENT(IN)     ::  PTSTEP_MET
+REAL,                 INTENT(IN)     ::  PTSTEP_SV
 
-LOGICAL,                INTENT(IN)   :: OMIXUV      ! True if mixing of momentum
-LOGICAL,                INTENT(IN)   :: ONOMIXLG  ! False if mixing of lagrangian tracer
-INTEGER,                INTENT(IN)   :: KSV_LGBEG ! first index of lag. tracer
-INTEGER,                INTENT(IN)   :: KSV_LGEND ! last  index of lag. tracer
-REAL,                   INTENT(IN)   :: PIMPL       ! degree of implicitness
-REAL,                 INTENT(IN)     ::  PTSTEP   ! Dynamical timestep 
-REAL,                 INTENT(IN)     ::  PTSTEP_MET! Timestep for meteorological variables                        
-REAL,                 INTENT(IN)     ::  PTSTEP_SV! Timestep for tracer variables
-!
-REAL, DIMENSION(:,:), INTENT(IN)   :: PDZZ        ! metric coefficients
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PDZZ        
 
-REAL, DIMENSION(:,:), INTENT(IN)   ::  PRHODJ    ! dry density * Grid size
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PRHODJ      
 
-!   Conservative var. at t-dt
-REAL, DIMENSION(:,:), INTENT(IN) ::  PTHLM       ! conservative pot. temp.
-REAL, DIMENSION(:,:), INTENT(IN) ::  PRTM         ! water var.  where 
-!  Virtual potential temperature at t-dt
-REAL, DIMENSION(:,:), INTENT(IN) ::  PTHVM 
-!  Momentum at t-dt
-REAL, DIMENSION(:,:), INTENT(IN) ::  PUM
-REAL, DIMENSION(:,:), INTENT(IN) ::  PVM
-!  scalar variables at t-dt
-REAL, DIMENSION(:,:,:), INTENT(IN) ::  PSVM
-!
-! Tendencies of conservative variables
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PTHLDT
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PTHLM        
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PRTM         
 
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PRTDT 
-! Tendencies of momentum
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PUDT
-REAL, DIMENSION(:,:),   INTENT(OUT) ::  PVDT
-! Tendencies of scalar variables
-REAL, DIMENSION(:,:,:), INTENT(OUT) ::  PSVDT
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PTHVM 
 
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PUM
+REAL, DIMENSION(KLON,KLEV), INTENT(IN) ::  PVM
 
-! Updraft characteritics
-REAL, DIMENSION(:,:), INTENT(IN)   ::  PEMF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP
-REAL, DIMENSION(:,:,:), INTENT(IN) ::  PSV_UP
-! Fluxes
-REAL, DIMENSION(:,:), INTENT(OUT)  ::  PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN) ::  PSVM
 
-REAL, DIMENSION(:,:,:), INTENT(OUT)::  PFLXZSVMF
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PTHLDT
+
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PRTDT 
+
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PUDT
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT) ::  PVDT
+
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT) ::  PSVDT
+
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   ::  PEMF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN) ::  PSV_UP
+
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  ::  PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF
+
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
 
 END SUBROUTINE MF_TURB
-
 END INTERFACE
-!
-END MODULE MODI_MF_TURB
+
+END MODULE

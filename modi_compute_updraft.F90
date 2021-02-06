@@ -1,16 +1,12 @@
-!     ######spl
-     MODULE MODI_COMPUTE_UPDRAFT
-!    ###########################
-!
+MODULE MODI_COMPUTE_UPDRAFT
+
 INTERFACE
-!
-!     #################################################################
-      SUBROUTINE COMPUTE_UPDRAFT(KKA,KKB,KKE,KKU,KKL, HFRAC_ICE,  &
+SUBROUTINE COMPUTE_UPDRAFT(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,HFRAC_ICE, &
                                  OENTR_DETR,OMIXUV,               &
                                  ONOMIXLG,KSV_LGBEG,KSV_LGEND,    &
                                  PZZ,PDZZ,                        &
                                  PSFTH,PSFRV,                     &
-                                 PPABSM,PRHODREF,PUM,PVM,PTKEM,   &
+                                 PPABSM,PRHODREF,PUM,PVM, PTKEM,  &
                                  PTHM,PRVM,PTHLM,PRTM,            &
                                  PSVM,PTHL_UP,PRT_UP,             &
                                  PRV_UP,PRC_UP,PRI_UP,PTHV_UP,    &
@@ -18,62 +14,57 @@ INTERFACE
                                  PFRAC_UP,PFRAC_ICE_UP,PRSAT_UP,  &
                                  PEMF,PDETR,PENTR,                &
                                  PBUO_INTEG,KKLCL,KKETL,KKCTL,    &
-                                 PDEPTH)
-!     #################################################################
-!
-!*                    1.1  Declaration of Arguments
-!
-!
-!
-INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
-INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
-INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
-INTEGER,                INTENT(IN)   :: KKU          ! uppest atmosphere array index
-INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
-CHARACTER*1,            INTENT(IN)   :: HFRAC_ICE    ! partition liquid/ice scheme
-LOGICAL,                INTENT(IN) :: OENTR_DETR! flag to recompute entrainment, detrainment and mass flux
-LOGICAL,                INTENT(IN) :: OMIXUV    ! True if mixing of momentum
-LOGICAL,                INTENT(IN)   :: ONOMIXLG  ! False if mixing of lagrangian tracer
-INTEGER,                INTENT(IN)   :: KSV_LGBEG ! first index of lag. tracer
-INTEGER,                INTENT(IN)   :: KSV_LGEND ! last  index of lag. tracer
-REAL, DIMENSION(:,:), INTENT(IN)   :: PZZ       !  Height at the flux point
-REAL, DIMENSION(:,:), INTENT(IN)   :: PDZZ      !  Metrics coefficient
+                                 PDEPTH     )
+
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
+INTEGER,                INTENT(IN)   :: KSV
+INTEGER,                INTENT(IN)   :: KKA          
+INTEGER,                INTENT(IN)   :: KKB          
+INTEGER,                INTENT(IN)   :: KKE          
+INTEGER,                INTENT(IN)   :: KKU          
+INTEGER,                INTENT(IN)   :: KKL          
+CHARACTER*1,            INTENT(IN)   :: HFRAC_ICE    
+LOGICAL,                INTENT(IN) :: OENTR_DETR
+LOGICAL,                INTENT(IN) :: OMIXUV    
+LOGICAL,                INTENT(IN)   :: ONOMIXLG  
+INTEGER,                INTENT(IN)   :: KSV_LGBEG 
+INTEGER,                INTENT(IN)   :: KSV_LGEND 
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PZZ       
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PDZZ      
  
-REAL, DIMENSION(:),   INTENT(IN)   ::  PSFTH,PSFRV
-! normal surface fluxes of theta,rv,(u,v) parallel to the orography
-!
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PPABSM     ! Pressure at t-dt
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PRHODREF   ! dry density of the
-                                                  ! reference state
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PUM        ! u mean wind
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PVM        ! v mean wind
-REAL, DIMENSION(:,:),   INTENT(IN) ::  PTKEM      ! TKE at t-dt
-!
-REAL, DIMENSION(:,:),   INTENT(IN)   ::  PTHM           ! liquid pot. temp. at t-dt
-REAL, DIMENSION(:,:),   INTENT(IN)   ::  PRVM           ! vapor mixing ratio at t-dt
-REAL, DIMENSION(:,:),   INTENT(IN)   ::  PTHLM,PRTM     ! cons. var. at t-dt
+REAL, DIMENSION(KLON),   INTENT(IN)   ::  PSFTH,PSFRV
 
-REAL, DIMENSION(:,:,:), INTENT(IN)   ::  PSVM           ! scalar var. at t-dt
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PPABSM     
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PRHODREF   
+                                                  
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PUM        
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PVM        
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN) ::  PTKEM      
 
-REAL, DIMENSION(:,:),   INTENT(OUT)  ::  PTHL_UP,PRT_UP   ! updraft properties
-REAL, DIMENSION(:,:),   INTENT(OUT)  ::  PU_UP, PV_UP     ! updraft wind components
-REAL, DIMENSION(:,:),   INTENT(INOUT)::  PRV_UP,PRC_UP, & ! updraft rv, rc
-                                         PRI_UP,PTHV_UP,& ! updraft ri, THv
-                                         PW_UP,PFRAC_UP,& ! updraft w, fraction
-                                         PFRAC_ICE_UP,&   ! liquid/solid fraction in updraft
-                                         PRSAT_UP         ! Rsat
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   ::  PTHM           
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   ::  PRVM           
+REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   ::  PTHLM,PRTM     
 
-REAL, DIMENSION(:,:,:), INTENT(OUT)  ::  PSV_UP           ! updraft scalar var. 
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN)   ::  PSVM           
+
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PTHL_UP,PRT_UP   
+REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PU_UP, PV_UP     
+REAL, DIMENSION(KLON,KLEV),   INTENT(INOUT)::  PRV_UP,PRC_UP, & 
+                                         PRI_UP,PTHV_UP,& 
+                                         PW_UP,PFRAC_UP,& 
+                                         PFRAC_ICE_UP,&   
+                                         PRSAT_UP         
+
+REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)  ::  PSV_UP           
                                          
-REAL, DIMENSION(:,:),   INTENT(INOUT)::  PEMF,PDETR,PENTR ! Mass_flux,
-                                                          ! entrainment, detrainment
-REAL, DIMENSION(:,:),   INTENT(INOUT) :: PBUO_INTEG       ! Integrated Buoyancy 
-INTEGER, DIMENSION(:),  INTENT(INOUT)::  KKLCL,KKETL,KKCTL! LCL, ETL, CTL                                           
-REAL, DIMENSION(:),     INTENT(OUT)   :: PDEPTH           ! Deepness of cloud
-
+REAL, DIMENSION(KLON,KLEV),   INTENT(INOUT)::  PEMF,PDETR,PENTR 
+                                                          
+REAL, DIMENSION(KLON,KLEV),   INTENT(INOUT) :: PBUO_INTEG       
+INTEGER, DIMENSION(KLON),  INTENT(INOUT) :: KKLCL,KKETL,KKCTL
+REAL, DIMENSION(KLON),     INTENT(OUT)   :: PDEPTH           
 
 END SUBROUTINE COMPUTE_UPDRAFT
-
 END INTERFACE
-!
-END MODULE MODI_COMPUTE_UPDRAFT
+
+END MODULE

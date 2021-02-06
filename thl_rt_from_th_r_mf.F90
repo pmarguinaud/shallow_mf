@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE THL_RT_FROM_TH_R_MF( KRR,KRRL,KRRI,                  &
+      SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
                                       PTHL, PRT                      )
 !     #################################################################
@@ -49,16 +49,18 @@ IMPLICIT NONE
 !
 !*      0.1  declarations of arguments
 !
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KRR           ! number of moist var.
 INTEGER,                INTENT(IN)   :: KRRL          ! number of liquid water var.
 INTEGER,                INTENT(IN)   :: KRRI          ! number of ice water var.
 
-REAL, DIMENSION(:,:), INTENT(IN)   :: PTH      ! theta
-REAL, DIMENSION(:,:,:), INTENT(IN) :: PR       ! water species
-REAL, DIMENSION(:,:), INTENT(IN)   :: PEXN    ! exner function
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PTH      ! theta
+REAL, DIMENSION(KLON,KLEV,KRR), INTENT(IN) :: PR       ! water species
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PEXN    ! exner function
 
-REAL, DIMENSION(:,:), INTENT(OUT)  :: PTHL     ! th_l
-REAL, DIMENSION(:,:), INTENT(OUT)  :: PRT      ! total non precip. water
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PTHL     ! th_l
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PRT      ! total non precip. water
 !
 !-------------------------------------------------------------------------------
 !

@@ -66,7 +66,7 @@ USE MODI_THL_RT_FROM_TH_R_MF
 USE MODI_COMPUTE_UPDRAFT
 USE MODI_MF_TURB
 USE MODI_COMPUTE_MF_CLOUD
-USE MODI_COMPUTE_FRAC_ICE
+USE MODI_COMPUTE_FRAC_ICE2D
 !
 IMPLICIT NONE
 
@@ -183,10 +183,10 @@ ZFRAC_ICE(:,:) = 0.
 WHERE(PRM(:,:,2)+PRM(:,:,4) > 1.E-20)
   ZFRAC_ICE(:,:) = PRM(:,:,4) / (PRM(:,:,2)+PRM(:,:,4))
 ENDWHERE
-CALL COMPUTE_FRAC_ICE(HFRAC_ICE,ZFRAC_ICE(:,:),PTHM(:,:)*PEXNM(:,:))
+CALL COMPUTE_FRAC_ICE2D(HFRAC_ICE,ZFRAC_ICE(:,:),PTHM(:,:)*PEXNM(:,:))
 
 ! Conservative variables at t-dt
-CALL THL_RT_FROM_TH_R_MF(KRR,KRRL,KRRI,    &
+CALL THL_RT_FROM_TH_R_MF(KLON,KLEV,KRR,KRRL,KRRI,    &
                          PTHM, PRM, PEXNM, &
                          ZTHLM, ZRTM       )
 
@@ -199,7 +199,7 @@ ZTHVM(:,:) = PTHM(:,:)*((1.+XRV / XRD *PRM(:,:,1))/(1.+ZRTM(:,:)))
 !
 IF (HMF_UPDRAFT == 'EDKF') THEN
   GENTR_DETR = .TRUE.
-  CALL COMPUTE_UPDRAFT(KKA,IKB,IKE,KKU,KKL,HFRAC_ICE,GENTR_DETR,OMIXUV,&
+  CALL COMPUTE_UPDRAFT(KLON,KLEV,KSV,KKA,IKB,IKE,KKU,KKL,HFRAC_ICE,GENTR_DETR,OMIXUV,&
                        ONOMIXLG,KSV_LGBEG,KSV_LGEND,             &
                        PZZ,PDZZ,                                 &
                        PSFTH,PSFRV,PPABSM,PRHODREF,              &
@@ -219,7 +219,7 @@ ENDIF
 !!! 5. Compute diagnostic convective cloud fraction and content
 !!!    --------------------------------------------------------
 !
-CALL COMPUTE_MF_CLOUD(KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
+CALL COMPUTE_MF_CLOUD(KLON,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
                       HMF_CLOUD,ZFRAC_ICE,              &
                       PRC_UP,PRI_UP,PEMF,               &
                       PTHL_UP,PRT_UP,PFRAC_UP,          &
@@ -237,7 +237,7 @@ CALL COMPUTE_MF_CLOUD(KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
 ZEMF_O_RHODREF=PEMF/PRHODREF
 
 IF ( PIMPL_MF > 1.E-10 ) THEN  
-CALL MF_TURB(KKA, IKB, IKE, KKU, KKL, OMIXUV,                         &
+CALL MF_TURB(KLON,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,           &
              ONOMIXLG,KSV_LGBEG,KSV_LGEND,                            &
              PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
              PDZZ,                                                    &

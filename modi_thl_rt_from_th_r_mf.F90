@@ -1,31 +1,24 @@
-!     ######spl
-     MODULE MODI_THL_RT_FROM_TH_R_MF
-!    ###############################
-!
+MODULE MODI_THL_RT_FROM_TH_R_MF
+
 INTERFACE
-!     #################################################################
-      SUBROUTINE THL_RT_FROM_TH_R_MF( KRR,KRRL,KRRI,                  &
+SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
                                       PTHL, PRT                      )
-!     #################################################################
-!
-!               
-!*               1.1  Declaration of Arguments
-!                
-!
-INTEGER,                INTENT(IN)   :: KRR           ! number of moist var.
-INTEGER,                INTENT(IN)   :: KRRL          ! number of liquid water var.
-INTEGER,                INTENT(IN)   :: KRRI          ! number of ice water var.
 
-REAL, DIMENSION(:,:), INTENT(IN)   :: PTH      ! theta
-REAL, DIMENSION(:,:,:), INTENT(IN) :: PR       ! water species
-REAL, DIMENSION(:,:), INTENT(IN)   :: PEXN    ! exner function
+INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KLEV
+INTEGER,                INTENT(IN)   :: KRR           
+INTEGER,                INTENT(IN)   :: KRRL          
+INTEGER,                INTENT(IN)   :: KRRI          
 
-REAL, DIMENSION(:,:), INTENT(OUT)  :: PTHL     ! th_l
-REAL, DIMENSION(:,:), INTENT(OUT)  :: PRT      ! total non precip. water
-!
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PTH      
+REAL, DIMENSION(KLON,KLEV,KRR), INTENT(IN) :: PR       
+REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PEXN    
+
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PTHL     
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PRT      
+
 END SUBROUTINE THL_RT_FROM_TH_R_MF
-
 END INTERFACE
-!
-END MODULE MODI_THL_RT_FROM_TH_R_MF
+
+END MODULE
