@@ -34,7 +34,7 @@ wrap_shallow_mf.o: wrap_shallow_mf.F90 xrd_getoptions.o modi_shallow_mf.o load_m
 shallow_mf_load_all.o: shallow_mf_load_all.F90 modd_cst.o modd_cmfshall.o modd_cturb.o load_mod.o modd_neb.o
 	$(FC) -c shallow_mf_load_all.F90
 
-shallow_mf.o: shallow_mf.F90 modd_cst.o modd_cmfshall.o modd_parameters.o modi_thl_rt_from_th_r_mf.o modi_compute_updraft.o modi_mf_turb.o modi_compute_mf_cloud.o modi_compute_frac_ice.o modi_compute_frac_ice2d.o
+shallow_mf.o: shallow_mf.F90 modd_cst.o modd_cmfshall.o modd_parameters.o modi_thl_rt_from_th_r_mf.o modi_compute_updraft.o modi_mf_turb.o modi_compute_mf_cloud.o modi_compute_frac_ice2d.o
 	$(FC) -c shallow_mf.F90
 
 compute_frac_ice2d.o: compute_frac_ice2d.F90 modi_compute_frac_ice1d.o
@@ -58,7 +58,7 @@ shuman_mf.o: shuman_mf.F90
 compute_frac_ice1d.o: compute_frac_ice1d.F90 modd_neb.o modd_cst.o
 	$(FC) -o $@ -c $< 
 
-th_r_from_thl_rt_1d.o: th_r_from_thl_rt_1d.F90 modi_compute_frac_ice.o modd_cst.o mode_thermo_mono.o
+th_r_from_thl_rt_1d.o: th_r_from_thl_rt_1d.F90 modi_compute_frac_ice1d.o modd_cst.o mode_thermo_mono.o
 	$(FC) -o $@ -c $< 
 
 mode_thermo_mono.o: mode_thermo_mono.F90 mode_fm.o
