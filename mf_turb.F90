@@ -126,6 +126,7 @@ REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
 
 REAL, DIMENSION(KLON,KLEV) :: ZVARS
 REAL, DIMENSION(KLON,KLEV) :: ZMEMF
+REAL, DIMENSION(KLON,KLEV) :: ZMZM
 
 !
 INTEGER :: ISV,JSV          !number of scalar variables and Loop counter
@@ -153,15 +154,20 @@ PSVDT = 0.
 !   ( Resulting fluxes are in flux level (w-point) as PEMF and PTHL_UP )
 !
 
-PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHLM(:,:)))
+CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHLM(:,:),ZMZM)
+PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-ZMZM)
 
-PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRTM(:,:)))
+CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRTM(:,:),ZMZM)
+PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-ZMZM)
 
-PFLXZTHVMF(:,:) = PEMF(:,:)*(PTHV_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHVM(:,:)))
+CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHVM(:,:),ZMZM)
+PFLXZTHVMF(:,:) = PEMF(:,:)*(PTHV_UP(:,:)-ZMZM)
 
 IF (OMIXUV) THEN
-  PFLXZUMF(:,:) =  PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PUM(:,:)))
-  PFLXZVMF(:,:) =  PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVM(:,:)))
+  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PUM(:,:),ZMZM)
+  PFLXZUMF(:,:) =  PEMF(:,:)*(PU_UP(:,:)-ZMZM)
+  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVM(:,:),ZMZM)
+  PFLXZVMF(:,:) =  PEMF(:,:)*(PV_UP(:,:)-ZMZM)
 ELSE
   PFLXZUMF(:,:) = 0.
   PFLXZVMF(:,:) = 0.
@@ -185,7 +191,8 @@ ZMEMF = - PEMF
 CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PTHLM,PFLXZTHMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                       PDZZ,PRHODJ,ZVARS )
 ! compute new flux
-PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
+CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-ZMZM)
 
 !!! compute THL tendency
 !
@@ -197,7 +204,8 @@ PTHLDT(:,:)= (ZVARS(:,:)-PTHLM(:,:))/PTSTEP_MET
 CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PRTM(:,:),PFLXZRMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
 ! compute new flux
-PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
+CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-ZMZM)
 
 !!! compute RT tendency
 PRTDT(:,:) = (ZVARS(:,:)-PRTM(:,:))/PTSTEP_MET
@@ -212,7 +220,8 @@ IF (OMIXUV) THEN
   CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PUM,PFLXZUMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  PFLXZUMF(:,:) = PEMF(:,:)*(PU_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
+  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+  PFLXZUMF(:,:) = PEMF(:,:)*(PU_UP(:,:)-ZMZM)
 
   ! compute U tendency
   PUDT(:,:)= (ZVARS(:,:)-PUM(:,:))/PTSTEP
@@ -226,7 +235,8 @@ IF (OMIXUV) THEN
   CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVM,PFLXZVMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  PFLXZVMF(:,:) = PEMF(:,:)*(PV_UP(:,:)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:)))
+  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+  PFLXZVMF(:,:) = PEMF(:,:)*(PV_UP(:,:)-ZMZM)
 
   ! compute V tendency
   PVDT(:,:)= (ZVARS(:,:)-PVM(:,:))/PTSTEP
@@ -242,7 +252,8 @@ DO JSV=1,ISV
   !*     compute mean flux of scalar variables at time t-dt
   !   ( Resulting fluxes are in flux level (w-point) as PEMF and PTHL_UP )
 
-  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,PSVM(:,:,JSV)))
+  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PSVM(:,:,JSV),ZMZM)
+  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-ZMZM)
   
   !
   ! 3.5 Compute the tendency for scalar variables
@@ -251,7 +262,8 @@ DO JSV=1,ISV
   CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PSVM(:,:,JSV),PFLXZSVMF(:,:,JSV),&
                         ZMEMF,PTSTEP_SV,PIMPL,PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS))
+  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS,ZMZM)
+  PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-ZMZM)
 
   ! compute Sv tendency
   PSVDT(:,:,JSV)= (ZVARS(:,:)-PSVM(:,:,JSV))/PTSTEP_SV

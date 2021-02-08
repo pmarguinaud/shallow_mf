@@ -1,5 +1,5 @@
 !     ###############################
-      FUNCTION MZM_MF(KLON,KLEV,KKA,KKU,KKL,PA)  RESULT(PMZM)
+      SUBROUTINE MZM_MF(KLON,KLEV,KKA,KKU,KKL,PA,PMZM)
 !     ###############################
 !
 !!****  *MZM* -  SHUMAN_MF operator : mean operator in z direction for a
@@ -55,7 +55,7 @@ INTEGER,              INTENT(IN)       :: KLEV
 INTEGER,              INTENT(IN)       :: KKA, KKU ! near ground and uppest atmosphere array indexes
 INTEGER,              INTENT(IN)       :: KKL    ! +1 if grid goes from ground to atmosphere top, -1 otherwise
 REAL, DIMENSION(KLON,KLEV), INTENT(IN)       :: PA     ! variable at mass localization
-REAL, DIMENSION(KLON,KLEV) :: PMZM   ! result at flux localization
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)      :: PMZM   ! result at flux localization
 !
 !*       0.2   Declarations of local variables
 !              -------------------------------
@@ -76,9 +76,9 @@ PMZM(:,KKU) = 0.5*( PA(:,KKU)+PA(:,KKU-KKL) )
 !
 !-------------------------------------------------------------------------------
 !
-END FUNCTION MZM_MF
+END SUBROUTINE MZM_MF
 !     ###############################
-      FUNCTION DZM_MF(KLON,KLEV,KKA,KKU,KKL,PA)  RESULT(PDZM)
+      SUBROUTINE DZM_MF(KLON,KLEV,KKA,KKU,KKL,PA,PDZM)
 !     ###############################
 !
 !!****  *DZM* -  SHUMAN_MF operator : finite difference operator in z direction
@@ -135,7 +135,7 @@ INTEGER,              INTENT(IN)       :: KKA, KKU ! near ground and uppest atmo
 INTEGER,              INTENT(IN)       :: KKL    ! +1 if grid goes from ground to atmosphere top, -1 otherwise
 REAL, DIMENSION(KLON,KLEV), INTENT(IN)       :: PA     ! variable at mass
                                                  ! localization
-REAL, DIMENSION(KLON,KLEV) :: PDZM   ! result at flux
+REAL, DIMENSION(KLON,KLEV), INTENT(OUT)      :: PDZM   ! result at flux
                                                  ! side
 !
 !*       0.2   Declarations of local variables
@@ -156,5 +156,5 @@ PDZM(:,KKU) = PA(:,KKU) - PA(:,KKU-KKL)
 !
 !-------------------------------------------------------------------------------
 !
-END FUNCTION DZM_MF
+END SUBROUTINE DZM_MF
 

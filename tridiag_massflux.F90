@@ -156,7 +156,7 @@ INTEGER                              :: JK            ! loop counter
 !*      1.  Preliminaries
 !           -------------
 !
-ZMZM_RHODJ  = MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRHODJ)
+CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRHODJ,ZMZM_RHODJ)
 ZRHODJ_DFDT_O_DZ = ZMZM_RHODJ*PDFDT/PDZZ
 !
 ZA=0.
