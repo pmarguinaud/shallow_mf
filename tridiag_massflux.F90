@@ -174,7 +174,7 @@ ZY(:,KKB) = PRHODJ(:,KKB)*PVARM(:,KKB)/PTSTEP             &
     + ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL * PVARM(:,KKB+KKL)    &
     + ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL * PVARM(:,KKB  )
 !
-DO JK=2+JPVEXT,SIZE(ZY,2)-JPVEXT-1
+DO JK=2+JPVEXT,KLEV-JPVEXT-1
   ZY(:,JK) = PRHODJ(:,JK)*PVARM(:,JK)/PTSTEP          &
     - ZMZM_RHODJ(:,JK+KKL) * PF(:,JK+KKL)/PDZZ(:,JK+KKL)    &
     + ZMZM_RHODJ(:,JK  ) * PF(:,JK  )/PDZZ(:,JK  )    &
@@ -207,7 +207,7 @@ IF ( PIMPL > 1.E-10 ) THEN
                 + ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL
   ZC(:,KKB) =   ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL
 
-  DO JK=2+JPVEXT,SIZE(ZY,2)-JPVEXT-1
+  DO JK=2+JPVEXT,KLEV-JPVEXT-1
     ZA(:,JK) = - ZRHODJ_DFDT_O_DZ(:,JK  ) * 0.5*PIMPL
     ZB(:,JK) =   PRHODJ(:,JK)/PTSTEP                   &
                  + ZRHODJ_DFDT_O_DZ(:,JK+KKL) * 0.5*PIMPL &

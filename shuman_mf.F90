@@ -68,7 +68,7 @@ INTEGER :: JK             ! Loop index in z direction
 !*       1.    DEFINITION OF MZM
 !              ------------------
 !
-DO JK=2,SIZE(PA,2)-1
+DO JK=2,KLEV-1
   PMZM(:,JK) = 0.5*( PA(:,JK)+PA(:,JK-KKL) )
 END DO
 PMZM(:,KKA) = PA(:,KKA)
@@ -148,7 +148,7 @@ INTEGER :: JK            ! Loop index in z direction
 !*       1.    DEFINITION OF DZM
 !              ------------------
 !
-DO JK=2,SIZE(PA,2)-1
+DO JK=2,KLEV-1
   PDZM(:,JK) = PA(:,JK) - PA(:,JK-KKL)
 END DO
 PDZM(:,KKA) = 0.
