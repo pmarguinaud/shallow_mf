@@ -77,40 +77,40 @@ INTEGER :: JRR
 !
 !
 !temperature
-ZT(:,:) = PTH(:,:) * PEXN(:,:)
+ZT = PTH * PEXN
 
 !Cp
 ZCP=XCPD
-IF (KRR > 0) ZCP(:,:) = ZCP(:,:) + XCPV * PR(:,:,1)
+IF (KRR > 0) ZCP = ZCP + XCPV * PR(:,:,1)
 DO JRR = 2,1+KRRL  ! loop on the liquid components
-  ZCP(:,:)  = ZCP(:,:) + XCL * PR(:,:,JRR)
+  ZCP  = ZCP + XCL * PR(:,:,JRR)
 END DO
 DO JRR = 2+KRRL,1+KRRL+KRRI ! loop on the solid components
-  ZCP(:,:)  = ZCP(:,:)  + XCI * PR(:,:,JRR)
+  ZCP  = ZCP  + XCI * PR(:,:,JRR)
 END DO
 
 IF ( KRRL >= 1 ) THEN
   IF ( KRRI >= 1 ) THEN
     !ZLVOCPEXN and ZLSOCPEXN
-    ZLVOCPEXN(:,:)=(XLVTT + (XCPV-XCL) *  (ZT(:,:)-XTT) ) / ZCP(:,:) / PEXN(:,:)
-    ZLSOCPEXN(:,:)=(XLSTT + (XCPV-XCI) *  (ZT(:,:)-XTT) ) / ZCP(:,:) / PEXN(:,:)
+    ZLVOCPEXN=(XLVTT + (XCPV-XCL) *  (ZT-XTT) ) / ZCP / PEXN
+    ZLSOCPEXN=(XLSTT + (XCPV-XCI) *  (ZT-XTT) ) / ZCP / PEXN
     ! Rnp 
-    PRT(:,:)  = PR(:,:,1)  + PR(:,:,2)  + PR(:,:,4)
+    PRT  = PR(:,:,1)  + PR(:,:,2)  + PR(:,:,4)
     ! Theta_l 
-    PTHL(:,:)  = PTH(:,:)  - ZLVOCPEXN(:,:) * PR(:,:,2) &
-                           - ZLSOCPEXN(:,:) * PR(:,:,4)
+    PTHL  = PTH  - ZLVOCPEXN * PR(:,:,2) &
+                           - ZLSOCPEXN * PR(:,:,4)
   ELSE
     !ZLVOCPEXN
-    ZLVOCPEXN(:,:)=(XLVTT + (XCPV-XCL) *  (ZT(:,:)-XTT) ) / ZCP(:,:) / PEXN(:,:)
+    ZLVOCPEXN=(XLVTT + (XCPV-XCL) *  (ZT-XTT) ) / ZCP / PEXN
     ! Rnp
-    PRT(:,:)  = PR(:,:,1)  + PR(:,:,2) 
+    PRT  = PR(:,:,1)  + PR(:,:,2) 
     ! Theta_l
-    PTHL(:,:) = PTH(:,:)  - ZLVOCPEXN(:,:) * PR(:,:,2)
+    PTHL = PTH  - ZLVOCPEXN * PR(:,:,2)
   END IF
 ELSE
   ! Rnp = rv
-  PRT(:,:)  = PR(:,:,1)
+  PRT  = PR(:,:,1)
   ! Theta_l = Theta
-  PTHL(:,:) = PTH(:,:)
+  PTHL = PTH
 END IF
 END SUBROUTINE THL_RT_FROM_TH_R_MF

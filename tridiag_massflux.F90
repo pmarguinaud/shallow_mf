@@ -224,24 +224,24 @@ IF ( PIMPL > 1.E-10 ) THEN
 !*       3.2 going up
 !            --------
 !
-  ZBET(:) = ZB(:,KKB)  ! bet = b(KKB)
-  PVARP(:,KKB) = ZY(:,KKB) / ZBET(:)
+  ZBET = ZB(:,KKB)  ! bet = b(KKB)
+  PVARP(:,KKB) = ZY(:,KKB) / ZBET
 
   !
   DO JK = KKB+KKL,KKE-KKL,KKL
-    ZGAM(:,JK) = ZC(:,JK-KKL) / ZBET(:)
+    ZGAM(:,JK) = ZC(:,JK-KKL) / ZBET
                                                     ! gam(k) = c(k-1) / bet
-    ZBET(:)    = ZB(:,JK) - ZA(:,JK) * ZGAM(:,JK)
+    ZBET    = ZB(:,JK) - ZA(:,JK) * ZGAM(:,JK)
                                                     ! bet = b(k) - a(k)* gam(k)  
-    PVARP(:,JK)= ( ZY(:,JK) - ZA(:,JK) * PVARP(:,JK-KKL) ) / ZBET(:)
+    PVARP(:,JK)= ( ZY(:,JK) - ZA(:,JK) * PVARP(:,JK-KKL) ) / ZBET
                                         ! res(k) = (y(k) -a(k)*res(k-1))/ bet 
   END DO 
   ! special treatment for the last level
-  ZGAM(:,KKE) = ZC(:,KKE-KKL) / ZBET(:)
+  ZGAM(:,KKE) = ZC(:,KKE-KKL) / ZBET
                                                     ! gam(k) = c(k-1) / bet
-  ZBET(:)     = ZB(:,KKE) - ZA(:,KKE) * ZGAM(:,KKE)
+  ZBET     = ZB(:,KKE) - ZA(:,KKE) * ZGAM(:,KKE)
                                                     ! bet = b(k) - a(k)* gam(k)  
-  PVARP(:,KKE)= ( ZY(:,KKE) - ZA(:,KKE) * PVARP(:,KKE-KKL) ) / ZBET(:)
+  PVARP(:,KKE)= ( ZY(:,KKE) - ZA(:,KKE) * PVARP(:,KKE-KKL) ) / ZBET
                                        ! res(k) = (y(k) -a(k)*res(k-1))/ bet 
 !
 !*       3.3 going down

@@ -182,9 +182,9 @@ IF (HMF_UPDRAFT == 'EDKF') THEN
 ENDIF
 
 ! Thermodynamics functions
-ZFRAC_ICE(:,:) = 0.
+ZFRAC_ICE = 0.
 WHERE(PRM(:,:,2)+PRM(:,:,4) > 1.E-20)
-  ZFRAC_ICE(:,:) = PRM(:,:,4) / (PRM(:,:,2)+PRM(:,:,4))
+  ZFRAC_ICE = PRM(:,:,4) / (PRM(:,:,2)+PRM(:,:,4))
 ENDWHERE
 
 ZTHMXEXNM = PTHM * PEXNM
@@ -197,7 +197,7 @@ CALL THL_RT_FROM_TH_R_MF(KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,    &
                          ZTHLM, ZRTM       )
 
 ! Virtual potential temperature at t-dt
-ZTHVM(:,:) = PTHM(:,:)*((1.+XRV / XRD *PRM(:,:,1))/(1.+ZRTM(:,:))) 
+ZTHVM = PTHM*((1.+XRV / XRD *PRM(:,:,1))/(1.+ZRTM)) 
 
 ! 
 !!! 2. Compute updraft

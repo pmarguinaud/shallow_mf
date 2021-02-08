@@ -81,13 +81,13 @@ REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 !              --------------
 IIJU=KLON
 !
-CALL DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT(:,:),ZDELTVPT)
+CALL DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT,ZDELTVPT)
 ZDELTVPT(:,KKA)=0.
-WHERE (ABS(ZDELTVPT(:,:))<XLINF)
-  ZDELTVPT(:,:)=XLINF
+WHERE (ABS(ZDELTVPT)<XLINF)
+  ZDELTVPT=XLINF
 END WHERE
 !
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT(:,:), ZHLVPT)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT, ZHLVPT)
 !
 !We consider that gradient between mass levels KKB and KKB+KKL is the same as
 !the gradient between flux level KKB and mass level KKB
@@ -101,11 +101,11 @@ ZHLVPT(:,KKB)=PVPT(:,KKB)-ZDELTVPT(:,KKB)*0.5
 !
 
 IF (OUPORDN.EQV..TRUE.) THEN 
- ZINTE(:)=PTKEM_DEP(:)
+ ZINTE=PTKEM_DEP
  PLWORK=0.
  ZTESTM=1.
  IF(OFLUX)THEN
-   ZVPT_DEP(:)=ZHLVPT(:,KK) ! departure point is on flux level
+   ZVPT_DEP=ZHLVPT(:,KK) ! departure point is on flux level
    !We must compute what happens between flux level KK and mass level KK
    DO J1D=1,IIJU
      ZTEST0=0.5+SIGN(0.5,ZINTE(J1D)) ! test if there's energy to consume
@@ -132,7 +132,7 @@ IF (OUPORDN.EQV..TRUE.) THEN
       ZINTE(J1D) = ZINTE(J1D) - ZPOTE(J1D)
    ENDDO
  ELSE
-   ZVPT_DEP(:)=PVPT(:,KK) ! departure point is on mass level
+   ZVPT_DEP=PVPT(:,KK) ! departure point is on mass level
  ENDIF
 
  DO JKK=KK+KKL,KKE,KKL
@@ -173,7 +173,7 @@ IF (OUPORDN.EQV..FALSE.) THEN
    CALL ABORT
    STOP
  ENDIF
- ZINTE(:)=PTKEM_DEP(:)
+ ZINTE=PTKEM_DEP
  PLWORK=0.
  ZTESTM=1.
  DO JKK=KK,KKB,-KKL

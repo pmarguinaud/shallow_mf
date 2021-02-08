@@ -90,10 +90,10 @@ REAL(KIND=JPRB) :: ZVAR1, ZVAR2, ZTPOW2, ZDELT
 JITER=2
 !
 !Computation of ZCPH2 depending on dummy arguments received
-ZCPH2(:)=0
+ZCPH2=0
 !
 !Computation of an approximate state thanks to PRL and PRI guess
-ZEXN(:)=(PP(:)/XP00) ** RDSCPD
+ZEXN=(PP/XP00) ** RDSCPD
 
 DO J=1,KLON
 Z99PP(J)=0.99*PP(J)
@@ -112,23 +112,23 @@ ENDDO
 !         ---------
 
 DO II=1,JITER
-  ZT(:)=PTH(:)*ZEXN(:)
+  ZT=PTH*ZEXN
 
   !Computation of liquid/ice fractions
-  PFRAC_ICE(:) = 0.
+  PFRAC_ICE = 0.
   DO J=1, KLON
     IF(PRL(J)+PRI(J) > 1.E-20) THEN
       PFRAC_ICE(J) = PRI(J) / (PRL(J)+PRI(J))
     ENDIF
   ENDDO
-  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE(:),ZT(:))
+  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,ZT)
 
   !Computation of Rvsat and dRsat/dT
   !In this version QSAT, QSATI, DQSAT and DQASATI functions are not used
   !due to performance issue
 
   ! Log does not vectorize on all compilers:
-  ZLOGT(:)=LOG(ZT(:))
+  ZLOGT=LOG(ZT)
 
   DO J=1,KLON
 

@@ -196,31 +196,31 @@ ISV=KSV
 
 IF (OENTR_DETR) THEN
   ! Initialisation of intersesting Level :LCL,ETL,CTL
-  KKLCL(:)=KKE
-  KKETL(:)=KKE
-  KKCTL(:)=KKE
+  KKLCL=KKE
+  KKETL=KKE
+  KKCTL=KKE
 
   !
   ! Initialisation
   !* udraft governing variables
-  PEMF(:,:)=0.
-  PDETR(:,:)=0.
-  PENTR(:,:)=0.
+  PEMF=0.
+  PDETR=0.
+  PENTR=0.
 
   ! Initialisation
   !* updraft core variables
-  PRV_UP(:,:)=0.
-  PRC_UP(:,:)=0.
-  PRI_UP(:,:)=0.
-  PW_UP(:,:)=0.
-  ZTH_UP(:,:)=0.
-  PFRAC_UP(:,:)=0.
-  PTHV_UP(:,:)=0.
+  PRV_UP=0.
+  PRC_UP=0.
+  PRI_UP=0.
+  PW_UP=0.
+  ZTH_UP=0.
+  PFRAC_UP=0.
+  PTHV_UP=0.
 
   PBUO_INTEG=0.
 
-  PFRAC_ICE_UP(:,:)=0.
-  PRSAT_UP(:,:)=PRVM(:,:) ! should be initialised correctly but is (normaly) not used
+  PFRAC_ICE_UP=0.
+  PRSAT_UP=PRVM ! should be initialised correctly but is (normaly) not used
 
   !cloud/dry air mixture cloud content
   ZRC_MIX = 0.
@@ -230,11 +230,11 @@ END IF
 
 ! Initialisation of environment variables at t-dt
 ! variables at flux level
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTHLM(:,:),ZTHLM_F)
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRTM(:,:), ZRTM_F )
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PUM(:,:),  ZUM_F  )
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVM(:,:),  ZVM_F  )
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTKEM(:,:),ZTKEM_F)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTHLM,ZTHLM_F)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRTM, ZRTM_F )
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PUM,  ZUM_F  )
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVM,  ZVM_F  )
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTKEM,ZTKEM_F)
 
 DO JSV=1,ISV
   IF (ONOMIXLG .AND. JSV >= KSV_LGBEG .AND. JSV<= KSV_LGEND) CYCLE
@@ -242,33 +242,33 @@ DO JSV=1,ISV
 END DO
 !                     
 !          Initialisation of updraft characteristics 
-PTHL_UP(:,:)=ZTHLM_F(:,:)
-PRT_UP(:,:)=ZRTM_F(:,:)
-PU_UP(:,:)=ZUM_F(:,:)
-PV_UP(:,:)=ZVM_F(:,:)
-PSV_UP(:,:,:)=ZSVM_F(:,:,:)
+PTHL_UP=ZTHLM_F
+PRT_UP=ZRTM_F
+PU_UP=ZUM_F
+PV_UP=ZVM_F
+PSV_UP=ZSVM_F
 
 
 ! Computation or initialisation of updraft characteristics at the KKB level
 ! thetal_up,rt_up,thetaV_up, w2,Buoyancy term and mass flux (PEMF)
 
-PTHL_UP(:,KKB)= ZTHLM_F(:,KKB)+MAX(0.,MIN(ZTMAX,(PSFTH(:)/SQRT(ZTKEM_F(:,KKB)))*XALP_PERT))
-PRT_UP(:,KKB) = ZRTM_F(:,KKB)+MAX(0.,MIN(ZRMAX,(PSFRV(:)/SQRT(ZTKEM_F(:,KKB)))*XALP_PERT)) 
+PTHL_UP(:,KKB)= ZTHLM_F(:,KKB)+MAX(0.,MIN(ZTMAX,(PSFTH/SQRT(ZTKEM_F(:,KKB)))*XALP_PERT))
+PRT_UP(:,KKB) = ZRTM_F(:,KKB)+MAX(0.,MIN(ZRMAX,(PSFRV/SQRT(ZTKEM_F(:,KKB)))*XALP_PERT)) 
 
 
 IF (OENTR_DETR) THEN
-  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTHM (:,:),     ZTHM_F )
-  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PPABSM(:,:),    ZPRES_F) 
-  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRHODREF(:,:),  ZRHO_F )   
-  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRVM(:,:),      ZRVM_F )
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTHM ,     ZTHM_F )
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PPABSM,    ZPRES_F) 
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRHODREF,  ZRHO_F )   
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRVM,      ZRVM_F )
 
   ! thetav at mass and flux levels
-  ZTHVM_F(:,:)=ZTHM_F(:,:)*((1.+ZRVORD*ZRVM_F(:,:))/(1.+ZRTM_F(:,:)))
-  ZTHVM(:,:)=PTHM(:,:)*((1.+ZRVORD*PRVM(:,:))/(1.+PRTM(:,:)))
+  ZTHVM_F=ZTHM_F*((1.+ZRVORD*ZRVM_F)/(1.+ZRTM_F))
+  ZTHVM=PTHM*((1.+ZRVORD*PRVM)/(1.+PRTM))
 
-  PTHV_UP(:,:)=ZTHVM_F(:,:)
+  PTHV_UP=ZTHVM_F
 
-  ZW_UP2(:,:)=0.
+  ZW_UP2=0.
   ZW_UP2(:,KKB) = MAX(0.0001,(2./3.)*ZTKEM_F(:,KKB))
 
 
@@ -278,41 +278,41 @@ IF (OENTR_DETR) THEN
   PRI_UP(:,KKB)=0.
   CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE_UP(:,KKB),ZPRES_F(:,KKB), &
              PTHL_UP(:,KKB),PRT_UP(:,KKB),ZTH_UP(:,KKB), &
-             PRV_UP(:,KKB),PRC_UP(:,KKB),PRI_UP(:,KKB),ZRSATW(:),ZRSATI(:))
+             PRV_UP(:,KKB),PRC_UP(:,KKB),PRI_UP(:,KKB),ZRSATW,ZRSATI)
 
   ! compute updraft thevav and buoyancy term at KKB level
   PTHV_UP(:,KKB) = ZTH_UP(:,KKB)*((1+ZRVORD*PRV_UP(:,KKB))/(1+PRT_UP(:,KKB)))
   ! compute mean rsat in updraft
-  PRSAT_UP(:,KKB) = ZRSATW(:)*(1-PFRAC_ICE_UP(:,KKB)) + ZRSATI(:)*PFRAC_ICE_UP(:,KKB)
+  PRSAT_UP(:,KKB) = ZRSATW*(1-PFRAC_ICE_UP(:,KKB)) + ZRSATI*PFRAC_ICE_UP(:,KKB)
                                                             
   ! Closure assumption for mass flux at KKB level
   !
 
-  ZG_O_THVREF(:,:)=XG/ZTHVM_F(:,:)
+  ZG_O_THVREF=XG/ZTHVM_F
 
   ! compute L_up
   GLMIX=.TRUE.
   ZTKEM_F(:,KKB)=0.
 
   CALL COMPUTE_BL89_ML(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PDZZ,ZTKEM_F(:,KKB),ZG_O_THVREF(:,KKB),ZTHVM,KKB,GLMIX,.TRUE.,ZLUP)
-  ZLUP(:)=MAX(ZLUP(:),1.E-10)
+  ZLUP=MAX(ZLUP,1.E-10)
 
   ! Compute Buoyancy flux at the ground
-  ZWTHVSURF(:) = (ZTHVM_F(:,KKB)/ZTHM_F(:,KKB))*PSFTH(:)+     &
-                (0.61*ZTHM_F(:,KKB))*PSFRV(:)
+  ZWTHVSURF = (ZTHVM_F(:,KKB)/ZTHM_F(:,KKB))*PSFTH+     &
+                (0.61*ZTHM_F(:,KKB))*PSFRV
 
   ! Mass flux at KKB level (updraft triggered if PSFTH>0.)
-  WHERE (ZWTHVSURF(:)>0.)
+  WHERE (ZWTHVSURF>0.)
     PEMF(:,KKB) = XCMF * ZRHO_F(:,KKB) * ((ZG_O_THVREF(:,KKB))*ZWTHVSURF*ZLUP)**(1./3.)
     PFRAC_UP(:,KKB)=MIN(PEMF(:,KKB)/(SQRT(ZW_UP2(:,KKB))*ZRHO_F(:,KKB)),XFRAC_UP_MAX)
     ZW_UP2(:,KKB)=(PEMF(:,KKB)/(PFRAC_UP(:,KKB)*ZRHO_F(:,KKB)))**2
-    GTEST(:)=.TRUE.
+    GTEST=.TRUE.
   ELSEWHERE
     PEMF(:,KKB) =0.
-    GTEST(:)=.FALSE.
+    GTEST=.FALSE.
   ENDWHERE
 ELSE
-  GTEST(:)=PEMF(:,KKB+KKL)>0.
+  GTEST=PEMF(:,KKB+KKL)>0.
 END IF
 
 !--------------------------------------------------------------------------
@@ -323,8 +323,8 @@ END IF
 ! If GTEST = T the updraft starts from the KKB level and stops when GTEST becomes F
 !
 !
-GTESTLCL(:)=.FALSE.
-GTESTETL(:)=.FALSE.
+GTESTLCL=.FALSE.
+GTESTETL=.FALSE.
 
 !       Loop on vertical level
 
@@ -341,8 +341,8 @@ DO JK=KKB,KKE-KKL,KKL
 ! to find the LCL (check if JK is LCL or not)
 
   WHERE ((PRC_UP(:,JK)+PRI_UP(:,JK)>0.).AND.(.NOT.(GTESTLCL)))
-      KKLCL(:) = JK           
-      GTESTLCL(:)=.TRUE.
+      KKLCL = JK           
+      GTESTLCL=.TRUE.
   ENDWHERE
 
 ! COMPUTE PENTR and PDETR at mass level JK
@@ -353,14 +353,14 @@ DO JK=KKB,KKE-KKL,KKL
     ENDIF
     CALL COMPUTE_ENTR_DETR(KLON,KIDIA,KFDIA,KLEV,JK,KKB,KKE,KKL,GTEST,GTESTLCL,HFRAC_ICE,PFRAC_ICE_UP(:,JK),&
                            PRHODREF(:,JK),ZPRES_F(:,JK),ZPRES_F(:,JK+KKL),&
-                           PZZ(:,:),PDZZ(:,:),ZTHVM(:,:),  &
-                           PTHLM(:,:),PRTM(:,:),ZW_UP2(:,:),ZTH_UP(:,JK),   &
-                           PTHL_UP(:,JK),PRT_UP(:,JK),ZLUP(:),         &
+                           PZZ,PDZZ,ZTHVM,  &
+                           PTHLM,PRTM,ZW_UP2,ZTH_UP(:,JK),   &
+                           PTHL_UP(:,JK),PRT_UP(:,JK),ZLUP,         &
                            PRC_UP(:,JK),PRI_UP(:,JK),PTHV_UP(:,JK),&
                            PRSAT_UP(:,JK),ZRC_MIX(:,JK),ZRI_MIX(:,JK),                 &
                            PENTR(:,JK),PDETR(:,JK),ZENTR_CLD(:,JK),ZDETR_CLD(:,JK),&
                            ZBUO_INTEG_DRY(:,JK), ZBUO_INTEG_CLD(:,JK), &
-                           ZPART_DRY(:)   )
+                           ZPART_DRY   )
     PBUO_INTEG(:,JK)=ZBUO_INTEG_DRY(:,JK)+ZBUO_INTEG_CLD(:,JK)
 
     IF (JK==KKB) THEN
@@ -370,19 +370,19 @@ DO JK=KKB,KKE-KKL,KKL
  
 !       Computation of updraft characteristics at level JK+KKL
     WHERE(GTEST)
-      ZMIX1(:)=0.5*(PZZ(:,JK+KKL)-PZZ(:,JK))*(PENTR(:,JK)-PDETR(:,JK))
-      PEMF(:,JK+KKL)=PEMF(:,JK)*EXP(2*ZMIX1(:))
+      ZMIX1=0.5*(PZZ(:,JK+KKL)-PZZ(:,JK))*(PENTR(:,JK)-PDETR(:,JK))
+      PEMF(:,JK+KKL)=PEMF(:,JK)*EXP(2*ZMIX1)
     ENDWHERE
   ELSE
-    GTEST(:) = (PEMF(:,JK+KKL)>0.)
+    GTEST = (PEMF(:,JK+KKL)>0.)
   END IF 
   
 
 ! stop the updraft if MF becomes negative
   WHERE (GTEST.AND.(PEMF(:,JK+KKL)<=0.))
     PEMF(:,JK+KKL)=0.
-    KKCTL(:) = JK+KKL
-    GTEST(:)=.FALSE.
+    KKCTL = JK+KKL
+    GTEST=.FALSE.
     PFRAC_ICE_UP(:,JK+KKL)=PFRAC_ICE_UP(:,JK)
     PRSAT_UP(:,JK+KKL)=PRSAT_UP(:,JK)
   ENDWHERE
@@ -390,41 +390,41 @@ DO JK=KKB,KKE-KKL,KKL
 
 ! If the updraft did not stop, compute cons updraft characteritics at jk+KKL
   WHERE(GTEST)     
-    ZMIX2(:) = (PZZ(:,JK+KKL)-PZZ(:,JK))*PENTR(:,JK) !&
-    ZMIX3_CLD(:) = (PZZ(:,JK+KKL)-PZZ(:,JK))*(1.-ZPART_DRY(:))*ZDETR_CLD(:,JK) !&                   
-    ZMIX2_CLD(:) = (PZZ(:,JK+KKL)-PZZ(:,JK))*(1.-ZPART_DRY(:))*ZENTR_CLD(:,JK)
+    ZMIX2 = (PZZ(:,JK+KKL)-PZZ(:,JK))*PENTR(:,JK) !&
+    ZMIX3_CLD = (PZZ(:,JK+KKL)-PZZ(:,JK))*(1.-ZPART_DRY)*ZDETR_CLD(:,JK) !&                   
+    ZMIX2_CLD = (PZZ(:,JK+KKL)-PZZ(:,JK))*(1.-ZPART_DRY)*ZENTR_CLD(:,JK)
                 
-    PTHL_UP(:,JK+KKL)=(PTHL_UP(:,JK)*(1.-0.5*ZMIX2(:)) + PTHLM(:,JK)*ZMIX2(:)) &
-                          /(1.+0.5*ZMIX2(:))   
-    PRT_UP(:,JK+KKL) =(PRT_UP (:,JK)*(1.-0.5*ZMIX2(:)) + PRTM(:,JK)*ZMIX2(:))  &
-                          /(1.+0.5*ZMIX2(:))
+    PTHL_UP(:,JK+KKL)=(PTHL_UP(:,JK)*(1.-0.5*ZMIX2) + PTHLM(:,JK)*ZMIX2) &
+                          /(1.+0.5*ZMIX2)   
+    PRT_UP(:,JK+KKL) =(PRT_UP (:,JK)*(1.-0.5*ZMIX2) + PRTM(:,JK)*ZMIX2)  &
+                          /(1.+0.5*ZMIX2)
   ENDWHERE
   
 
   IF(OMIXUV) THEN
     IF(JK/=KKB) THEN
       WHERE(GTEST)
-        PU_UP(:,JK+KKL) = (PU_UP (:,JK)*(1-0.5*ZMIX2(:)) + PUM(:,JK)*ZMIX2(:)+ &
+        PU_UP(:,JK+KKL) = (PU_UP (:,JK)*(1-0.5*ZMIX2) + PUM(:,JK)*ZMIX2+ &
                           0.5*XPRES_UV*(PZZ(:,JK+KKL)-PZZ(:,JK))*&
                           ((PUM(:,JK+KKL)-PUM(:,JK))/PDZZ(:,JK+KKL)+&
                            (PUM(:,JK)-PUM(:,JK-KKL))/PDZZ(:,JK))        )   &
-                          /(1+0.5*ZMIX2(:))
-        PV_UP(:,JK+KKL) = (PV_UP (:,JK)*(1-0.5*ZMIX2(:)) + PVM(:,JK)*ZMIX2(:)+ &
+                          /(1+0.5*ZMIX2)
+        PV_UP(:,JK+KKL) = (PV_UP (:,JK)*(1-0.5*ZMIX2) + PVM(:,JK)*ZMIX2+ &
                           0.5*XPRES_UV*(PZZ(:,JK+KKL)-PZZ(:,JK))*&
                           ((PVM(:,JK+KKL)-PVM(:,JK))/PDZZ(:,JK+KKL)+&
                            (PVM(:,JK)-PVM(:,JK-KKL))/PDZZ(:,JK))    )   &
-                          /(1+0.5*ZMIX2(:))
+                          /(1+0.5*ZMIX2)
       ENDWHERE
     ELSE
       WHERE(GTEST)
-        PU_UP(:,JK+KKL) = (PU_UP (:,JK)*(1-0.5*ZMIX2(:)) + PUM(:,JK)*ZMIX2(:)+ &
+        PU_UP(:,JK+KKL) = (PU_UP (:,JK)*(1-0.5*ZMIX2) + PUM(:,JK)*ZMIX2+ &
                           0.5*XPRES_UV*(PZZ(:,JK+KKL)-PZZ(:,JK))*&
                           ((PUM(:,JK+KKL)-PUM(:,JK))/PDZZ(:,JK+KKL))        )   &
-                          /(1+0.5*ZMIX2(:))
-        PV_UP(:,JK+KKL) = (PV_UP (:,JK)*(1-0.5*ZMIX2(:)) + PVM(:,JK)*ZMIX2(:)+ &
+                          /(1+0.5*ZMIX2)
+        PV_UP(:,JK+KKL) = (PV_UP (:,JK)*(1-0.5*ZMIX2) + PVM(:,JK)*ZMIX2+ &
                           0.5*XPRES_UV*(PZZ(:,JK+KKL)-PZZ(:,JK))*&
                           ((PVM(:,JK+KKL)-PVM(:,JK))/PDZZ(:,JK+KKL))    )   &
-                          /(1+0.5*ZMIX2(:))
+                          /(1+0.5*ZMIX2)
       ENDWHERE
 
     ENDIF
@@ -432,24 +432,24 @@ DO JK=KKB,KKE-KKL,KKL
   DO JSV=1,ISV 
      IF (ONOMIXLG .AND. JSV >= KSV_LGBEG .AND. JSV<= KSV_LGEND) CYCLE
       WHERE(GTEST) 
-           PSV_UP(:,JK+KKL,JSV) = (PSV_UP (:,JK,JSV)*(1-0.5*ZMIX2(:)) + &
-                        PSVM(:,JK,JSV)*ZMIX2(:))  /(1+0.5*ZMIX2(:))
+           PSV_UP(:,JK+KKL,JSV) = (PSV_UP (:,JK,JSV)*(1-0.5*ZMIX2) + &
+                        PSVM(:,JK,JSV)*ZMIX2)  /(1+0.5*ZMIX2)
       ENDWHERE                        
   END DO  
   
  IF (OENTR_DETR) THEN
 
 ! Compute non cons. var. at level JK+KKL
-  ZRC_UP(:)=PRC_UP(:,JK) ! guess = level just below
-  ZRI_UP(:)=PRI_UP(:,JK) ! guess = level just below
+  ZRC_UP=PRC_UP(:,JK) ! guess = level just below
+  ZRI_UP=PRI_UP(:,JK) ! guess = level just below
   CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE_UP(:,JK+KKL),ZPRES_F(:,JK+KKL), &
           PTHL_UP(:,JK+KKL),PRT_UP(:,JK+KKL),ZTH_UP(:,JK+KKL),              &
-          ZRV_UP(:),ZRC_UP(:),ZRI_UP(:),ZRSATW(:),ZRSATI(:))
+          ZRV_UP,ZRC_UP,ZRI_UP,ZRSATW,ZRSATI)
   WHERE(GTEST)
-    PRC_UP(:,JK+KKL)=ZRC_UP(:)
-    PRV_UP(:,JK+KKL)=ZRV_UP(:)
-    PRI_UP(:,JK+KKL)=ZRI_UP(:)
-    PRSAT_UP(:,JK+KKL) = ZRSATW(:)*(1-PFRAC_ICE_UP(:,JK+KKL)) + ZRSATI(:)*PFRAC_ICE_UP(:,JK+KKL)
+    PRC_UP(:,JK+KKL)=ZRC_UP
+    PRV_UP(:,JK+KKL)=ZRV_UP
+    PRI_UP(:,JK+KKL)=ZRI_UP
+    PRSAT_UP(:,JK+KKL) = ZRSATW*(1-PFRAC_ICE_UP(:,JK+KKL)) + ZRSATI*PFRAC_ICE_UP(:,JK+KKL)
   ENDWHERE
   
 
@@ -461,24 +461,24 @@ DO JK=KKB,KKE-KKL,KKL
     ELSEWHERE
       ZW_UP2(:,JK+KKL)  = ZW_UP2(:,JK) + 2.*XABUO* ZBUO_INTEG_DRY(:,JK)
     ENDWHERE
-    ZW_UP2(:,JK+KKL)  = ZW_UP2(:,JK+KKL)*(1.-(XBDETR*ZMIX3_CLD(:)+XBENTR*ZMIX2_CLD(:)))&
-            /(1.+(XBDETR*ZMIX3_CLD(:)+XBENTR*ZMIX2_CLD(:))) &
-            +2.*(XABUO)*ZBUO_INTEG_CLD(:,JK)/(1.+(XBDETR*ZMIX3_CLD(:)+XBENTR*ZMIX2_CLD(:)))
+    ZW_UP2(:,JK+KKL)  = ZW_UP2(:,JK+KKL)*(1.-(XBDETR*ZMIX3_CLD+XBENTR*ZMIX2_CLD))&
+            /(1.+(XBDETR*ZMIX3_CLD+XBENTR*ZMIX2_CLD)) &
+            +2.*(XABUO)*ZBUO_INTEG_CLD(:,JK)/(1.+(XBDETR*ZMIX3_CLD+XBENTR*ZMIX2_CLD))
  ENDWHERE
 
 
   ! Test if the updraft has reach the ETL
-  GTESTETL(:)=.FALSE.
+  GTESTETL=.FALSE.
   WHERE (GTEST.AND.(PBUO_INTEG(:,JK)<=0.))
-      KKETL(:) = JK+KKL
-      GTESTETL(:)=.TRUE.
+      KKETL = JK+KKL
+      GTESTETL=.TRUE.
   ENDWHERE
 
   ! Test is we have reached the top of the updraft
   WHERE (GTEST.AND.((ZW_UP2(:,JK+KKL)<=0.).OR.(PEMF(:,JK+KKL)<=0.)))
       ZW_UP2(:,JK+KKL)=0.
       PEMF(:,JK+KKL)=0.
-      GTEST(:)=.FALSE.
+      GTEST=.FALSE.
       PTHL_UP(:,JK+KKL)=ZTHLM_F(:,JK+KKL)
       PRT_UP(:,JK+KKL)=ZRTM_F(:,JK+KKL)
       PRC_UP(:,JK+KKL)=0.
@@ -486,7 +486,7 @@ DO JK=KKB,KKE-KKL,KKL
       PRV_UP(:,JK+KKL)=0.
       PTHV_UP(:,JK+KKL)=ZTHVM_F(:,JK+KKL)
       PFRAC_UP(:,JK+KKL)=0.
-      KKCTL(:)=JK+KKL
+      KKCTL=JK+KKL
   ENDWHERE
  
   ! compute frac_up at JK+KKL
@@ -513,7 +513,7 @@ ENDDO
 
 IF(OENTR_DETR) THEN
 
-  PW_UP(:,:)=SQRT(ZW_UP2(:,:))
+  PW_UP=SQRT(ZW_UP2)
 
   PEMF(:,KKB) =0.
 
@@ -527,13 +527,13 @@ IF(OENTR_DETR) THEN
      PDEPTH(JI) = MAX(0., PZZ(JI,KKCTL(JI)) -  PZZ(JI,KKLCL(JI)) )
   END DO
 
-  GWORK1(:)= (GTESTLCL(:) .AND. (PDEPTH(:) > ZDEPTH_MAX1) )
-  GWORK2(:,:) = SPREAD( GWORK1(:), DIM=2, NCOPIES=MAX(KKU,KKA) )
-  ZCOEF(:,:) = SPREAD( (1.-(PDEPTH(:)-ZDEPTH_MAX1)/(ZDEPTH_MAX2-ZDEPTH_MAX1)), DIM=2, NCOPIES=KLEV)
+  GWORK1= (GTESTLCL .AND. (PDEPTH > ZDEPTH_MAX1) )
+  GWORK2 = SPREAD( GWORK1, DIM=2, NCOPIES=MAX(KKU,KKA) )
+  ZCOEF = SPREAD( (1.-(PDEPTH-ZDEPTH_MAX1)/(ZDEPTH_MAX2-ZDEPTH_MAX1)), DIM=2, NCOPIES=KLEV)
   ZCOEF=MIN(MAX(ZCOEF,0.),1.)
   WHERE (GWORK2) 
-    PEMF(:,:)     = PEMF(:,:)     * ZCOEF(:,:)
-    PFRAC_UP(:,:) = PFRAC_UP(:,:) * ZCOEF(:,:)
+    PEMF     = PEMF     * ZCOEF
+    PFRAC_UP = PFRAC_UP * ZCOEF
   ENDWHERE
 ENDIF
 
