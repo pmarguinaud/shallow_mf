@@ -1,7 +1,8 @@
 MODULE MODI_MF_TURB
 
 INTERFACE
-SUBROUTINE MF_TURB(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
+
+      SUBROUTINE MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
                 PDZZ,                                                 &
@@ -13,6 +14,8 @@ SUBROUTINE MF_TURB(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 PFLXZSVMF                                             )
 
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KSV
 INTEGER,                INTENT(IN)   :: KKA          
@@ -59,7 +62,8 @@ REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  ::  PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZ
 
 REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
 
-END SUBROUTINE MF_TURB
+END SUBROUTINE MF_TURB    
+
 END INTERFACE
 
 END MODULE

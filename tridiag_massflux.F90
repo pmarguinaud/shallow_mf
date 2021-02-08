@@ -1,5 +1,5 @@
 !     ######spl
-       SUBROUTINE TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
+       SUBROUTINE TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,PVARP             )
 
        USE PARKIND1, ONLY : JPRB
@@ -123,6 +123,8 @@ IMPLICIT NONE
 !*       0.1 declarations of arguments
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
@@ -156,7 +158,7 @@ INTEGER                              :: JK            ! loop counter
 !*      1.  Preliminaries
 !           -------------
 !
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRHODJ,ZMZM_RHODJ)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRHODJ,ZMZM_RHODJ)
 ZRHODJ_DFDT_O_DZ = ZMZM_RHODJ*PDFDT/PDZZ
 !
 ZA=0.

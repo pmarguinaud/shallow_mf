@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON, KLEV, KKB, KKE, KKL, &
+      SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                                         &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
                                         &PRC_MF, PRI_MF, PCF_MF)
 !     #################################################################
@@ -52,6 +52,8 @@ IMPLICIT NONE
 !*                    0.1  Declaration of Arguments
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKB            ! near ground physical index
 INTEGER,                INTENT(IN)   :: KKE            ! uppest atmosphere physical index

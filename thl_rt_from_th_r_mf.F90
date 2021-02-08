@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KLEV,KRR,KRRL,KRRI,       &
+      SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
                                       PTHL, PRT                      )
 !     #################################################################
@@ -50,6 +50,8 @@ IMPLICIT NONE
 !*      0.1  declarations of arguments
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KRR           ! number of moist var.
 INTEGER,                INTENT(IN)   :: KRRL          ! number of liquid water var.

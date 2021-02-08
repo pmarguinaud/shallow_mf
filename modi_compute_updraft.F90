@@ -1,7 +1,8 @@
 MODULE MODI_COMPUTE_UPDRAFT
 
 INTERFACE
-SUBROUTINE COMPUTE_UPDRAFT(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,HFRAC_ICE, &
+
+      SUBROUTINE COMPUTE_UPDRAFT(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,HFRAC_ICE, &
                                  OENTR_DETR,OMIXUV,               &
                                  ONOMIXLG,KSV_LGBEG,KSV_LGEND,    &
                                  PZZ,PDZZ,                        &
@@ -17,6 +18,8 @@ SUBROUTINE COMPUTE_UPDRAFT(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,HFRAC_ICE, &
                                  PDEPTH     )
 
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KSV
 INTEGER,                INTENT(IN)   :: KKA          
@@ -65,6 +68,7 @@ INTEGER, DIMENSION(KLON),  INTENT(INOUT) :: KKLCL,KKETL,KKCTL
 REAL, DIMENSION(KLON),     INTENT(OUT)   :: PDEPTH           
 
 END SUBROUTINE COMPUTE_UPDRAFT
+
 END INTERFACE
 
 END MODULE

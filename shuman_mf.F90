@@ -1,5 +1,5 @@
 !     ###############################
-      SUBROUTINE MZM_MF(KLON,KLEV,KKA,KKU,KKL,PA,PMZM)
+      SUBROUTINE MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PMZM)
 !     ###############################
 !
 !!****  *MZM* -  SHUMAN_MF operator : mean operator in z direction for a
@@ -51,6 +51,8 @@ IMPLICIT NONE
 !              ------------------------------------
 !
 INTEGER,              INTENT(IN)       :: KLON
+INTEGER,              INTENT(IN)       :: KIDIA
+INTEGER,              INTENT(IN)       :: KFDIA
 INTEGER,              INTENT(IN)       :: KLEV
 INTEGER,              INTENT(IN)       :: KKA, KKU ! near ground and uppest atmosphere array indexes
 INTEGER,              INTENT(IN)       :: KKL    ! +1 if grid goes from ground to atmosphere top, -1 otherwise
@@ -78,7 +80,7 @@ PMZM(:,KKU) = 0.5*( PA(:,KKU)+PA(:,KKU-KKL) )
 !
 END SUBROUTINE MZM_MF
 !     ###############################
-      SUBROUTINE DZM_MF(KLON,KLEV,KKA,KKU,KKL,PA,PDZM)
+      SUBROUTINE DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PDZM)
 !     ###############################
 !
 !!****  *DZM* -  SHUMAN_MF operator : finite difference operator in z direction
@@ -130,6 +132,8 @@ IMPLICIT NONE
 !              ------------------------------------
 !
 INTEGER,              INTENT(IN)       :: KLON
+INTEGER,              INTENT(IN)       :: KIDIA
+INTEGER,              INTENT(IN)       :: KFDIA
 INTEGER,              INTENT(IN)       :: KLEV
 INTEGER,              INTENT(IN)       :: KKA, KKU ! near ground and uppest atmosphere array indexes
 INTEGER,              INTENT(IN)       :: KKL    ! +1 if grid goes from ground to atmosphere top, -1 otherwise

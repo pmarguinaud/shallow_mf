@@ -1,11 +1,14 @@
 MODULE MODI_THL_RT_FROM_TH_R_MF
 
 INTERFACE
-SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KLEV,KRR,KRRL,KRRI,       &
+
+      SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
                                       PTHL, PRT                      )
 
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KRR           
 INTEGER,                INTENT(IN)   :: KRRL          
@@ -19,6 +22,7 @@ REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PTHL
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PRT      
 
 END SUBROUTINE THL_RT_FROM_TH_R_MF
+
 END INTERFACE
 
 END MODULE

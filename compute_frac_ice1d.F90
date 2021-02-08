@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_FRAC_ICE1D(KLON,HFRAC_ICE,PFRAC_ICE,PT)
+      SUBROUTINE COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PT)
 !    ##########################################################
 !
 !
@@ -46,6 +46,8 @@ IMPLICIT NONE
 !*      0.1  declarations of arguments
 !
 INTEGER           , INTENT(IN)    :: KLON
+INTEGER           , INTENT(IN)    :: KIDIA
+INTEGER           , INTENT(IN)    :: KFDIA
 CHARACTER*1       , INTENT(IN)    :: HFRAC_ICE  ! scheme to use
 REAL, DIMENSION(KLON), INTENT(IN)    :: PT         ! temperature
 REAL, DIMENSION(KLON), INTENT(INOUT) :: PFRAC_ICE  ! Ice fraction (1 for ice only, 0 for liquid only)

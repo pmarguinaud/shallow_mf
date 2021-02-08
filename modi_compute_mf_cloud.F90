@@ -1,7 +1,8 @@
 MODULE MODI_COMPUTE_MF_CLOUD
 
 INTERFACE
-SUBROUTINE COMPUTE_MF_CLOUD(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,KRR,KRRL,KRRI,HMF_CLOUD,&
+
+      SUBROUTINE COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,KRR,KRRL,KRRI,HMF_CLOUD,&
                                   PFRAC_ICE,                                            &
                                   PRC_UP,PRI_UP,PEMF,                                   &
                                   PTHL_UP, PRT_UP, PFRAC_UP,                            &
@@ -12,6 +13,8 @@ SUBROUTINE COMPUTE_MF_CLOUD(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,KRR,KRRL,KRRI,HMF_CLOU
                                   PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH    )
 
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKA          
 INTEGER,                INTENT(IN)   :: KKB          
@@ -42,6 +45,7 @@ REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PSIGMF
 REAL, DIMENSION(KLON),     INTENT(IN)   ::  PDEPTH            
 
 END SUBROUTINE COMPUTE_MF_CLOUD
+
 END INTERFACE
 
 END MODULE

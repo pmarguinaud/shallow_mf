@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE SHALLOW_MF(KLON,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
+      SUBROUTINE SHALLOW_MF(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
                 HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,              &
@@ -75,6 +75,8 @@ IMPLICIT NONE
 !
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KSV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
@@ -187,10 +189,10 @@ ENDWHERE
 
 ZTHMXEXNM = PTHM * PEXNM
 
-CALL COMPUTE_FRAC_ICE2D(KLON,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM)
+CALL COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM)
 
 ! Conservative variables at t-dt
-CALL THL_RT_FROM_TH_R_MF(KLON,KLEV,KRR,KRRL,KRRI,    &
+CALL THL_RT_FROM_TH_R_MF(KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,    &
                          PTHM, PRM, PEXNM, &
                          ZTHLM, ZRTM       )
 
@@ -203,7 +205,7 @@ ZTHVM(:,:) = PTHM(:,:)*((1.+XRV / XRD *PRM(:,:,1))/(1.+ZRTM(:,:)))
 !
 IF (HMF_UPDRAFT == 'EDKF') THEN
   GENTR_DETR = .TRUE.
-  CALL COMPUTE_UPDRAFT(KLON,KLEV,KSV,KKA,IKB,IKE,KKU,KKL,HFRAC_ICE,GENTR_DETR,OMIXUV,&
+  CALL COMPUTE_UPDRAFT(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,IKB,IKE,KKU,KKL,HFRAC_ICE,GENTR_DETR,OMIXUV,&
                        ONOMIXLG,KSV_LGBEG,KSV_LGEND,             &
                        PZZ,PDZZ,                                 &
                        PSFTH,PSFRV,PPABSM,PRHODREF,              &
@@ -223,7 +225,7 @@ ENDIF
 !!! 5. Compute diagnostic convective cloud fraction and content
 !!!    --------------------------------------------------------
 !
-CALL COMPUTE_MF_CLOUD(KLON,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
+CALL COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
                       HMF_CLOUD,ZFRAC_ICE,              &
                       PRC_UP,PRI_UP,PEMF,               &
                       PTHL_UP,PRT_UP,PFRAC_UP,          &
@@ -241,7 +243,7 @@ CALL COMPUTE_MF_CLOUD(KLON,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
 ZEMF_O_RHODREF=PEMF/PRHODREF
 
 IF ( PIMPL_MF > 1.E-10 ) THEN  
-CALL MF_TURB(KLON,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,           &
+CALL MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,           &
              ONOMIXLG,KSV_LGBEG,KSV_LGEND,                            &
              PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
              PDZZ,                                                    &

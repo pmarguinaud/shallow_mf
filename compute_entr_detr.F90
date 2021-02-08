@@ -1,5 +1,5 @@
 !     ######spl
-          SUBROUTINE COMPUTE_ENTR_DETR(KLON,KLEV,KK,KKB,KKE,KKL,OTEST,OTESTLCL,&
+          SUBROUTINE COMPUTE_ENTR_DETR(KLON,KIDIA,KFDIA,KLEV,KK,KKB,KKE,KKL,OTEST,OTESTLCL,&
                             HFRAC_ICE,PFRAC_ICE,PRHODREF,&
                             PPRE_MINUS_HALF,&
                             PPRE_PLUS_HALF,PZZ,PDZZ,&
@@ -71,6 +71,8 @@ IMPLICIT NONE
 !
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KK
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
@@ -260,7 +262,7 @@ INTEGER :: JI
   !but we are dealing with updraft and not mixture
   ZRCMIX(:)=PRC_UP(:)
   ZRIMIX(:)=PRI_UP(:)
-  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,ZFRAC_ICE,&
+  CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,ZFRAC_ICE,&
                PPRE_PLUS_HALF,PTHL_UP,PRT_UP,&
                ZTHMIX,ZRVMIX,ZRCMIX,ZRIMIX,&
                ZRSATW, ZRSATI)
@@ -327,7 +329,7 @@ INTEGER :: JI
                  (PRTM(:,KK)-ZDZ(:)*(PRTM(:,KK)-PRTM(:,JI))/PDZZ(:,KK)) + &
                  (1. - ZKIC_INIT)*PRT_UP(:)
   ENDWHERE
-  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,ZFRAC_ICE,&
+  CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,ZFRAC_ICE,&
                ZPRE,ZMIXTHL,ZMIXRT,&
                ZTHMIX,ZRVMIX,PRC_MIX,PRI_MIX,&
                ZRSATW, ZRSATI)
@@ -336,7 +338,7 @@ INTEGER :: JI
   !  Compute cons then non cons. var. of mixture at the flux level KK+KKL  with initial ZKIC
   ZMIXTHL(:) = ZKIC_INIT * 0.5*(PTHLM(:,KK)+PTHLM(:,KK+KKL))+(1. - ZKIC_INIT)*PTHL_UP(:)
   ZMIXRT(:)  = ZKIC_INIT * 0.5*(PRTM(:,KK)+PRTM(:,KK+KKL))+(1. - ZKIC_INIT)*PRT_UP(:)
-  CALL TH_R_FROM_THL_RT_1D(KLON,HFRAC_ICE,ZFRAC_ICE,&
+  CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,ZFRAC_ICE,&
                PPRE_PLUS_HALF,ZMIXTHL,ZMIXRT,&
                ZTHMIX,ZRVMIX,PRC_MIX,PRI_MIX,&
                ZRSATW, ZRSATI)

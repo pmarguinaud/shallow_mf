@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_FRAC_ICE2D(KLON,KLEV,HFRAC_ICE,PFRAC_ICE,PT)
+      SUBROUTINE COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,PFRAC_ICE,PT)
 !    ##########################################################
 !
 !
@@ -44,6 +44,8 @@ IMPLICIT NONE
 !*      0.1  declarations of arguments
 !
 INTEGER             , INTENT(IN)    :: KLON
+INTEGER             , INTENT(IN)    :: KIDIA
+INTEGER             , INTENT(IN)    :: KFDIA
 INTEGER             , INTENT(IN)    :: KLEV
 CHARACTER*1         , INTENT(IN)    :: HFRAC_ICE ! scheme to use
 REAL, DIMENSION(KLON,KLEV), INTENT(IN)    :: PT        ! Temperature
@@ -64,7 +66,7 @@ INTEGER :: JK
 !         ----------------
 !
 DO JK=1, KLEV
-  CALL COMPUTE_FRAC_ICE1D(KLON,HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK))
+  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK))
 ENDDO
 
 

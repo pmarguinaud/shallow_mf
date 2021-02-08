@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_BL89_ML(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PDZZ2D, &
+      SUBROUTINE COMPUTE_BL89_ML(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PDZZ2D, &
              PTKEM_DEP,PG_O_THVREF,PVPT,KK,OUPORDN,OFLUX,PLWORK)
 
       USE PARKIND1, ONLY : JPRB
@@ -42,6 +42,8 @@ IMPLICIT NONE
 !          0.1 arguments
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
@@ -79,13 +81,13 @@ REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 !              --------------
 IIJU=KLON
 !
-CALL DZM_MF(KLON,KLEV,KKA,KKU,KKL,PVPT(:,:),ZDELTVPT)
+CALL DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT(:,:),ZDELTVPT)
 ZDELTVPT(:,KKA)=0.
 WHERE (ABS(ZDELTVPT(:,:))<XLINF)
   ZDELTVPT(:,:)=XLINF
 END WHERE
 !
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVPT(:,:), ZHLVPT)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT(:,:), ZHLVPT)
 !
 !We consider that gradient between mass levels KKB and KKB+KKL is the same as
 !the gradient between flux level KKB and mass level KKB

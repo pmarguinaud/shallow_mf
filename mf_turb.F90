@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE MF_TURB(KLON,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
+      SUBROUTINE MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
                 PDZZ,                                                 &
@@ -67,6 +67,8 @@ IMPLICIT NONE
 !
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KSV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
@@ -154,19 +156,19 @@ PSVDT = 0.
 !   ( Resulting fluxes are in flux level (w-point) as PEMF and PTHL_UP )
 !
 
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHLM(:,:),ZMZM)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTHLM(:,:),ZMZM)
 PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-ZMZM)
 
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PRTM(:,:),ZMZM)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRTM(:,:),ZMZM)
 PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-ZMZM)
 
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PTHVM(:,:),ZMZM)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PTHVM(:,:),ZMZM)
 PFLXZTHVMF(:,:) = PEMF(:,:)*(PTHV_UP(:,:)-ZMZM)
 
 IF (OMIXUV) THEN
-  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PUM(:,:),ZMZM)
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PUM(:,:),ZMZM)
   PFLXZUMF(:,:) =  PEMF(:,:)*(PU_UP(:,:)-ZMZM)
-  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PVM(:,:),ZMZM)
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVM(:,:),ZMZM)
   PFLXZVMF(:,:) =  PEMF(:,:)*(PV_UP(:,:)-ZMZM)
 ELSE
   PFLXZUMF(:,:) = 0.
@@ -188,10 +190,10 @@ ZMEMF = - PEMF
 ! 3.1 Compute the tendency for the conservative potential temperature
 !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
 !
-CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PTHLM,PFLXZTHMF,ZMEMF,PTSTEP_MET,PIMPL,  &
+CALL TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PTHLM,PFLXZTHMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                       PDZZ,PRHODJ,ZVARS )
 ! compute new flux
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
 PFLXZTHMF(:,:) = PEMF(:,:)*(PTHL_UP(:,:)-ZMZM)
 
 !!! compute THL tendency
@@ -201,10 +203,10 @@ PTHLDT(:,:)= (ZVARS(:,:)-PTHLM(:,:))/PTSTEP_MET
 !
 ! 3.2 Compute the tendency for the conservative mixing ratio
 !
-CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PRTM(:,:),PFLXZRMF,ZMEMF,PTSTEP_MET,PIMPL,  &
+CALL TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PRTM(:,:),PFLXZRMF,ZMEMF,PTSTEP_MET,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
 ! compute new flux
-CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
 PFLXZRMF(:,:) =  PEMF(:,:)*(PRT_UP(:,:)-ZMZM)
 
 !!! compute RT tendency
@@ -217,10 +219,10 @@ IF (OMIXUV) THEN
   !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
   !
 
-  CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PUM,PFLXZUMF,ZMEMF,PTSTEP,PIMPL,  &
+  CALL TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PUM,PFLXZUMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
   PFLXZUMF(:,:) = PEMF(:,:)*(PU_UP(:,:)-ZMZM)
 
   ! compute U tendency
@@ -232,10 +234,10 @@ IF (OMIXUV) THEN
   !                                  meridian momentum
   !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
   !
-  CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PVM,PFLXZVMF,ZMEMF,PTSTEP,PIMPL,  &
+  CALL TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PVM,PFLXZVMF,ZMEMF,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,ZVARS(:,:),ZMZM)
   PFLXZVMF(:,:) = PEMF(:,:)*(PV_UP(:,:)-ZMZM)
 
   ! compute V tendency
@@ -252,17 +254,17 @@ DO JSV=1,ISV
   !*     compute mean flux of scalar variables at time t-dt
   !   ( Resulting fluxes are in flux level (w-point) as PEMF and PTHL_UP )
 
-  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,PSVM(:,:,JSV),ZMZM)
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PSVM(:,:,JSV),ZMZM)
   PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-ZMZM)
   
   !
   ! 3.5 Compute the tendency for scalar variables
   !     (PDZZ and flux in w-point and PRHODJ is mass point, result in mass point)
   !
-  CALL TRIDIAG_MASSFLUX(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,PSVM(:,:,JSV),PFLXZSVMF(:,:,JSV),&
+  CALL TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PSVM(:,:,JSV),PFLXZSVMF(:,:,JSV),&
                         ZMEMF,PTSTEP_SV,PIMPL,PDZZ,PRHODJ,ZVARS )
   ! compute new flux
-  CALL MZM_MF(KLON,KLEV,KKA,KKU,KKL,ZVARS,ZMZM)
+  CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,ZVARS,ZMZM)
   PFLXZSVMF(:,:,JSV) = PEMF(:,:)*(PSV_UP(:,:,JSV)-ZMZM)
 
   ! compute Sv tendency

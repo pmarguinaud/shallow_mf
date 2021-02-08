@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_MF_CLOUD(KLON,KLEV,KKA,KKB,KKE,KKU,KKL,KRR,KRRL,KRRI,HMF_CLOUD,&
+      SUBROUTINE COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,KRR,KRRL,KRRI,HMF_CLOUD,&
                                   PFRAC_ICE,                                            &
                                   PRC_UP,PRI_UP,PEMF,                                   &
                                   PTHL_UP, PRT_UP, PFRAC_UP,                            &
@@ -58,6 +58,8 @@ IMPLICIT NONE
 !
 !
 INTEGER,                INTENT(IN)   :: KLON
+INTEGER,                INTENT(IN)   :: KIDIA
+INTEGER,                INTENT(IN)   :: KFDIA
 INTEGER,                INTENT(IN)   :: KLEV
 INTEGER,                INTENT(IN)   :: KKA          ! near ground array index
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
@@ -104,7 +106,7 @@ PSIGMF = 0.
 
 IF (HMF_CLOUD == 'DIRE') THEN
   !Direct cloud scheme
-  CALL COMPUTE_MF_CLOUD_DIRECT(KLON, KLEV, KKB, KKE, KKL, &
+  CALL COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                               &KKLCL(:), PFRAC_UP(:,:), PRC_UP(:,:), PRI_UP(:,:),&
                               &PRC_MF(:,:), PRI_MF(:,:), PCF_MF(:,:))
   !
