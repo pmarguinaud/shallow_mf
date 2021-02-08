@@ -159,41 +159,41 @@ INTEGER                              :: JK            ! loop counter
 !           -------------
 !
 CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRHODJ,ZMZM_RHODJ)
-ZRHODJ_DFDT_O_DZ = ZMZM_RHODJ*PDFDT/PDZZ
+ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,:) = ZMZM_RHODJ(KIDIA:KFDIA,:)*PDFDT(KIDIA:KFDIA,:)/PDZZ(KIDIA:KFDIA,:)
 !
-ZA=0.
-ZB=0.
-ZC=0.
-ZY=0.
+ZA(KIDIA:KFDIA,:)=0.
+ZB(KIDIA:KFDIA,:)=0.
+ZC(KIDIA:KFDIA,:)=0.
+ZY(KIDIA:KFDIA,:)=0.
 !
 !
 !*      2.  COMPUTE THE RIGHT HAND SIDE
 !           ---------------------------
 !
-ZY(:,KKB) = PRHODJ(:,KKB)*PVARM(:,KKB)/PTSTEP             &
-    - ZMZM_RHODJ(:,KKB+KKL) * PF(:,KKB+KKL)/PDZZ(:,KKB+KKL)     &
-    + ZMZM_RHODJ(:,KKB  ) * PF(:,KKB  )/PDZZ(:,KKB  )     &
-    + ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL * PVARM(:,KKB+KKL)    &
-    + ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL * PVARM(:,KKB  )
+ZY(KIDIA:KFDIA,KKB) = PRHODJ(KIDIA:KFDIA,KKB)*PVARM(KIDIA:KFDIA,KKB)/PTSTEP             &
+    - ZMZM_RHODJ(KIDIA:KFDIA,KKB+KKL) * PF(KIDIA:KFDIA,KKB+KKL)/PDZZ(KIDIA:KFDIA,KKB+KKL)     &
+    + ZMZM_RHODJ(KIDIA:KFDIA,KKB  ) * PF(KIDIA:KFDIA,KKB  )/PDZZ(KIDIA:KFDIA,KKB  )     &
+    + ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKB+KKL) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,KKB+KKL)    &
+    + ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKB+KKL) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,KKB  )
 !
 DO JK=2+JPVEXT,KLEV-JPVEXT-1
-  ZY(:,JK) = PRHODJ(:,JK)*PVARM(:,JK)/PTSTEP          &
-    - ZMZM_RHODJ(:,JK+KKL) * PF(:,JK+KKL)/PDZZ(:,JK+KKL)    &
-    + ZMZM_RHODJ(:,JK  ) * PF(:,JK  )/PDZZ(:,JK  )    &
-    + ZRHODJ_DFDT_O_DZ(:,JK+KKL) * 0.5*PIMPL * PVARM(:,JK+KKL)  &
-    + ZRHODJ_DFDT_O_DZ(:,JK+KKL) * 0.5*PIMPL * PVARM(:,JK  )  &
-    - ZRHODJ_DFDT_O_DZ(:,JK  ) * 0.5*PIMPL * PVARM(:,JK  )  &
-    - ZRHODJ_DFDT_O_DZ(:,JK  ) * 0.5*PIMPL * PVARM(:,JK-KKL)
+  ZY(KIDIA:KFDIA,JK) = PRHODJ(KIDIA:KFDIA,JK)*PVARM(KIDIA:KFDIA,JK)/PTSTEP          &
+    - ZMZM_RHODJ(KIDIA:KFDIA,JK+KKL) * PF(KIDIA:KFDIA,JK+KKL)/PDZZ(KIDIA:KFDIA,JK+KKL)    &
+    + ZMZM_RHODJ(KIDIA:KFDIA,JK  ) * PF(KIDIA:KFDIA,JK  )/PDZZ(KIDIA:KFDIA,JK  )    &
+    + ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK+KKL) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,JK+KKL)  &
+    + ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK+KKL) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,JK  )  &
+    - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK  ) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,JK  )  &
+    - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK  ) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,JK-KKL)
 END DO
 ! 
 IF (JPVEXT==0) THEN
-  ZY(:,KKE) = PRHODJ(:,KKE)*PVARM(:,KKE)/PTSTEP 
+  ZY(KIDIA:KFDIA,KKE) = PRHODJ(KIDIA:KFDIA,KKE)*PVARM(KIDIA:KFDIA,KKE)/PTSTEP 
 ELSE
-  ZY(:,KKE) = PRHODJ(:,KKE)*PVARM(:,KKE)/PTSTEP &
-   - ZMZM_RHODJ(:,KKE+KKL) * PF(:,KKE+KKL)/PDZZ(:,KKE+KKL) &
-   + ZMZM_RHODJ(:,KKE  ) * PF(:,KKE  )/PDZZ(:,KKE  ) &
-   - ZRHODJ_DFDT_O_DZ(:,KKE ) * 0.5*PIMPL * PVARM(:,KKE  ) &
-   - ZRHODJ_DFDT_O_DZ(:,KKE ) * 0.5*PIMPL * PVARM(:,KKE-KKL)
+  ZY(KIDIA:KFDIA,KKE) = PRHODJ(KIDIA:KFDIA,KKE)*PVARM(KIDIA:KFDIA,KKE)/PTSTEP &
+   - ZMZM_RHODJ(KIDIA:KFDIA,KKE+KKL) * PF(KIDIA:KFDIA,KKE+KKL)/PDZZ(KIDIA:KFDIA,KKE+KKL) &
+   + ZMZM_RHODJ(KIDIA:KFDIA,KKE  ) * PF(KIDIA:KFDIA,KKE  )/PDZZ(KIDIA:KFDIA,KKE  ) &
+   - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKE ) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,KKE  ) &
+   - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKE ) * 0.5*PIMPL * PVARM(KIDIA:KFDIA,KKE-KKL)
 ENDIF
 !
 !
@@ -205,50 +205,50 @@ IF ( PIMPL > 1.E-10 ) THEN
 !*       3.1 arrays A, B, C
 !            --------------
 !
-  ZB(:,KKB) =   PRHODJ(:,KKB)/PTSTEP                   &
-                + ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL
-  ZC(:,KKB) =   ZRHODJ_DFDT_O_DZ(:,KKB+KKL) * 0.5*PIMPL
+  ZB(KIDIA:KFDIA,KKB) =   PRHODJ(KIDIA:KFDIA,KKB)/PTSTEP                   &
+                + ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKB+KKL) * 0.5*PIMPL
+  ZC(KIDIA:KFDIA,KKB) =   ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKB+KKL) * 0.5*PIMPL
 
   DO JK=2+JPVEXT,KLEV-JPVEXT-1
-    ZA(:,JK) = - ZRHODJ_DFDT_O_DZ(:,JK  ) * 0.5*PIMPL
-    ZB(:,JK) =   PRHODJ(:,JK)/PTSTEP                   &
-                 + ZRHODJ_DFDT_O_DZ(:,JK+KKL) * 0.5*PIMPL &
-                 - ZRHODJ_DFDT_O_DZ(:,JK  ) * 0.5*PIMPL
-    ZC(:,JK) =   ZRHODJ_DFDT_O_DZ(:,JK+KKL) * 0.5*PIMPL
+    ZA(KIDIA:KFDIA,JK) = - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK  ) * 0.5*PIMPL
+    ZB(KIDIA:KFDIA,JK) =   PRHODJ(KIDIA:KFDIA,JK)/PTSTEP                   &
+                 + ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK+KKL) * 0.5*PIMPL &
+                 - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK  ) * 0.5*PIMPL
+    ZC(KIDIA:KFDIA,JK) =   ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,JK+KKL) * 0.5*PIMPL
   END DO
 
-  ZA(:,KKE) = - ZRHODJ_DFDT_O_DZ(:,KKE  ) * 0.5*PIMPL
-  ZB(:,KKE) =   PRHODJ(:,KKE)/PTSTEP                   &
-                - ZRHODJ_DFDT_O_DZ(:,KKE  ) * 0.5*PIMPL
+  ZA(KIDIA:KFDIA,KKE) = - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKE  ) * 0.5*PIMPL
+  ZB(KIDIA:KFDIA,KKE) =   PRHODJ(KIDIA:KFDIA,KKE)/PTSTEP                   &
+                - ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,KKE  ) * 0.5*PIMPL
 !
 !*       3.2 going up
 !            --------
 !
-  ZBET = ZB(:,KKB)  ! bet = b(KKB)
-  PVARP(:,KKB) = ZY(:,KKB) / ZBET
+  ZBET(KIDIA:KFDIA) = ZB(KIDIA:KFDIA,KKB)  ! bet = b(KKB)
+  PVARP(KIDIA:KFDIA,KKB) = ZY(KIDIA:KFDIA,KKB) / ZBET(KIDIA:KFDIA)
 
   !
   DO JK = KKB+KKL,KKE-KKL,KKL
-    ZGAM(:,JK) = ZC(:,JK-KKL) / ZBET
+    ZGAM(KIDIA:KFDIA,JK) = ZC(KIDIA:KFDIA,JK-KKL) / ZBET(KIDIA:KFDIA)
                                                     ! gam(k) = c(k-1) / bet
-    ZBET    = ZB(:,JK) - ZA(:,JK) * ZGAM(:,JK)
+    ZBET(KIDIA:KFDIA)    = ZB(KIDIA:KFDIA,JK) - ZA(KIDIA:KFDIA,JK) * ZGAM(KIDIA:KFDIA,JK)
                                                     ! bet = b(k) - a(k)* gam(k)  
-    PVARP(:,JK)= ( ZY(:,JK) - ZA(:,JK) * PVARP(:,JK-KKL) ) / ZBET
+    PVARP(KIDIA:KFDIA,JK)= ( ZY(KIDIA:KFDIA,JK) - ZA(KIDIA:KFDIA,JK) * PVARP(KIDIA:KFDIA,JK-KKL) ) / ZBET(KIDIA:KFDIA)
                                         ! res(k) = (y(k) -a(k)*res(k-1))/ bet 
   END DO 
   ! special treatment for the last level
-  ZGAM(:,KKE) = ZC(:,KKE-KKL) / ZBET
+  ZGAM(KIDIA:KFDIA,KKE) = ZC(KIDIA:KFDIA,KKE-KKL) / ZBET(KIDIA:KFDIA)
                                                     ! gam(k) = c(k-1) / bet
-  ZBET     = ZB(:,KKE) - ZA(:,KKE) * ZGAM(:,KKE)
+  ZBET(KIDIA:KFDIA)     = ZB(KIDIA:KFDIA,KKE) - ZA(KIDIA:KFDIA,KKE) * ZGAM(KIDIA:KFDIA,KKE)
                                                     ! bet = b(k) - a(k)* gam(k)  
-  PVARP(:,KKE)= ( ZY(:,KKE) - ZA(:,KKE) * PVARP(:,KKE-KKL) ) / ZBET
+  PVARP(KIDIA:KFDIA,KKE)= ( ZY(KIDIA:KFDIA,KKE) - ZA(KIDIA:KFDIA,KKE) * PVARP(KIDIA:KFDIA,KKE-KKL) ) / ZBET(KIDIA:KFDIA)
                                        ! res(k) = (y(k) -a(k)*res(k-1))/ bet 
 !
 !*       3.3 going down
 !            ----------
 !
   DO JK = KKE-KKL,KKB,-KKL
-    PVARP(:,JK) = PVARP(:,JK) - ZGAM(:,JK+KKL) * PVARP(:,JK+KKL)
+    PVARP(KIDIA:KFDIA,JK) = PVARP(KIDIA:KFDIA,JK) - ZGAM(KIDIA:KFDIA,JK+KKL) * PVARP(KIDIA:KFDIA,JK+KKL)
   END DO
 !
 !
@@ -256,7 +256,7 @@ ELSE
   !!! EXPLICIT FORMULATION
   !
   DO JK=1+JPVEXT,KLEV-JPVEXT
-    PVARP(:,JK) = ZY(:,JK) * PTSTEP / PRHODJ(:,JK)
+    PVARP(KIDIA:KFDIA,JK) = ZY(KIDIA:KFDIA,JK) * PTSTEP / PRHODJ(KIDIA:KFDIA,JK)
   ENDDO
   !
 END IF 
@@ -265,8 +265,8 @@ END IF
 !*       4.  FILL THE UPPER AND LOWER EXTERNAL VALUES
 !            ----------------------------------------
 !
-PVARP(:,KKA)=PVARP(:,KKB)
-PVARP(:,KKU)=PVARP(:,KKE)
+PVARP(KIDIA:KFDIA,KKA)=PVARP(KIDIA:KFDIA,KKB)
+PVARP(KIDIA:KFDIA,KKU)=PVARP(KIDIA:KFDIA,KKE)
 !
 !-------------------------------------------------------------------------------
 !

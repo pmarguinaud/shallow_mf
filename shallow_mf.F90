@@ -175,19 +175,19 @@ IKE=KKU-KKL*JPVEXT
 
 ! updraft governing variables
 IF (HMF_UPDRAFT == 'EDKF') THEN
-  PENTR      = 1.E20
-  PDETR      = 1.E20
-  PEMF       = 1.E20
-  ZBUO_INTEG = 1.E20
+  PENTR(KIDIA:KFDIA,:)      = 1.E20
+  PDETR(KIDIA:KFDIA,:)      = 1.E20
+  PEMF(KIDIA:KFDIA,:)       = 1.E20
+  ZBUO_INTEG(KIDIA:KFDIA,:) = 1.E20
 ENDIF
 
 ! Thermodynamics functions
-ZFRAC_ICE = 0.
-WHERE(PRM(:,:,2)+PRM(:,:,4) > 1.E-20)
-  ZFRAC_ICE = PRM(:,:,4) / (PRM(:,:,2)+PRM(:,:,4))
+ZFRAC_ICE(KIDIA:KFDIA,:) = 0.
+WHERE(PRM(KIDIA:KFDIA,:,2)+PRM(KIDIA:KFDIA,:,4) > 1.E-20)
+  ZFRAC_ICE(KIDIA:KFDIA,:) = PRM(KIDIA:KFDIA,:,4) / (PRM(KIDIA:KFDIA,:,2)+PRM(KIDIA:KFDIA,:,4))
 ENDWHERE
 
-ZTHMXEXNM = PTHM * PEXNM
+ZTHMXEXNM(KIDIA:KFDIA,:) = PTHM(KIDIA:KFDIA,:) * PEXNM(KIDIA:KFDIA,:)
 
 CALL COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM)
 
@@ -197,7 +197,7 @@ CALL THL_RT_FROM_TH_R_MF(KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,    &
                          ZTHLM, ZRTM       )
 
 ! Virtual potential temperature at t-dt
-ZTHVM = PTHM*((1.+XRV / XRD *PRM(:,:,1))/(1.+ZRTM)) 
+ZTHVM(KIDIA:KFDIA,:) = PTHM(KIDIA:KFDIA,:)*((1.+XRV / XRD *PRM(KIDIA:KFDIA,:,1))/(1.+ZRTM(KIDIA:KFDIA,:))) 
 
 ! 
 !!! 2. Compute updraft
@@ -240,7 +240,7 @@ CALL COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
 !!! 3. Compute fluxes of conservative variables and their divergence = tendency
 !!!    ------------------------------------------------------------------------
 !
-ZEMF_O_RHODREF=PEMF/PRHODREF
+ZEMF_O_RHODREF(KIDIA:KFDIA,:)=PEMF(KIDIA:KFDIA,:)/PRHODREF(KIDIA:KFDIA,:)
 
 IF ( PIMPL_MF > 1.E-10 ) THEN  
 CALL MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,           &
@@ -261,7 +261,7 @@ ENDIF
 ! to be modified if 'DUAL' is evolving (momentum mixing for example)
 IF( HMF_UPDRAFT == 'DUAL') THEN
   ! Now thetav_up from vdfhghtnn is used!
-  PFLXZTHVMF=0.
+  PFLXZTHVMF(KIDIA:KFDIA,:)=0.
   ! Yes/No UV mixing!
 !  PDUDT_MF=0.
 !  PDVDT_MF=0.

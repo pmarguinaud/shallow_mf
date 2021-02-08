@@ -99,10 +99,10 @@ REAL, DIMENSION(KLON),     INTENT(IN)   ::  PDEPTH            ! Deepness of clou
 !
 !                     2.1 Internal domain
 
-PRC_MF = 0.
-PRI_MF = 0.
-PCF_MF = 0.
-PSIGMF = 0.
+PRC_MF(KIDIA:KFDIA,:) = 0.
+PRI_MF(KIDIA:KFDIA,:) = 0.
+PCF_MF(KIDIA:KFDIA,:) = 0.
+PSIGMF(KIDIA:KFDIA,:) = 0.
 
 IF (HMF_CLOUD == 'DIRE') THEN
   !Direct cloud scheme

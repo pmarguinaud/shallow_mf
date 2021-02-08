@@ -77,40 +77,40 @@ INTEGER :: JRR
 !
 !
 !temperature
-ZT = PTH * PEXN
+ZT(KIDIA:KFDIA,:) = PTH(KIDIA:KFDIA,:) * PEXN(KIDIA:KFDIA,:)
 
 !Cp
-ZCP=XCPD
-IF (KRR > 0) ZCP = ZCP + XCPV * PR(:,:,1)
+ZCP(KIDIA:KFDIA,:)=XCPD
+IF (KRR > 0) ZCP(KIDIA:KFDIA,:) = ZCP(KIDIA:KFDIA,:) + XCPV * PR(KIDIA:KFDIA,:,1)
 DO JRR = 2,1+KRRL  ! loop on the liquid components
-  ZCP  = ZCP + XCL * PR(:,:,JRR)
+  ZCP(KIDIA:KFDIA,:)  = ZCP(KIDIA:KFDIA,:) + XCL * PR(KIDIA:KFDIA,:,JRR)
 END DO
 DO JRR = 2+KRRL,1+KRRL+KRRI ! loop on the solid components
-  ZCP  = ZCP  + XCI * PR(:,:,JRR)
+  ZCP(KIDIA:KFDIA,:)  = ZCP(KIDIA:KFDIA,:)  + XCI * PR(KIDIA:KFDIA,:,JRR)
 END DO
 
 IF ( KRRL >= 1 ) THEN
   IF ( KRRI >= 1 ) THEN
     !ZLVOCPEXN and ZLSOCPEXN
-    ZLVOCPEXN=(XLVTT + (XCPV-XCL) *  (ZT-XTT) ) / ZCP / PEXN
-    ZLSOCPEXN=(XLSTT + (XCPV-XCI) *  (ZT-XTT) ) / ZCP / PEXN
+    ZLVOCPEXN(KIDIA:KFDIA,:)=(XLVTT + (XCPV-XCL) *  (ZT(KIDIA:KFDIA,:)-XTT) ) / ZCP(KIDIA:KFDIA,:) / PEXN(KIDIA:KFDIA,:)
+    ZLSOCPEXN(KIDIA:KFDIA,:)=(XLSTT + (XCPV-XCI) *  (ZT(KIDIA:KFDIA,:)-XTT) ) / ZCP(KIDIA:KFDIA,:) / PEXN(KIDIA:KFDIA,:)
     ! Rnp 
-    PRT  = PR(:,:,1)  + PR(:,:,2)  + PR(:,:,4)
+    PRT(KIDIA:KFDIA,:)  = PR(KIDIA:KFDIA,:,1)  + PR(KIDIA:KFDIA,:,2)  + PR(KIDIA:KFDIA,:,4)
     ! Theta_l 
-    PTHL  = PTH  - ZLVOCPEXN * PR(:,:,2) &
-                           - ZLSOCPEXN * PR(:,:,4)
+    PTHL(KIDIA:KFDIA,:)  = PTH(KIDIA:KFDIA,:)  - ZLVOCPEXN(KIDIA:KFDIA,:) * PR(KIDIA:KFDIA,:,2) &
+                           - ZLSOCPEXN(KIDIA:KFDIA,:) * PR(KIDIA:KFDIA,:,4)
   ELSE
     !ZLVOCPEXN
-    ZLVOCPEXN=(XLVTT + (XCPV-XCL) *  (ZT-XTT) ) / ZCP / PEXN
+    ZLVOCPEXN(KIDIA:KFDIA,:)=(XLVTT + (XCPV-XCL) *  (ZT(KIDIA:KFDIA,:)-XTT) ) / ZCP(KIDIA:KFDIA,:) / PEXN(KIDIA:KFDIA,:)
     ! Rnp
-    PRT  = PR(:,:,1)  + PR(:,:,2) 
+    PRT(KIDIA:KFDIA,:)  = PR(KIDIA:KFDIA,:,1)  + PR(KIDIA:KFDIA,:,2) 
     ! Theta_l
-    PTHL = PTH  - ZLVOCPEXN * PR(:,:,2)
+    PTHL(KIDIA:KFDIA,:) = PTH(KIDIA:KFDIA,:)  - ZLVOCPEXN(KIDIA:KFDIA,:) * PR(KIDIA:KFDIA,:,2)
   END IF
 ELSE
   ! Rnp = rv
-  PRT  = PR(:,:,1)
+  PRT(KIDIA:KFDIA,:)  = PR(KIDIA:KFDIA,:,1)
   ! Theta_l = Theta
-  PTHL = PTH
+  PTHL(KIDIA:KFDIA,:) = PTH(KIDIA:KFDIA,:)
 END IF
 END SUBROUTINE THL_RT_FROM_TH_R_MF

@@ -90,12 +90,12 @@ REAL(KIND=JPRB) :: ZVAR1, ZVAR2, ZTPOW2, ZDELT
 JITER=2
 !
 !Computation of ZCPH2 depending on dummy arguments received
-ZCPH2=0
+ZCPH2(KIDIA:KFDIA)=0
 !
 !Computation of an approximate state thanks to PRL and PRI guess
-ZEXN=(PP/XP00) ** RDSCPD
+ZEXN(KIDIA:KFDIA)=(PP(KIDIA:KFDIA)/XP00) ** RDSCPD
 
-DO J=1,KLON
+DO J=KIDIA,KFDIA
 Z99PP(J)=0.99*PP(J)
 PRV(J)=PRT(J)-PRL(J)-PRI(J)
 ZCPH(J)=XCPD+ XCPV * PRV(J)+ XCL * PRL(J) + XCI * PRI(J) + ZCPH2(J)
@@ -112,11 +112,11 @@ ENDDO
 !         ---------
 
 DO II=1,JITER
-  ZT=PTH*ZEXN
+  ZT(KIDIA:KFDIA)=PTH(KIDIA:KFDIA)*ZEXN(KIDIA:KFDIA)
 
   !Computation of liquid/ice fractions
-  PFRAC_ICE = 0.
-  DO J=1, KLON
+  PFRAC_ICE(KIDIA:KFDIA) = 0.
+  DO J=KIDIA, KFDIA
     IF(PRL(J)+PRI(J) > 1.E-20) THEN
       PFRAC_ICE(J) = PRI(J) / (PRL(J)+PRI(J))
     ENDIF
@@ -128,9 +128,9 @@ DO II=1,JITER
   !due to performance issue
 
   ! Log does not vectorize on all compilers:
-  ZLOGT=LOG(ZT)
+  ZLOGT(KIDIA:KFDIA)=LOG(ZT(KIDIA:KFDIA))
 
-  DO J=1,KLON
+  DO J=KIDIA,KFDIA
 
   ZFOESW(J) = MIN(EXP( XALPW - XBETAW/ZT(J) - XGAMW*ZLOGT(J)  ), Z99PP(J))
   ZFOESI(J) = MIN(EXP( XALPI - XBETAI/ZT(J) - XGAMI*ZLOGT(J)  ), Z99PP(J))

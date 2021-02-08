@@ -62,11 +62,11 @@ REAL, DIMENSION(KLON), INTENT(INOUT) :: PFRAC_ICE  ! Ice fraction (1 for ice onl
 !                1. Compute FRAC_ICE
 !
 IF (HFRAC_ICE=='T') THEN !using Temperature
-  PFRAC_ICE = ( XTMAXMIX - PT ) / ( XTMAXMIX - XTMINMIX ) ! freezing interval
+  PFRAC_ICE(KIDIA:KFDIA) = ( XTMAXMIX - PT(KIDIA:KFDIA) ) / ( XTMAXMIX - XTMINMIX ) ! freezing interval
 ELSEIF (HFRAC_ICE=='O') THEN !using Temperature with old formulae
-  PFRAC_ICE = ( XTT - PT ) / 40. ! freezing interval
+  PFRAC_ICE(KIDIA:KFDIA) = ( XTT - PT(KIDIA:KFDIA) ) / 40. ! freezing interval
 ELSEIF (HFRAC_ICE=='N') THEN !No ice
-  PFRAC_ICE = 0.
+  PFRAC_ICE(KIDIA:KFDIA) = 0.
 ELSEIF (HFRAC_ICE=='S') THEN !Same as previous
   !nothing to do
 ELSE
@@ -76,7 +76,7 @@ ELSE
   STOP
 ENDIF
 
-PFRAC_ICE = MAX( 0., MIN(1., PFRAC_ICE ) )
+PFRAC_ICE(KIDIA:KFDIA) = MAX( 0., MIN(1., PFRAC_ICE(KIDIA:KFDIA) ) )
 
 
 END SUBROUTINE COMPUTE_FRAC_ICE1D

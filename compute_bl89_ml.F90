@@ -82,17 +82,17 @@ REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 IIJU=KLON
 !
 CALL DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT,ZDELTVPT)
-ZDELTVPT(:,KKA)=0.
-WHERE (ABS(ZDELTVPT)<XLINF)
-  ZDELTVPT=XLINF
+ZDELTVPT(KIDIA:KFDIA,KKA)=0.
+WHERE (ABS(ZDELTVPT(KIDIA:KFDIA,:))<XLINF)
+  ZDELTVPT(KIDIA:KFDIA,:)=XLINF
 END WHERE
 !
 CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT, ZHLVPT)
 !
 !We consider that gradient between mass levels KKB and KKB+KKL is the same as
 !the gradient between flux level KKB and mass level KKB
-ZDELTVPT(:,KKB)=PDZZ2D(:,KKB)*ZDELTVPT(:,KKB+KKL)/PDZZ2D(:,KKB+KKL)
-ZHLVPT(:,KKB)=PVPT(:,KKB)-ZDELTVPT(:,KKB)*0.5
+ZDELTVPT(KIDIA:KFDIA,KKB)=PDZZ2D(KIDIA:KFDIA,KKB)*ZDELTVPT(KIDIA:KFDIA,KKB+KKL)/PDZZ2D(KIDIA:KFDIA,KKB+KKL)
+ZHLVPT(KIDIA:KFDIA,KKB)=PVPT(KIDIA:KFDIA,KKB)-ZDELTVPT(KIDIA:KFDIA,KKB)*0.5
 !
 !
 !
@@ -101,13 +101,13 @@ ZHLVPT(:,KKB)=PVPT(:,KKB)-ZDELTVPT(:,KKB)*0.5
 !
 
 IF (OUPORDN.EQV..TRUE.) THEN 
- ZINTE=PTKEM_DEP
- PLWORK=0.
+ ZINTE(KIDIA:KFDIA)=PTKEM_DEP(KIDIA:KFDIA)
+ PLWORK(KIDIA:KFDIA)=0.
  ZTESTM=1.
  IF(OFLUX)THEN
-   ZVPT_DEP=ZHLVPT(:,KK) ! departure point is on flux level
+   ZVPT_DEP(KIDIA:KFDIA)=ZHLVPT(KIDIA:KFDIA,KK) ! departure point is on flux level
    !We must compute what happens between flux level KK and mass level KK
-   DO J1D=1,IIJU
+   DO J1D=KIDIA,KFDIA
      ZTEST0=0.5+SIGN(0.5,ZINTE(J1D)) ! test if there's energy to consume
      ! Energy consumed if parcel cross the entire layer
      ZPOTE(J1D) = ZTEST0*(PG_O_THVREF(J1D)      *      &
@@ -132,13 +132,13 @@ IF (OUPORDN.EQV..TRUE.) THEN
       ZINTE(J1D) = ZINTE(J1D) - ZPOTE(J1D)
    ENDDO
  ELSE
-   ZVPT_DEP=PVPT(:,KK) ! departure point is on mass level
+   ZVPT_DEP(KIDIA:KFDIA)=PVPT(KIDIA:KFDIA,KK) ! departure point is on mass level
  ENDIF
 
  DO JKK=KK+KKL,KKE,KKL
     IF(ZTESTM > 0.) THEN
       ZTESTM=0
-      DO J1D=1,IIJU
+      DO J1D=KIDIA,KFDIA
         ZTEST0=0.5+SIGN(0.5,ZINTE(J1D))
         ZPOTE(J1D) = ZTEST0*(PG_O_THVREF(J1D)      *      &
             (ZHLVPT(J1D,JKK) - ZVPT_DEP(J1D)))  * PDZZ2D(J1D,JKK) !particle keeps its temperature
@@ -173,13 +173,13 @@ IF (OUPORDN.EQV..FALSE.) THEN
    CALL ABORT
    STOP
  ENDIF
- ZINTE=PTKEM_DEP
- PLWORK=0.
+ ZINTE(KIDIA:KFDIA)=PTKEM_DEP(KIDIA:KFDIA)
+ PLWORK(KIDIA:KFDIA)=0.
  ZTESTM=1.
  DO JKK=KK,KKB,-KKL
     IF(ZTESTM > 0.) THEN
       ZTESTM=0
-      DO J1D=1,IIJU
+      DO J1D=KIDIA,KFDIA
         ZTEST0=0.5+SIGN(0.5,ZINTE(J1D))
         ZPOTE(J1D) = -ZTEST0*(PG_O_THVREF(J1D)      *      &
             (ZHLVPT(J1D,JKK) - PVPT(J1D,KK)))  * PDZZ2D(J1D,JKK) !particle keeps its temperature

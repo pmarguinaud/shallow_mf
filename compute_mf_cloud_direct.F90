@@ -77,11 +77,11 @@ INTEGER  :: JI,JK, JK0
 !
 ! Warning: updraft variables are on flux levels
 ! and PRC_MF, PRI_MF and PCF_MF are on mass levels
-PRC_MF=0.
-PRI_MF=0.
-PCF_MF=0.
+PRC_MF(KIDIA:KFDIA,:)=0.
+PRI_MF(KIDIA:KFDIA,:)=0.
+PCF_MF(KIDIA:KFDIA,:)=0.
 
-DO JI=1,KLON
+DO JI=KIDIA,KFDIA
   JK0=KKLCL(JI)-KKL ! first mass level with cloud
   JK0=MAX(JK0, MIN(KKB,KKE)) !protection if KKL=1
   JK0=MIN(JK0, MAX(KKB,KKE)) !protection if KKL=-1

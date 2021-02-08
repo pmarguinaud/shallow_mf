@@ -71,10 +71,10 @@ INTEGER :: JK             ! Loop index in z direction
 !              ------------------
 !
 DO JK=2,KLEV-1
-  PMZM(:,JK) = 0.5*( PA(:,JK)+PA(:,JK-KKL) )
+  PMZM(KIDIA:KFDIA,JK) = 0.5*( PA(KIDIA:KFDIA,JK)+PA(KIDIA:KFDIA,JK-KKL) )
 END DO
-PMZM(:,KKA) = PA(:,KKA)
-PMZM(:,KKU) = 0.5*( PA(:,KKU)+PA(:,KKU-KKL) )
+PMZM(KIDIA:KFDIA,KKA) = PA(KIDIA:KFDIA,KKA)
+PMZM(KIDIA:KFDIA,KKU) = 0.5*( PA(KIDIA:KFDIA,KKU)+PA(KIDIA:KFDIA,KKU-KKL) )
 !
 !-------------------------------------------------------------------------------
 !
@@ -153,10 +153,10 @@ INTEGER :: JK            ! Loop index in z direction
 !              ------------------
 !
 DO JK=2,KLEV-1
-  PDZM(:,JK) = PA(:,JK) - PA(:,JK-KKL)
+  PDZM(KIDIA:KFDIA,JK) = PA(KIDIA:KFDIA,JK) - PA(KIDIA:KFDIA,JK-KKL)
 END DO
-PDZM(:,KKA) = 0.
-PDZM(:,KKU) = PA(:,KKU) - PA(:,KKU-KKL)
+PDZM(KIDIA:KFDIA,KKA) = 0.
+PDZM(KIDIA:KFDIA,KKU) = PA(KIDIA:KFDIA,KKU) - PA(KIDIA:KFDIA,KKU-KKL)
 !
 !-------------------------------------------------------------------------------
 !

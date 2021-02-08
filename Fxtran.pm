@@ -268,11 +268,20 @@ sub f
   my $xpc = 'XML::LibXML::XPathContext'->new ();
   $xpc->registerNs (f => 'http://fxtran.net/#syntax');
 
-  my @x = $xpc->findnodes (@_[0,1]);
-  if (! defined ($_[2]))
+  my $xpath = shift (@_);
+
+  while ($xpath =~ s/\?/$_[0]/)
+    {
+      shift (@_);
+    }
+
+
+  my @x = $xpc->findnodes ($xpath, $_[0]);
+
+  if (! defined ($_[1]))
     {
     }
-  elsif ($_[2] == 1)
+  elsif ($_[1] == 1)
     {
       @x = map { $_->textContent } @x;
       for (@x)
@@ -281,7 +290,7 @@ sub f
           $_ = uc ($_);
         }
     }
-  elsif ($_[2] == 2)
+  elsif ($_[1] == 2)
     {
       @x = map { $_->textContent } @x;
     }
