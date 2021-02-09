@@ -246,7 +246,7 @@ DO IBL = 1, ICOUNT
                     PU_UP_ALL (:,:,IBL),  PV_UP_ALL (:,:,IBL),  PTHV_UP_ALL (:,:,IBL),         &
                     PW_UP_ALL (:,:,IBL), PFRAC_UP_ALL (:,:,IBL), PEMF_ALL (:,:,IBL),           &
                     PDETR_ALL (:,:,IBL), PENTR_ALL (:,:,IBL), KKLCL_ALL (:,IBL),               &
-                    KKETL_ALL (:,IBL), KKCTL_ALL (:,IBL), ISTSZ_ALL, ISTPT_ALL, PSTACK_ALL (:,IBL))
+                    KKETL_ALL (:,IBL), KKCTL_ALL (:,IBL), ISTPT_ALL, ISTSZ_ALL, PSTACK_ALL (:,IBL))
     
   ENDDO
   
