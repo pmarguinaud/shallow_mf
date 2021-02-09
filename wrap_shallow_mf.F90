@@ -211,41 +211,37 @@ KSV = SIZE (PSVM_ALL, 3)
 !$OMP PARALLEL DO PRIVATE (IBL, JIDIA, JFDIA, JLON)
 DO IBL = 1, ICOUNT
 
-!DO JLON = 1, KLON
+  DO JLON = 1, KLON
 
-!JIDIA = JLON
-!JFDIA = JLON
-JIDIA = 1
-JFDIA = KLON
-
-CALL SHALLOW_MF(KLON,JIDIA,JFDIA,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
-                HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
-                ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
-                PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,              &
-                PDZZ_ALL (:,:,IBL), PZZ_ALL (:,:,IBL), PRHODJ_ALL (:,:,IBL),               &
-                PRHODREF_ALL (:,:,IBL), PPABSM_ALL (:,:,IBL),  PEXNM_ALL (:,:,IBL),        &
-                PSFTH_ALL (:,IBL), PSFRV_ALL (:,IBL), PTHM_ALL (:,:,IBL),                  &
-                PRM_ALL (:,:,:,IBL), PUM_ALL (:,:,IBL), PVM_ALL (:,:,IBL),                 &
-                PTKEM_ALL (:,:,IBL), PSVM_ALL (:,:,:,IBL), PDUDT_MF_ALL (:,:,IBL),         &
-                PDVDT_MF_ALL (:,:,IBL), PDTHLDT_MF_ALL (:,:,IBL), PDRTDT_MF_ALL (:,:,IBL), &
-                PDSVDT_MF_ALL (:,:,:,IBL), PSIGMF_ALL (:,:,IBL), PRC_MF_ALL (:,:,IBL),     &
-                PRI_MF_ALL (:,:,IBL), PCF_MF_ALL (:,:,IBL), PFLXZTHVMF_ALL (:,:,IBL),      &
-                PFLXZTHMF_ALL (:,:,IBL), PFLXZRMF_ALL (:,:,IBL), PFLXZUMF_ALL (:,:,IBL),   &
-                PFLXZVMF_ALL (:,:,IBL), PTHL_UP_ALL (:,:,IBL), PRT_UP_ALL (:,:,IBL),       &
-                PRV_UP_ALL (:,:,IBL), PRC_UP_ALL (:,:,IBL), PRI_UP_ALL (:,:,IBL),          &
-                PU_UP_ALL (:,:,IBL),  PV_UP_ALL (:,:,IBL),  PTHV_UP_ALL (:,:,IBL),         &
-                PW_UP_ALL (:,:,IBL), PFRAC_UP_ALL (:,:,IBL), PEMF_ALL (:,:,IBL),           &
-                PDETR_ALL (:,:,IBL), PENTR_ALL (:,:,IBL), KKLCL_ALL (:,IBL),               &
-                KKETL_ALL (:,IBL), KKCTL_ALL (:,IBL))
-
-!ENDDO
-
+    JIDIA = JLON
+    JFDIA = JLON
+    
+    CALL SHALLOW_MF(KLON,JIDIA,JFDIA,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
+                    HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
+                    ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
+                    PIMPL_MF, PTSTEP, PTSTEP_MET, PTSTEP_SV,              &
+                    PDZZ_ALL (:,:,IBL), PZZ_ALL (:,:,IBL), PRHODJ_ALL (:,:,IBL),               &
+                    PRHODREF_ALL (:,:,IBL), PPABSM_ALL (:,:,IBL),  PEXNM_ALL (:,:,IBL),        &
+                    PSFTH_ALL (:,IBL), PSFRV_ALL (:,IBL), PTHM_ALL (:,:,IBL),                  &
+                    PRM_ALL (:,:,:,IBL), PUM_ALL (:,:,IBL), PVM_ALL (:,:,IBL),                 &
+                    PTKEM_ALL (:,:,IBL), PSVM_ALL (:,:,:,IBL), PDUDT_MF_ALL (:,:,IBL),         &
+                    PDVDT_MF_ALL (:,:,IBL), PDTHLDT_MF_ALL (:,:,IBL), PDRTDT_MF_ALL (:,:,IBL), &
+                    PDSVDT_MF_ALL (:,:,:,IBL), PSIGMF_ALL (:,:,IBL), PRC_MF_ALL (:,:,IBL),     &
+                    PRI_MF_ALL (:,:,IBL), PCF_MF_ALL (:,:,IBL), PFLXZTHVMF_ALL (:,:,IBL),      &
+                    PFLXZTHMF_ALL (:,:,IBL), PFLXZRMF_ALL (:,:,IBL), PFLXZUMF_ALL (:,:,IBL),   &
+                    PFLXZVMF_ALL (:,:,IBL), PTHL_UP_ALL (:,:,IBL), PRT_UP_ALL (:,:,IBL),       &
+                    PRV_UP_ALL (:,:,IBL), PRC_UP_ALL (:,:,IBL), PRI_UP_ALL (:,:,IBL),          &
+                    PU_UP_ALL (:,:,IBL),  PV_UP_ALL (:,:,IBL),  PTHV_UP_ALL (:,:,IBL),         &
+                    PW_UP_ALL (:,:,IBL), PFRAC_UP_ALL (:,:,IBL), PEMF_ALL (:,:,IBL),           &
+                    PDETR_ALL (:,:,IBL), PENTR_ALL (:,:,IBL), KKLCL_ALL (:,IBL),               &
+                    KKETL_ALL (:,IBL), KKCTL_ALL (:,IBL))
+    
+  ENDDO
+  
 ENDDO
 !$OMP END PARALLEL DO
 
-WRITE (0, *) __FILE__, ':', __LINE__, PDUDT_MF_ALL (1, 3, 20)
-
-IF (LLDIFF .AND. ICOUNT0 == ICOUNT1 .AND. KLON0 == KLON1) THEN
+IF (LLDIFF .AND. KLON0 == KLON1) THEN
 
 PRINT *, "-- DIFF"
 
