@@ -88,6 +88,8 @@ INTEGER :: J1D                  !horizontal loop counter
 INTEGER :: JKK                  !loop counters
 REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 
+init_stack ()
+
 alloc (ZHLVPT)
 alloc (ZDELTVPT)
 alloc (ZVPT_DEP)

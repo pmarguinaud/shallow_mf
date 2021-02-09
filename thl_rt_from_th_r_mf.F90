@@ -85,6 +85,8 @@ temp (REAL, ZLVOCPEXN, (KLON,KLEV))
 
 INTEGER :: JRR
 
+init_stack ()
+
 alloc (ZLSOCPEXN)
 alloc (ZLVOCPEXN)
 alloc (ZT)

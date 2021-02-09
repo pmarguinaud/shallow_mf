@@ -184,6 +184,7 @@ temp (REAL, ZTHV_MINUS_HALF, (KLON))
 temp (REAL, ZDZ_STOP, (KLON))
 INTEGER :: JI
 
+init_stack ()
 
 alloc (ZDZ)
 alloc (ZTHV_PLUS_HALF)

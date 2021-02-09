@@ -132,12 +132,15 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !       0.2  declaration of local variables
 !
 
+
 temp (REAL, ZVARS, (KLON,KLEV))
 temp (REAL, ZMEMF, (KLON,KLEV))
 temp (REAL, ZMZM , (KLON,KLEV))
 
 !
 INTEGER :: ISV,JSV          !number of scalar variables and Loop counter
+
+init_stack ()
 
 alloc (ZMZM)
 alloc (ZMEMF)

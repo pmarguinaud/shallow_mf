@@ -194,6 +194,7 @@ REAL  :: ZDEPTH_MAX1, ZDEPTH_MAX2 ! control auto-extinction process
 
 REAL  :: ZTMAX,ZRMAX  ! control value
 
+init_stack ()
 
 alloc (ZPART_DRY)
 alloc (ZRSATI)

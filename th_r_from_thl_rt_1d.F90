@@ -102,6 +102,7 @@ temp (REAL, ZLOGT, (KLON))
 
 REAL(KIND=JPRB) :: ZVAR1, ZVAR2, ZTPOW2, ZDELT
 
+init_stack ()
 
 alloc (Z1PRT)
 alloc (Z99PP)

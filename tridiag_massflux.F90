@@ -165,6 +165,8 @@ temp (REAL, ZBET, (KLON))
 ! 2D work array
 INTEGER                              :: JK            ! loop counter
 
+init_stack ()
+
 alloc (ZBET)
 alloc (ZGAM)
 alloc (ZY)

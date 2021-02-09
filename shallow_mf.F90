@@ -178,6 +178,8 @@ LOGICAL :: GENTR_DETR  ! flag to recompute entrainment, detrainment and mass flu
 INTEGER :: IKB         ! near ground physical index
 INTEGER :: IKE         ! uppest atmosphere physical index
 
+init_stack ()
+
 alloc (ZTHMXEXNM)
 alloc (ZRSAT_UP)
 alloc (ZFRAC_ICE_UP)
@@ -219,12 +221,12 @@ ENDWHERE
 
 ZTHMXEXNM(KIDIA:KFDIA,:) = PTHM(KIDIA:KFDIA,:) * PEXNM(KIDIA:KFDIA,:)
 
-CALL COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM,KSTPT,KSTSZ,PSTACK)
+CALL COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM,ISTPT,KSTSZ,PSTACK)
 
 ! Conservative variables at t-dt
 CALL THL_RT_FROM_TH_R_MF(KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,    &
                          PTHM, PRM, PEXNM, &
-                         ZTHLM, ZRTM,KSTPT,KSTSZ,PSTACK       )
+                         ZTHLM, ZRTM,ISTPT,KSTSZ,PSTACK       )
 
 ! Virtual potential temperature at t-dt
 ZTHVM(KIDIA:KFDIA,:) = PTHM(KIDIA:KFDIA,:)*((1.+XRV / XRD *PRM(KIDIA:KFDIA,:,1))/(1.+ZRTM(KIDIA:KFDIA,:))) 
@@ -244,7 +246,7 @@ IF (HMF_UPDRAFT == 'EDKF') THEN
                        PTHL_UP,PRT_UP,PRV_UP,PRC_UP,PRI_UP,      &
                        PTHV_UP, PW_UP, PU_UP, PV_UP, ZSV_UP,     &
                        PFRAC_UP,ZFRAC_ICE_UP,ZRSAT_UP,PEMF,PDETR,&
-                       PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH,KSTPT,KSTSZ,PSTACK )
+                       PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH,ISTPT,KSTSZ,PSTACK )
 ELSE
   WRITE(*,*) ' STOP'                                                     
   WRITE(*,*) ' NO UPDRAFT MODEL FOR EDKF : CMF_UPDRAFT =',HMF_UPDRAFT 
@@ -264,7 +266,7 @@ CALL COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
                       PTHM, ZTHVM, PRM,                 &
                       PDZZ,PZZ,KKLCL,                   &
                       PPABSM,PRHODREF,                  &
-                      PRC_MF,PRI_MF,PCF_MF,PSIGMF,ZDEPTH,KSTPT,KSTSZ,PSTACK)
+                      PRC_MF,PRI_MF,PCF_MF,PSIGMF,ZDEPTH,ISTPT,KSTSZ,PSTACK)
 
 
 !!! 3. Compute fluxes of conservative variables and their divergence = tendency
@@ -282,7 +284,7 @@ CALL MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,         
              PDTHLDT_MF,PDRTDT_MF,PDUDT_MF,PDVDT_MF,PDSVDT_MF,        &
              ZEMF_O_RHODREF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP,ZSV_UP,&
              PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,         &
-             ZFLXZSVMF,KSTPT,KSTSZ,PSTACK                                                )
+             ZFLXZSVMF,ISTPT,KSTSZ,PSTACK                                                )
 ELSE
   CALL ABORT
 ENDIF
