@@ -11,7 +11,10 @@
                             PBUO_INTEG_DRY,PBUO_INTEG_CLD,&
                             PPART_DRY,KSTPT,KSTSZ,PSTACK)
 
-          USE PARKIND1, ONLY : JPRB
+          
+#include "temp.h"
+
+USE PARKIND1, ONLY : JPRB
 !         #############################################################
 
 !!
@@ -122,38 +125,98 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 
 ! Variables for cloudy part
-REAL, DIMENSION(KLON) :: ZKIC, ZKIC_F2  ! fraction of env. mass in the muxtures
-REAL, DIMENSION(KLON) :: ZEPSI,ZDELTA   ! factor entrainment detrainment
-REAL, DIMENSION(KLON) :: ZEPSI_CLOUD    ! factor entrainment detrainment
+! fraction of env. mass in the muxtures
+temp (REAL, ZKIC_F2, (KLON))
+temp (REAL, ZKIC, (KLON))
+! factor entrainment detrainment
+temp (REAL, ZDELTA, (KLON))
+temp (REAL, ZEPSI, (KLON))
+! factor entrainment detrainment
+temp (REAL, ZEPSI_CLOUD, (KLON))
 REAL                           :: ZCOEFFMF_CLOUD ! factor for compputing entr. detr.
-REAL, DIMENSION(KLON) :: ZMIXTHL,ZMIXRT ! Thetal and rt in the mixtures
-REAL, DIMENSION(KLON) :: ZTHMIX         ! Theta and Thetav  of mixtures
-REAL, DIMENSION(KLON) :: ZRVMIX,ZRCMIX,ZRIMIX ! mixing ratios in mixtures
-REAL, DIMENSION(KLON) :: ZTHVMIX, ZTHVMIX_F2 ! Theta and Thetav  of mixtures
-REAL, DIMENSION(KLON) :: ZTHV_UP_F2     ! thv_up at flux point kk+kkl
-REAL, DIMENSION(KLON) :: ZRSATW, ZRSATI ! working arrays (mixing ratio at saturation)
-REAL, DIMENSION(KLON) :: ZTHV           ! theta V of environment at the bottom of cloudy part  
+! Thetal and rt in the mixtures
+temp (REAL, ZMIXRT, (KLON))
+temp (REAL, ZMIXTHL, (KLON))
+! Theta and Thetav  of mixtures
+temp (REAL, ZTHMIX, (KLON))
+! mixing ratios in mixtures
+temp (REAL, ZRIMIX, (KLON))
+temp (REAL, ZRCMIX, (KLON))
+temp (REAL, ZRVMIX, (KLON))
+! Theta and Thetav  of mixtures
+temp (REAL, ZTHVMIX_F2, (KLON))
+temp (REAL, ZTHVMIX, (KLON))
+! thv_up at flux point kk+kkl
+temp (REAL, ZTHV_UP_F2, (KLON))
+! working arrays (mixing ratio at saturation)
+temp (REAL, ZRSATI, (KLON))
+temp (REAL, ZRSATW, (KLON))
+! theta V of environment at the bottom of cloudy part  
+temp (REAL, ZTHV, (KLON))
 REAL                           :: ZKIC_INIT      !Initial value of ZKIC
-REAL, DIMENSION(KLON) :: ZCOTHVU              ! Variation of Thvup between bottom and top of cloudy part
+              ! Variation of Thvup between bottom and top of cloudy part
 
+temp (REAL, ZCOTHVU, (KLON))
 ! Variables for dry part
-REAL, DIMENSION(KLON) :: ZFOESW, ZFOESI       ! saturating vapor pressure
-REAL, DIMENSION(KLON) :: ZDRSATODP            ! d.Rsat/dP
-REAL, DIMENSION(KLON) :: ZT                   ! Temperature
-REAL, DIMENSION(KLON) :: ZWK                  ! Work array
-
+! saturating vapor pressure
+temp (REAL, ZFOESI, (KLON))
+temp (REAL, ZFOESW, (KLON))
+! d.Rsat/dP
+temp (REAL, ZDRSATODP, (KLON))
+! Temperature
+temp (REAL, ZT, (KLON))
+! Work array
+temp (REAL, ZWK, (KLON))
 ! Variables for dry and cloudy parts
-REAL, DIMENSION(KLON) :: ZCOEFF_MINUS_HALF,&  ! Variation of Thv between mass points kk-kkl and kk
-                                  ZCOEFF_PLUS_HALF     ! Variation of Thv between mass points kk and kk+kkl
-REAL, DIMENSION(KLON) :: ZPRE                 ! pressure at the bottom of the cloudy part
-REAL, DIMENSION(KLON) :: ZG_O_THVREF
-REAL, DIMENSION(KLON) :: ZFRAC_ICE            ! fraction of ice
+! Variation of Thv between mass points kk and kk+kkl
+temp (REAL, ZCOEFF_PLUS_HALF, (KLON))
+temp (REAL, ZCOEFF_MINUS_HALF, (KLON))
+! pressure at the bottom of the cloudy part
+temp (REAL, ZPRE, (KLON))
+temp (REAL, ZG_O_THVREF, (KLON))
+! fraction of ice
+temp (REAL, ZFRAC_ICE, (KLON))
 REAL                           :: ZRVORD               ! RV/RD
-REAL, DIMENSION(KLON) :: ZDZ_STOP,&           ! Exact Height of the LCL above flux level KK
-                                  ZTHV_MINUS_HALF,&    ! Thv at flux point(kk)  
-                                  ZTHV_PLUS_HALF,&     ! Thv at flux point(kk+kkl)
-                                  ZDZ                  ! Delta Z used in computations
+! Delta Z used in computations
+temp (REAL, ZDZ, (KLON))
+temp (REAL, ZTHV_PLUS_HALF, (KLON))
+temp (REAL, ZTHV_MINUS_HALF, (KLON))
+temp (REAL, ZDZ_STOP, (KLON))
 INTEGER :: JI
+
+
+alloc (ZDZ)
+alloc (ZTHV_PLUS_HALF)
+alloc (ZTHV_MINUS_HALF)
+alloc (ZDZ_STOP)
+alloc (ZFRAC_ICE)
+alloc (ZG_O_THVREF)
+alloc (ZPRE)
+alloc (ZCOEFF_PLUS_HALF)
+alloc (ZCOEFF_MINUS_HALF)
+alloc (ZWK)
+alloc (ZT)
+alloc (ZDRSATODP)
+alloc (ZFOESI)
+alloc (ZFOESW)
+alloc (ZCOTHVU)
+alloc (ZTHV)
+alloc (ZRSATI)
+alloc (ZRSATW)
+alloc (ZTHV_UP_F2)
+alloc (ZTHVMIX_F2)
+alloc (ZTHVMIX)
+alloc (ZRIMIX)
+alloc (ZRCMIX)
+alloc (ZRVMIX)
+alloc (ZTHMIX)
+alloc (ZMIXRT)
+alloc (ZMIXTHL)
+alloc (ZEPSI_CLOUD)
+alloc (ZDELTA)
+alloc (ZEPSI)
+alloc (ZKIC_F2)
+alloc (ZKIC)
 
 !----------------------------------------------------------------------------------
                         

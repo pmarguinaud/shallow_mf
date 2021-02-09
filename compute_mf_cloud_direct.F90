@@ -2,6 +2,9 @@
       SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                                         &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
                                         &PRC_MF, PRI_MF, PCF_MF,KSTPT,KSTSZ,PSTACK)
+
+#include "temp.h"
+
 !     #################################################################
 !!
 !!****  *COMPUTE_MF_CLOUD_DIRECT* -
@@ -70,6 +73,8 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !*                    0.1  Declaration of local variables
 !
 INTEGER  :: JI,JK, JK0
+
+
 !
 !*                    0.2 Initialisation
 !

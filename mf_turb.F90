@@ -10,7 +10,10 @@
                 PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,      &
                 PFLXZSVMF,KSTPT,KSTSZ,PSTACK                                             )
 
-      USE PARKIND1, ONLY : JPRB
+      
+#include "temp.h"
+
+USE PARKIND1, ONLY : JPRB
 
 !     #################################################################
 !
@@ -129,12 +132,17 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !       0.2  declaration of local variables
 !
 
-REAL, DIMENSION(KLON,KLEV) :: ZVARS
-REAL, DIMENSION(KLON,KLEV) :: ZMEMF
-REAL, DIMENSION(KLON,KLEV) :: ZMZM
+temp (REAL, ZVARS, (KLON,KLEV))
+temp (REAL, ZMEMF, (KLON,KLEV))
+temp (REAL, ZMZM , (KLON,KLEV))
 
 !
 INTEGER :: ISV,JSV          !number of scalar variables and Loop counter
+
+alloc (ZMZM)
+alloc (ZMEMF)
+alloc (ZVARS)
+
 !
 !----------------------------------------------------------------------------
 !

@@ -2,6 +2,9 @@
       SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
                                       PTHL, PRT,KSTPT,KSTSZ,PSTACK                      )
+
+#include "temp.h"
+
 !     #################################################################
 !
 !!
@@ -73,9 +76,20 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 
 !----------------------------------------------------------------------------
-REAL, DIMENSION(KLON,KLEV) :: ZCP, ZT
-REAL, DIMENSION(KLON,KLEV) :: ZLVOCPEXN, ZLSOCPEXN
+
+temp (REAL, ZT, (KLON,KLEV))
+temp (REAL, ZCP, (KLON,KLEV))
+
+temp (REAL, ZLSOCPEXN, (KLON,KLEV))
+temp (REAL, ZLVOCPEXN, (KLON,KLEV))
+
 INTEGER :: JRR
+
+alloc (ZLSOCPEXN)
+alloc (ZLVOCPEXN)
+alloc (ZT)
+alloc (ZCP)
+
 !----------------------------------------------------------------------------
 !
 !

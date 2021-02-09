@@ -8,6 +8,9 @@
                                   PDZZ, PZZ, KKLCL,                                     &
                                   PPABSM, PRHODREF,                                     &
                                   PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH,KSTPT,KSTSZ,PSTACK    )
+
+#include "temp.h"
+
 !     #################################################################
 !!
 !!****  *COMPUTE_MF_CLOUD* - 
@@ -92,6 +95,8 @@ REAL, DIMENSION(KLON),     INTENT(IN)   ::  PDEPTH            ! Deepness of clou
 INTEGER,                INTENT(IN)   :: KSTSZ
 INTEGER,                INTENT(IN)   :: KSTPT
 REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
+
+
 !
 !                       1.2  Declaration of local variables
 !

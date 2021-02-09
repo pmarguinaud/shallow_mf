@@ -17,7 +17,10 @@
                 PFRAC_UP,PEMF,PDETR,PENTR,                            &
                 KKLCL,KKETL,KKCTL,KSTPT,KSTSZ,PSTACK                                     )
 
-      USE PARKIND1, ONLY : JPRB
+      
+#include "temp.h"
+
+USE PARKIND1, ONLY : JPRB
 !     #################################################################
 !!
 !!****  *SHALLOW_MF* - 
@@ -147,26 +150,50 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !                     0.2  Declaration of local variables
 !
-REAL, DIMENSION(KLON,KLEV) ::     &
-          ZTHLM,                                  & !
-          ZRTM,                                   & !
-          ZTHVM,                                  & !
-          ZEMF_O_RHODREF,                         & ! entrainment/detrainment
-          ZTHVDT,ZTHDT,ZRVDT,                     & ! tendencies
-          ZBUO_INTEG                                ! integrated buoyancy
-REAL, DIMENSION(KLON,KLEV) :: ZFRAC_ICE
+                                ! integrated buoyancy
+temp (REAL, ZBUO_INTEG, (KLON,KLEV))
+temp (REAL, ZRVDT, (KLON,KLEV))
+temp (REAL, ZTHDT, (KLON,KLEV))
+temp (REAL, ZTHVDT, (KLON,KLEV))
+temp (REAL, ZEMF_O_RHODREF, (KLON,KLEV))
+temp (REAL, ZTHVM, (KLON,KLEV))
+temp (REAL, ZRTM, (KLON,KLEV))
+temp (REAL, ZTHLM, (KLON,KLEV))
 
-REAL, DIMENSION(KLON,KLEV,KSV) ::  &
-                                          ZSV_UP,&  ! updraft scalar var.
-                                          ZFLXZSVMF ! Flux     
-REAL, DIMENSION(KLON) :: ZDEPTH             ! Deepness of cloud
-REAL, DIMENSION(KLON,KLEV) :: ZFRAC_ICE_UP ! liquid/solid fraction in updraft
-REAL, DIMENSION(KLON,KLEV) :: ZRSAT_UP ! Rsat in updraft
-REAL, DIMENSION(KLON,KLEV) :: ZTHMXEXNM
+
+temp (REAL, ZFRAC_ICE, (KLON,KLEV))
+! Flux     
+temp (REAL, ZFLXZSVMF, (KLON,KLEV,KSV))
+temp (REAL, ZSV_UP, (KLON,KLEV,KSV))
+! Deepness of cloud
+temp (REAL, ZDEPTH, (KLON))
+! liquid/solid fraction in updraft
+temp (REAL, ZFRAC_ICE_UP, (KLON,KLEV))
+! Rsat in updraft
+temp (REAL, ZRSAT_UP, (KLON,KLEV))
+
+temp (REAL, ZTHMXEXNM, (KLON,KLEV))
 
 LOGICAL :: GENTR_DETR  ! flag to recompute entrainment, detrainment and mass flux
 INTEGER :: IKB         ! near ground physical index
 INTEGER :: IKE         ! uppest atmosphere physical index
+
+alloc (ZTHMXEXNM)
+alloc (ZRSAT_UP)
+alloc (ZFRAC_ICE_UP)
+alloc (ZDEPTH)
+alloc (ZFLXZSVMF)
+alloc (ZSV_UP)
+alloc (ZFRAC_ICE)
+alloc (ZBUO_INTEG)
+alloc (ZRVDT)
+alloc (ZTHDT)
+alloc (ZTHVDT)
+alloc (ZEMF_O_RHODREF)
+alloc (ZTHVM)
+alloc (ZRTM)
+alloc (ZTHLM)
+
 !------------------------------------------------------------------------
 
 !!! 1. Initialisation

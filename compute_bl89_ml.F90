@@ -2,7 +2,10 @@
       SUBROUTINE COMPUTE_BL89_ML(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PDZZ2D, &
              PTKEM_DEP,PG_O_THVREF,PVPT,KK,OUPORDN,OFLUX,PLWORK,KSTPT,KSTSZ,PSTACK)
 
-      USE PARKIND1, ONLY : JPRB
+      
+#include "temp.h"
+
+USE PARKIND1, ONLY : JPRB
 !     ###################################################################
 !!
 !!     COMPUTE_BL89_ML routine to:
@@ -65,19 +68,34 @@ INTEGER,                INTENT(IN)   :: KSTPT
 REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !          0.2 Local variable
 !
-REAL, DIMENSION(KLON) :: ZLWORK1,ZLWORK2 ! Temporary mixing length
-REAL, DIMENSION(KLON) :: ZINTE,ZPOTE     ! TKE and potential energy
-                                                 !   between 2 levels
-REAL, DIMENSION(KLON) :: ZVPT_DEP        ! Thetav on departure point
+! Temporary mixing length
+temp (REAL, ZLWORK2, (KLON))
+temp (REAL, ZLWORK1, (KLON))
+! TKE and potential energy
+temp (REAL, ZPOTE, (KLON))
+temp (REAL, ZINTE, (KLON))
+!   between 2 levels
+! Thetav on departure point
+temp (REAL, ZVPT_DEP, (KLON))
 !
-REAL, DIMENSION(KLON,KLEV) :: ZDELTVPT,ZHLVPT                                
-                      !Virtual Potential Temp at Half level and DeltaThv between
+temp (REAL, ZHLVPT, (KLON,KLEV))
+temp (REAL, ZDELTVPT, (KLON,KLEV))
+!Virtual Potential Temp at Half level and DeltaThv between
                       !2 mass levels
 
 INTEGER :: IIJU                 !Internal Domain
 INTEGER :: J1D                  !horizontal loop counter
 INTEGER :: JKK                  !loop counters
 REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
+
+alloc (ZHLVPT)
+alloc (ZDELTVPT)
+alloc (ZVPT_DEP)
+alloc (ZPOTE)
+alloc (ZINTE)
+alloc (ZLWORK2)
+alloc (ZLWORK1)
+
 !-------------------------------------------------------------------------------------
 !
 !*       1.    INITIALISATION

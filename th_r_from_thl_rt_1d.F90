@@ -2,6 +2,9 @@
       SUBROUTINE TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PP,        &
                                   PTHL, PRT, PTH, PRV, PRL, PRI,         &
                                   PRSATW, PRSATI,KSTPT,KSTSZ,PSTACK)
+
+#include "temp.h"
+
 !     #################################################################
 !
 !
@@ -74,13 +77,48 @@ REAL                , INTENT(INOUT):: PSTACK (KSTSZ)
 INTEGER                       :: II ! Loop control
 INTEGER                       :: JITER ! number of iterations
 INTEGER                       :: J
-REAL, DIMENSION(KLON)   :: ZEXN
-REAL, DIMENSION(KLON) :: ZRVSAT,ZCPH,ZRLTEMP,ZCPH2
-REAL, DIMENSION(KLON) :: ZT,ZLVOCPEXN,ZLSOCPEXN
-REAL, DIMENSION(KLON) :: ZDRSATODT,ZDRSATODTW,ZDRSATODTI
-REAL, DIMENSION(KLON) :: ZFOESW, ZFOESI
-REAL, DIMENSION(KLON) :: ZLOGT, Z99PP, Z1PRT
+
+temp (REAL, ZEXN, (KLON))
+
+temp (REAL, ZCPH2  , (KLON))
+temp (REAL, ZRLTEMP, (KLON))
+temp (REAL, ZCPH   , (KLON))
+temp (REAL, ZRVSAT , (KLON))
+
+temp (REAL, ZLSOCPEXN, (KLON))
+temp (REAL, ZLVOCPEXN, (KLON))
+temp (REAL, ZT       , (KLON))
+
+temp (REAL, ZDRSATODTI, (KLON))
+temp (REAL, ZDRSATODTW, (KLON))
+temp (REAL, ZDRSATODT , (KLON))
+
+temp (REAL, ZFOESI, (KLON))
+temp (REAL, ZFOESW, (KLON))
+
+temp (REAL, Z1PRT, (KLON))
+temp (REAL, Z99PP, (KLON))
+temp (REAL, ZLOGT, (KLON))
+
 REAL(KIND=JPRB) :: ZVAR1, ZVAR2, ZTPOW2, ZDELT
+
+
+alloc (Z1PRT)
+alloc (Z99PP)
+alloc (ZLOGT)
+alloc (ZFOESI)
+alloc (ZFOESW)
+alloc (ZDRSATODTI)
+alloc (ZDRSATODTW)
+alloc (ZDRSATODT)
+alloc (ZLSOCPEXN)
+alloc (ZLVOCPEXN)
+alloc (ZT)
+alloc (ZCPH2)
+alloc (ZRLTEMP)
+alloc (ZCPH)
+alloc (ZRVSAT)
+alloc (ZEXN)
 
 !----------------------------------------------------------------------------
 !

@@ -2,7 +2,10 @@
        SUBROUTINE TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,PVARP,KSTPT,KSTSZ,PSTACK             )
 
-       USE PARKIND1, ONLY : JPRB
+       
+#include "temp.h"
+
+USE PARKIND1, ONLY : JPRB
 !      #################################################
 !
 !
@@ -147,14 +150,30 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !*       0.2 declarations of local variables
 !
-REAL, DIMENSION(KLON,KLEV)  :: ZRHODJ_DFDT_O_DZ
-REAL, DIMENSION(KLON,KLEV)  :: ZMZM_RHODJ
-REAL, DIMENSION(KLON,KLEV)  :: ZA, ZB, ZC
-REAL, DIMENSION(KLON,KLEV)  :: ZY ,ZGAM 
-                                         ! RHS of the equation, 3D work array
-REAL, DIMENSION(KLON)                :: ZBET
-                                         ! 2D work array
+
+temp (REAL, ZRHODJ_DFDT_O_DZ, (KLON,KLEV))
+temp (REAL, ZMZM_RHODJ      , (KLON,KLEV))
+
+temp (REAL, ZC, (KLON,KLEV))
+temp (REAL, ZB, (KLON,KLEV))
+temp (REAL, ZA, (KLON,KLEV))
+ 
+temp (REAL, ZGAM, (KLON,KLEV))
+temp (REAL, ZY  , (KLON,KLEV))
+! RHS of the equation, 3D work array
+temp (REAL, ZBET, (KLON))
+! 2D work array
 INTEGER                              :: JK            ! loop counter
+
+alloc (ZBET)
+alloc (ZGAM)
+alloc (ZY)
+alloc (ZC)
+alloc (ZB)
+alloc (ZA)
+alloc (ZMZM_RHODJ)
+alloc (ZRHODJ_DFDT_O_DZ)
+
 !
 ! ---------------------------------------------------------------------------
 !                                              

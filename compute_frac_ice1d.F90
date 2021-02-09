@@ -1,5 +1,8 @@
 !     ######spl
       SUBROUTINE COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PT,KSTPT,KSTSZ,PSTACK)
+
+#include "temp.h"
+
 !    ##########################################################
 !
 !
@@ -54,6 +57,8 @@ REAL, DIMENSION(KLON), INTENT(INOUT) :: PFRAC_ICE  ! Ice fraction (1 for ice onl
 INTEGER           , INTENT(IN)    :: KSTSZ
 INTEGER           , INTENT(IN)    :: KSTPT
 REAL              , INTENT(INOUT) :: PSTACK (KSTSZ)
+
+
 !
 !               0.2  declaration of local variables
 ! 

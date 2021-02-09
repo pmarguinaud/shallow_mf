@@ -14,7 +14,10 @@
                                  PBUO_INTEG,KKLCL,KKETL,KKCTL,    &
                                  PDEPTH,KSTPT,KSTSZ,PSTACK     )
 
-      USE PARKIND1, ONLY : JPRB
+      
+#include "temp.h"
+
+USE PARKIND1, ONLY : JPRB
 !     #################################################################
 !!
 !!****  *COMPUTE_UPDRAFT* - calculates caracteristics of the updraft 
@@ -126,57 +129,111 @@ REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !
 ! Mean environment variables at t-dt at flux point
-REAL, DIMENSION(KLON,KLEV) ::    &
-                        ZTHM_F,ZRVM_F                 ! Theta,rv of
-                                                      ! updraft environnement
-REAL, DIMENSION(KLON,KLEV) ::    &
-                        ZRTM_F, ZTHLM_F, ZTKEM_F,&    ! rt, thetal,TKE,pressure,
-                        ZUM_F,ZVM_F,ZRHO_F,      &    ! density,momentum
-                        ZPRES_F,ZTHVM_F,ZTHVM,   &    ! interpolated at the flux point
-                        ZG_O_THVREF,             &    ! g*ThetaV ref
-                        ZW_UP2,                  &    ! w**2  of the updraft
-                        ZBUO_INTEG_DRY, ZBUO_INTEG_CLD,&! Integrated Buoyancy
-                        ZENTR_CLD,ZDETR_CLD           ! wet entrainment and detrainment
-
-REAL, DIMENSION(KLON,KLEV,KSV) :: &
-                        ZSVM_F ! scalar variables 
-
-                        
-REAL, DIMENSION(KLON,KLEV) ::  &
-                        ZTH_UP,                  &    ! updraft THETA 
-                        ZRC_MIX, ZRI_MIX              ! guess of Rc and Ri for KF mixture
-
-REAL, DIMENSION(KLON,KLEV) ::  ZCOEF  ! diminution coefficient for too high clouds 
-                        
-REAL, DIMENSION(KLON )            ::  ZWTHVSURF  ! Surface w'thetav'
-
+! Theta,rv of
+temp (REAL, ZRVM_F, (KLON,KLEV))
+temp (REAL, ZTHM_F, (KLON,KLEV))
+! updraft environnement
+! wet entrainment and detrainment
+temp (REAL, ZDETR_CLD     , (KLON,KLEV))
+temp (REAL, ZENTR_CLD     , (KLON,KLEV))
+temp (REAL, ZBUO_INTEG_CLD, (KLON,KLEV))
+temp (REAL, ZBUO_INTEG_DRY, (KLON,KLEV))
+temp (REAL, ZW_UP2        , (KLON,KLEV))
+temp (REAL, ZG_O_THVREF   , (KLON,KLEV))
+temp (REAL, ZTHVM         , (KLON,KLEV))
+temp (REAL, ZTHVM_F       , (KLON,KLEV))
+temp (REAL, ZPRES_F       , (KLON,KLEV))
+temp (REAL, ZRHO_F        , (KLON,KLEV))
+temp (REAL, ZVM_F         , (KLON,KLEV))
+temp (REAL, ZUM_F         , (KLON,KLEV))
+temp (REAL, ZTKEM_F       , (KLON,KLEV))
+temp (REAL, ZTHLM_F       , (KLON,KLEV))
+temp (REAL, ZRTM_F        , (KLON,KLEV))
+! scalar variables 
+temp (REAL, ZSVM_F        , (KLON,KLEV,KSV))
+! guess of Rc and Ri for KF mixture
+temp (REAL, ZRI_MIX       , (KLON,KLEV))
+temp (REAL, ZRC_MIX       , (KLON,KLEV))
+temp (REAL, ZTH_UP        , (KLON,KLEV))
+! diminution coefficient for too high clouds 
+temp (REAL, ZCOEF         , (KLON,KLEV))
+! Surface w'thetav'
+temp (REAL, ZWTHVSURF     , (KLON ))
 REAL  :: ZRDORV       ! RD/RV
 REAL  :: ZRVORD       ! RV/RD
 
-
-REAL, DIMENSION(KLON) :: ZMIX1,ZMIX2,ZMIX3_CLD,ZMIX2_CLD
-
-REAL, DIMENSION(KLON) :: ZLUP         ! Upward Mixing length from the ground
-
+temp (REAL, ZMIX2_CLD, (KLON))
+temp (REAL, ZMIX3_CLD, (KLON))
+temp (REAL, ZMIX2    , (KLON))
+temp (REAL, ZMIX1    , (KLON))
+! Upward Mixing length from the ground
+temp (REAL, ZLUP     , (KLON))
 INTEGER  :: ISV                ! Number of scalar variables                               
 INTEGER  :: JK,JI,JSV          ! loop counters
 
-LOGICAL, DIMENSION(KLON) ::  GTEST,GTESTLCL,GTESTETL
-                               ! Test if the ascent continue, if LCL or ETL is reached
+
+temp (LOGICAL, GTESTETL, (KLON))
+temp (LOGICAL, GTESTLCL, (KLON))
+temp (LOGICAL, GTEST   , (KLON))
+! Test if the ascent continue, if LCL or ETL is reached
 LOGICAL                          ::  GLMIX 
                                ! To choose upward or downward mixing length
-LOGICAL, DIMENSION(KLON)              :: GWORK1
-LOGICAL, DIMENSION(KLON,KLEV) :: GWORK2
 
+temp (LOGICAL, GWORK1, (KLON))
+temp (LOGICAL, GWORK2, (KLON,KLEV))
 INTEGER  :: ITEST
 
-REAL, DIMENSION(KLON) :: ZRC_UP, ZRI_UP, ZRV_UP,&
-                                 ZRSATW, ZRSATI,&
-                                 ZPART_DRY
+temp (REAL, ZPART_DRY, (KLON))
+temp (REAL, ZRSATI   , (KLON))
+temp (REAL, ZRSATW   , (KLON))
+temp (REAL, ZRV_UP   , (KLON))
+temp (REAL, ZRI_UP   , (KLON))
+temp (REAL, ZRC_UP   , (KLON))
 
 REAL  :: ZDEPTH_MAX1, ZDEPTH_MAX2 ! control auto-extinction process
 
 REAL  :: ZTMAX,ZRMAX  ! control value
+
+
+alloc (ZPART_DRY)
+alloc (ZRSATI)
+alloc (ZRSATW)
+alloc (ZRV_UP)
+alloc (ZRI_UP)
+alloc (ZRC_UP)
+alloc (GWORK2)
+alloc (GWORK1)
+alloc (GTESTETL)
+alloc (GTESTLCL)
+alloc (GTEST)
+alloc (ZLUP)
+alloc (ZMIX2_CLD)
+alloc (ZMIX3_CLD)
+alloc (ZMIX2)
+alloc (ZMIX1)
+alloc (ZWTHVSURF)
+alloc (ZCOEF)
+alloc (ZRI_MIX)
+alloc (ZRC_MIX)
+alloc (ZTH_UP)
+alloc (ZSVM_F)
+alloc (ZDETR_CLD)
+alloc (ZENTR_CLD)
+alloc (ZBUO_INTEG_CLD)
+alloc (ZBUO_INTEG_DRY)
+alloc (ZW_UP2)
+alloc (ZG_O_THVREF)
+alloc (ZTHVM)
+alloc (ZTHVM_F)
+alloc (ZPRES_F)
+alloc (ZRHO_F)
+alloc (ZVM_F)
+alloc (ZUM_F)
+alloc (ZTKEM_F)
+alloc (ZTHLM_F)
+alloc (ZRTM_F)
+alloc (ZRVM_F)
+alloc (ZTHM_F)
 
 ! Thresholds for the  perturbation of
 ! theta_l and r_t at the first level of the updraft
