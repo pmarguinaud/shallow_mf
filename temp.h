@@ -6,5 +6,5 @@
 #else
 #define temp(t, n, s) t, DIMENSION s :: n
 #define alloc(n)
-#define init_stack()
+#define init_stack() INTEGER ::ISTPT
 #endif
