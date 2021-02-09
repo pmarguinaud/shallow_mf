@@ -7,7 +7,7 @@
                                   PEXNM, PTHLM, PRTM, PTHM, PTHVM, PRM,                 &
                                   PDZZ, PZZ, KKLCL,                                     &
                                   PPABSM, PRHODREF,                                     &
-                                  PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH    )
+                                  PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH,KSTPT,KSTSZ,PSTACK    )
 !     #################################################################
 !!
 !!****  *COMPUTE_MF_CLOUD* - 
@@ -89,6 +89,9 @@ REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PCF_MF            ! and cloud fra
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PSIGMF            ! SQRT(variance) for statistical cloud scheme
 REAL, DIMENSION(KLON),     INTENT(IN)   ::  PDEPTH            ! Deepness of cloud
 
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !                       1.2  Declaration of local variables
 !
@@ -108,7 +111,7 @@ IF (HMF_CLOUD == 'DIRE') THEN
   !Direct cloud scheme
   CALL COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                               &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
-                              &PRC_MF, PRI_MF, PCF_MF)
+                              &PRC_MF, PRI_MF, PCF_MF,KSTPT,KSTSZ,PSTACK)
   !
 ELSE
   WRITE(*,*) ' STOP'

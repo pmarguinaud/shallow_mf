@@ -1,6 +1,6 @@
 !     ######spl
        SUBROUTINE TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
-                                 PDZZ,PRHODJ,PVARP             )
+                                 PDZZ,PRHODJ,PVARP,KSTPT,KSTSZ,PSTACK             )
 
        USE PARKIND1, ONLY : JPRB
 !      #################################################
@@ -140,6 +140,9 @@ REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PDZZ    ! Dz                   at flux
 REAL, DIMENSION(KLON,KLEV), INTENT(IN) :: PRHODJ  ! (dry rho)*J          at mass point
 !
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT):: PVARP   ! variable at t+1      at mass point
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !
 !*       0.2 declarations of local variables
@@ -158,7 +161,7 @@ INTEGER                              :: JK            ! loop counter
 !*      1.  Preliminaries
 !           -------------
 !
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRHODJ,ZMZM_RHODJ)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PRHODJ,ZMZM_RHODJ,KSTPT,KSTSZ,PSTACK)
 ZRHODJ_DFDT_O_DZ(KIDIA:KFDIA,:) = ZMZM_RHODJ(KIDIA:KFDIA,:)*PDFDT(KIDIA:KFDIA,:)/PDZZ(KIDIA:KFDIA,:)
 !
 ZA(KIDIA:KFDIA,:)=0.

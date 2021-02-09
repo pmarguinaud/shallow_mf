@@ -1,6 +1,6 @@
 !     ######spl
       SUBROUTINE COMPUTE_BL89_ML(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PDZZ2D, &
-             PTKEM_DEP,PG_O_THVREF,PVPT,KK,OUPORDN,OFLUX,PLWORK)
+             PTKEM_DEP,PG_O_THVREF,PVPT,KK,OUPORDN,OFLUX,PLWORK,KSTPT,KSTSZ,PSTACK)
 
       USE PARKIND1, ONLY : JPRB
 !     ###################################################################
@@ -60,6 +60,9 @@ LOGICAL,                INTENT(IN)  :: OUPORDN       ! switch to compute upward 
 LOGICAL,                INTENT(IN)  :: OFLUX         ! Computation must be done from flux level
 REAL, DIMENSION(KLON),     INTENT(OUT) :: PLWORK        ! Resulting mixing length
 
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !          0.2 Local variable
 !
 REAL, DIMENSION(KLON) :: ZLWORK1,ZLWORK2 ! Temporary mixing length
@@ -81,13 +84,13 @@ REAL    :: ZTEST,ZTEST0,ZTESTM  !test for vectorization
 !              --------------
 IIJU=KLON
 !
-CALL DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT,ZDELTVPT)
+CALL DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT,ZDELTVPT,KSTPT,KSTSZ,PSTACK)
 ZDELTVPT(KIDIA:KFDIA,KKA)=0.
 WHERE (ABS(ZDELTVPT(KIDIA:KFDIA,:))<XLINF)
   ZDELTVPT(KIDIA:KFDIA,:)=XLINF
 END WHERE
 !
-CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT, ZHLVPT)
+CALL MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PVPT, ZHLVPT,KSTPT,KSTSZ,PSTACK)
 !
 !We consider that gradient between mass levels KKB and KKB+KKL is the same as
 !the gradient between flux level KKB and mass level KKB

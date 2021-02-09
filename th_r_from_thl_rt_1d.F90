@@ -1,7 +1,7 @@
 !     ######spl
       SUBROUTINE TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PP,        &
                                   PTHL, PRT, PTH, PRV, PRL, PRI,         &
-                                  PRSATW, PRSATI)
+                                  PRSATW, PRSATI,KSTPT,KSTSZ,PSTACK)
 !     #################################################################
 !
 !
@@ -64,6 +64,9 @@ REAL, DIMENSION(KLON), INTENT(INOUT):: PRL    ! vapor mixing ratio
 REAL, DIMENSION(KLON), INTENT(INOUT):: PRI    ! vapor mixing ratio
 REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATW ! estimated mixing ration at saturation over water
 REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATI ! estimated mixing ration at saturation over ice
+INTEGER             , INTENT(IN) :: KSTSZ
+INTEGER             , INTENT(IN) :: KSTPT
+REAL                , INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !-------------------------------------------------------------------------------
 !
@@ -121,7 +124,7 @@ DO II=1,JITER
       PFRAC_ICE(J) = PRI(J) / (PRL(J)+PRI(J))
     ENDIF
   ENDDO
-  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,ZT)
+  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,ZT,KSTPT,KSTSZ,PSTACK)
 
   !Computation of Rvsat and dRsat/dT
   !In this version QSAT, QSATI, DQSAT and DQASATI functions are not used

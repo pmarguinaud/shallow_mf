@@ -18,7 +18,7 @@ INTERFACE
                 PTHL_UP,PRT_UP,PRV_UP,PRC_UP,PRI_UP,                  &
                 PU_UP, PV_UP, PTHV_UP, PW_UP,                         &
                 PFRAC_UP,PEMF,PDETR,PENTR,                            &
-                KKLCL,KKETL,KKCTL                                     )
+                KKLCL,KKETL,KKCTL,KSTPT,KSTSZ,PSTACK                                     )
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA
@@ -87,6 +87,9 @@ REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PEMF
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PDETR     
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PENTR     
 INTEGER,DIMENSION(KLON), INTENT(OUT) :: KKLCL,KKETL,KKCTL 
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE SHALLOW_MF
 

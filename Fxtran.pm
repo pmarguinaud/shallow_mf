@@ -1158,12 +1158,10 @@ sub fxtran
       use File::stat;
       return unless (-f $f);
 
-      if ((! -f "$f.xml") || (stat ($f)->mtime > stat ("$f.xml")->mtime))
-        {
-          my @cmd = (qw (fxtran -construct-tag -no-include), @opts, $f);
-          system (@cmd)
-            && die ("`@cmd' failed\n");
-        }
+      my @cmd = (qw (fxtran -construct-tag -no-include), @opts, $f);
+      system (@cmd)
+        && die ("`@cmd' failed\n");
+
       my $doc = 'XML::LibXML'->load_xml (location => $f . '.xml');
       return $doc;
     }

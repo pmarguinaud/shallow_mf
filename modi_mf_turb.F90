@@ -11,7 +11,7 @@ INTERFACE
                 PTHLDT,PRTDT,PUDT,PVDT,PSVDT,                         &
                 PEMF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP,PSV_UP,       &
                 PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,      &
-                PFLXZSVMF                                             )
+                PFLXZSVMF,KSTPT,KSTSZ,PSTACK                                             )
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA
@@ -61,6 +61,9 @@ REAL, DIMENSION(KLON,KLEV,KSV), INTENT(IN) ::  PSV_UP
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  ::  PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF
 
 REAL, DIMENSION(KLON,KLEV,KSV), INTENT(OUT)::  PFLXZSVMF
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE MF_TURB    
 

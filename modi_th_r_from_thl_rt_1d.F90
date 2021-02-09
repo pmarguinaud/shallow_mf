@@ -4,7 +4,7 @@ INTERFACE
 
       SUBROUTINE TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PP,        &
                                   PTHL, PRT, PTH, PRV, PRL, PRI,         &
-                                  PRSATW, PRSATI)
+                                  PRSATW, PRSATI,KSTPT,KSTSZ,PSTACK)
 
 INTEGER             , INTENT(IN) :: KLON
 INTEGER             , INTENT(IN) :: KIDIA
@@ -20,6 +20,9 @@ REAL, DIMENSION(KLON), INTENT(INOUT):: PRL
 REAL, DIMENSION(KLON), INTENT(INOUT):: PRI    
 REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATW 
 REAL, DIMENSION(KLON), INTENT(OUT)  :: PRSATI 
+INTEGER             , INTENT(IN) :: KSTSZ
+INTEGER             , INTENT(IN) :: KSTPT
+REAL                , INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE TH_R_FROM_THL_RT_1D
 

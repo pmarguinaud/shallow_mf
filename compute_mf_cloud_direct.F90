@@ -1,7 +1,7 @@
 !     ######spl
       SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                                         &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
-                                        &PRC_MF, PRI_MF, PCF_MF)
+                                        &PRC_MF, PRI_MF, PCF_MF,KSTPT,KSTSZ,PSTACK)
 !     #################################################################
 !!
 !!****  *COMPUTE_MF_CLOUD_DIRECT* -
@@ -63,6 +63,9 @@ REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   :: PFRAC_UP       ! Updraft Fraction
 REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   :: PRC_UP,PRI_UP  ! updraft characteritics
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  :: PRC_MF, PRI_MF ! cloud content
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  :: PCF_MF         ! and cloud fraction for MF scheme
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !*                    0.1  Declaration of local variables
 !

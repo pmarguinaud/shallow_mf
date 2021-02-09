@@ -15,7 +15,7 @@ INTERFACE
                                  PFRAC_UP,PFRAC_ICE_UP,PRSAT_UP,  &
                                  PEMF,PDETR,PENTR,                &
                                  PBUO_INTEG,KKLCL,KKETL,KKCTL,    &
-                                 PDEPTH     )
+                                 PDEPTH,KSTPT,KSTSZ,PSTACK     )
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA
@@ -66,6 +66,9 @@ REAL, DIMENSION(KLON,KLEV),   INTENT(INOUT)::  PEMF,PDETR,PENTR
 REAL, DIMENSION(KLON,KLEV),   INTENT(INOUT) :: PBUO_INTEG       
 INTEGER, DIMENSION(KLON),  INTENT(INOUT) :: KKLCL,KKETL,KKCTL
 REAL, DIMENSION(KLON),     INTENT(OUT)   :: PDEPTH           
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE COMPUTE_UPDRAFT
 

@@ -10,7 +10,7 @@ INTERFACE
                                   PEXNM, PTHLM, PRTM, PTHM, PTHVM, PRM,                 &
                                   PDZZ, PZZ, KKLCL,                                     &
                                   PPABSM, PRHODREF,                                     &
-                                  PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH    )
+                                  PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH,KSTPT,KSTSZ,PSTACK    )
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA
@@ -43,6 +43,10 @@ REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PRC_MF, PRI_MF
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PCF_MF            
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  ::  PSIGMF            
 REAL, DIMENSION(KLON),     INTENT(IN)   ::  PDEPTH            
+
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE COMPUTE_MF_CLOUD
 

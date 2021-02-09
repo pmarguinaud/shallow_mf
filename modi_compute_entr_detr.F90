@@ -12,7 +12,7 @@ INTERFACE
                             PRSAT_UP,PRC_MIX,PRI_MIX,      &
                             PENTR,PDETR,PENTR_CLD,PDETR_CLD,&
                             PBUO_INTEG_DRY,PBUO_INTEG_CLD,&
-                            PPART_DRY)
+                            PPART_DRY,KSTPT,KSTSZ,PSTACK)
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA
@@ -51,6 +51,9 @@ REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PENTR_CLD
 REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PDETR_CLD 
 REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PBUO_INTEG_DRY, PBUO_INTEG_CLD
 REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PPART_DRY 
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE COMPUTE_ENTR_DETR
 

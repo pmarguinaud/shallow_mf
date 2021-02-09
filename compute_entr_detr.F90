@@ -9,7 +9,7 @@
                             PRSAT_UP,PRC_MIX,PRI_MIX,      &
                             PENTR,PDETR,PENTR_CLD,PDETR_CLD,&
                             PBUO_INTEG_DRY,PBUO_INTEG_CLD,&
-                            PPART_DRY)
+                            PPART_DRY,KSTPT,KSTSZ,PSTACK)
 
           USE PARKIND1, ONLY : JPRB
 !         #############################################################
@@ -112,6 +112,9 @@ REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PENTR_CLD ! Mass flux entrainment of
 REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PDETR_CLD ! Mass flux detrainment of the updraft in cloudy part
 REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PBUO_INTEG_DRY, PBUO_INTEG_CLD! Integral Buoyancy
 REAL, DIMENSION(KLON),   INTENT(OUT)    ::  PPART_DRY ! ratio of dry part at the transition level
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !
 !                       1.2  Declaration of local variables
@@ -178,21 +181,26 @@ INTEGER :: JI
       !Temperature at flux level KK
       ZT(KIDIA:KFDIA)=PTH_UP(KIDIA:KFDIA)*(PPRE_MINUS_HALF(KIDIA:KFDIA)/XP00) ** (XRD/XCPD)
       !Saturating vapor pressure at flux level KK
-      ZFOESW(KIDIA:KFDIA) = MIN(EXP( XALPW - XBETAW/ZT(KIDIA:KFDIA) - XGAMW*LOG(ZT(KIDIA:KFDIA))  ), 0.99*PPRE_MINUS_HALF(KIDIA:KFDIA))
-      ZFOESI(KIDIA:KFDIA) = MIN(EXP( XALPI - XBETAI/ZT(KIDIA:KFDIA) - XGAMI*LOG(ZT(KIDIA:KFDIA))  ), 0.99*PPRE_MINUS_HALF(KIDIA:KFDIA))
+      ZFOESW(KIDIA:KFDIA) = MIN(EXP( XALPW - XBETAW/ZT(KIDIA:KFDIA) - XGAMW*LOG(ZT(KIDIA:KFDIA))  ), &
+                                0.99*PPRE_MINUS_HALF(KIDIA:KFDIA))
+      ZFOESI(KIDIA:KFDIA) = MIN(EXP( XALPI - XBETAI/ZT(KIDIA:KFDIA) - XGAMI*LOG(ZT(KIDIA:KFDIA))  ), &
+                                0.99*PPRE_MINUS_HALF(KIDIA:KFDIA))
       !Computation of d.Rsat / dP (partial derivations with respect to P and T
       !and use of T=Theta*(P/P0)**(R/Cp) to transform dT into dP with theta_up
       !constant at the vertical)
-      ZDRSATODP(KIDIA:KFDIA)=(XBETAW/ZT(KIDIA:KFDIA)-XGAMW)*(1-ZFRAC_ICE(KIDIA:KFDIA))+(XBETAI/ZT(KIDIA:KFDIA)-XGAMI)*ZFRAC_ICE(KIDIA:KFDIA)
+      ZDRSATODP(KIDIA:KFDIA)=(XBETAW/ZT(KIDIA:KFDIA)-XGAMW)*(1-ZFRAC_ICE(KIDIA:KFDIA))&
+                            +(XBETAI/ZT(KIDIA:KFDIA)-XGAMI)*ZFRAC_ICE(KIDIA:KFDIA)
       ZDRSATODP(KIDIA:KFDIA)=((XRD/XCPD)*ZDRSATODP(KIDIA:KFDIA)-1.)*PRSAT_UP(KIDIA:KFDIA)/ &
-                  &(PPRE_MINUS_HALF(KIDIA:KFDIA)-(ZFOESW(KIDIA:KFDIA)*(1-ZFRAC_ICE(KIDIA:KFDIA)) + ZFOESI(KIDIA:KFDIA)*ZFRAC_ICE(KIDIA:KFDIA)))
+                  &(PPRE_MINUS_HALF(KIDIA:KFDIA)-(ZFOESW(KIDIA:KFDIA)*(1-ZFRAC_ICE(KIDIA:KFDIA)) &
+                            + ZFOESI(KIDIA:KFDIA)*ZFRAC_ICE(KIDIA:KFDIA)))
       !Use of d.Rsat / dP and pressure at flux level KK to find pressure (ZPRE)
       !where Rsat is equal to PRT_UP
       ZPRE(KIDIA:KFDIA)=PPRE_MINUS_HALF(KIDIA:KFDIA)+(PRT_UP(KIDIA:KFDIA)-PRSAT_UP(KIDIA:KFDIA))/ZDRSATODP(KIDIA:KFDIA)
       !Fraction of dry part (computed with pressure and used with heights, no
       !impact found when using log function here and for pressure on flux levels
       !computation)
-      PPART_DRY(KIDIA:KFDIA)=MAX(0., MIN(1., (PPRE_MINUS_HALF(KIDIA:KFDIA)-ZPRE(KIDIA:KFDIA))/(PPRE_MINUS_HALF(KIDIA:KFDIA)-PPRE_PLUS_HALF(KIDIA:KFDIA))))
+      PPART_DRY(KIDIA:KFDIA)=MAX(0., MIN(1., (PPRE_MINUS_HALF(KIDIA:KFDIA)-ZPRE(KIDIA:KFDIA))&
+                                /(PPRE_MINUS_HALF(KIDIA:KFDIA)-PPRE_PLUS_HALF(KIDIA:KFDIA))))
       !Height above flux level KK of the cloudy part
       ZDZ_STOP(KIDIA:KFDIA) = (PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))*PPART_DRY(KIDIA:KFDIA)
     ENDWHERE
@@ -201,13 +209,15 @@ INTEGER :: JI
 !               1.5 Gradient and flux values of thetav
   IF(KK/=KKB)THEN
     ZCOEFF_MINUS_HALF(KIDIA:KFDIA)=((PTHVM(KIDIA:KFDIA,KK)-PTHVM(KIDIA:KFDIA,KK-KKL))/PDZZ(KIDIA:KFDIA,KK))
-    ZTHV_MINUS_HALF(KIDIA:KFDIA) = PTHVM(KIDIA:KFDIA,KK) - ZCOEFF_MINUS_HALF(KIDIA:KFDIA)*0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))
+    ZTHV_MINUS_HALF(KIDIA:KFDIA) = PTHVM(KIDIA:KFDIA,KK) - ZCOEFF_MINUS_HALF(KIDIA:KFDIA)&
+                                   *0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))
   ELSE
     ZCOEFF_MINUS_HALF(KIDIA:KFDIA)=0.
     ZTHV_MINUS_HALF(KIDIA:KFDIA) = PTHVM(KIDIA:KFDIA,KK)
   ENDIF
   ZCOEFF_PLUS_HALF(KIDIA:KFDIA)  = ((PTHVM(KIDIA:KFDIA,KK+KKL)-PTHVM(KIDIA:KFDIA,KK))/PDZZ(KIDIA:KFDIA,KK+KKL))
-  ZTHV_PLUS_HALF(KIDIA:KFDIA)  = PTHVM(KIDIA:KFDIA,KK) + ZCOEFF_PLUS_HALF(KIDIA:KFDIA)*0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))
+  ZTHV_PLUS_HALF(KIDIA:KFDIA)  = PTHVM(KIDIA:KFDIA,KK) + ZCOEFF_PLUS_HALF(KIDIA:KFDIA)&
+                                   *0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))
 
 !               2  Dry part computation:
 !                  Integral buoyancy and computation of PENTR and PDETR for dry part
@@ -265,14 +275,15 @@ INTEGER :: JI
   CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,ZFRAC_ICE,&
                PPRE_PLUS_HALF,PTHL_UP,PRT_UP,&
                ZTHMIX,ZRVMIX,ZRCMIX,ZRIMIX,&
-               ZRSATW, ZRSATI)
+               ZRSATW, ZRSATI,KSTPT,KSTSZ,PSTACK)
   ZTHV_UP_F2(KIDIA:KFDIA) = ZTHMIX(KIDIA:KFDIA)*(1.+ZRVORD*ZRVMIX(KIDIA:KFDIA))/(1.+PRT_UP(KIDIA:KFDIA))
 
   ! Integral buoyancy for cloudy part
   WHERE(OTEST(KIDIA:KFDIA) .AND. PPART_DRY(KIDIA:KFDIA)<1.)
     !Gradient of Theta V updraft over the cloudy part, assuming that thetaV updraft don't change
     !between flux level KK and bottom of cloudy part
-    ZCOTHVU(KIDIA:KFDIA)=(ZTHV_UP_F2(KIDIA:KFDIA)-PTHV_UP(KIDIA:KFDIA))/((PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))*(1-PPART_DRY(KIDIA:KFDIA)))
+    ZCOTHVU(KIDIA:KFDIA)=(ZTHV_UP_F2(KIDIA:KFDIA)-PTHV_UP(KIDIA:KFDIA))/((PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))&
+                        *(1-PPART_DRY(KIDIA:KFDIA)))
 
     !Computation in two parts to use change of gradient of theta v of environment
     !Between bottom of cloudy part (if under mass level) and mass level KK
@@ -282,10 +293,12 @@ INTEGER :: JI
                 - (PTHVM(KIDIA:KFDIA,KK)-ZDZ(KIDIA:KFDIA)*ZCOEFF_MINUS_HALF(KIDIA:KFDIA)) + PTHV_UP(KIDIA:KFDIA) )
 
     !Between max(mass level, bottom of cloudy part) and flux level KK+KKL
-    ZDZ(KIDIA:KFDIA)=(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))-MAX(ZDZ_STOP(KIDIA:KFDIA),0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK)))
+    ZDZ(KIDIA:KFDIA)=(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))&
+                     -MAX(ZDZ_STOP(KIDIA:KFDIA),0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK)))
     PBUO_INTEG_CLD(KIDIA:KFDIA) = PBUO_INTEG_CLD(KIDIA:KFDIA)+ZG_O_THVREF(KIDIA:KFDIA)*ZDZ(KIDIA:KFDIA)*&
                         (0.5*( ZCOTHVU(KIDIA:KFDIA) - ZCOEFF_PLUS_HALF(KIDIA:KFDIA))*ZDZ(KIDIA:KFDIA)&
-                - (PTHVM(KIDIA:KFDIA,KK)+(0.5*((PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK)))-ZDZ(KIDIA:KFDIA))*ZCOEFF_PLUS_HALF(KIDIA:KFDIA)) +&
+                - (PTHVM(KIDIA:KFDIA,KK)+(0.5*((PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK)))-&
+                   ZDZ(KIDIA:KFDIA))*ZCOEFF_PLUS_HALF(KIDIA:KFDIA)) +&
                 PTHV_UP(KIDIA:KFDIA) )
 
   ELSEWHERE
@@ -314,10 +327,12 @@ INTEGER :: JI
     ZDZ(KIDIA:KFDIA)=ZDZ_STOP(KIDIA:KFDIA)-0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))
     ZTHV(KIDIA:KFDIA)= PTHVM(KIDIA:KFDIA,KK)+ZCOEFF_PLUS_HALF(KIDIA:KFDIA)*ZDZ(KIDIA:KFDIA)
     ZMIXTHL(KIDIA:KFDIA) = ZKIC_INIT * &
-                 (PTHLM(KIDIA:KFDIA,KK)+ZDZ(KIDIA:KFDIA)*(PTHLM(KIDIA:KFDIA,KK+KKL)-PTHLM(KIDIA:KFDIA,KK))/PDZZ(KIDIA:KFDIA,KK+KKL)) + &
+                 (PTHLM(KIDIA:KFDIA,KK)+ZDZ(KIDIA:KFDIA)*(PTHLM(KIDIA:KFDIA,KK+KKL)-PTHLM(KIDIA:KFDIA,KK))&
+                 /PDZZ(KIDIA:KFDIA,KK+KKL)) + &
                  (1. - ZKIC_INIT)*PTHL_UP(KIDIA:KFDIA)
     ZMIXRT(KIDIA:KFDIA)  = ZKIC_INIT * &
-                 (PRTM(KIDIA:KFDIA,KK)+ZDZ(KIDIA:KFDIA)*(PRTM(KIDIA:KFDIA,KK+KKL)-PRTM(KIDIA:KFDIA,KK))/PDZZ(KIDIA:KFDIA,KK+KKL)) +   &
+                 (PRTM(KIDIA:KFDIA,KK)+ZDZ(KIDIA:KFDIA)*(PRTM(KIDIA:KFDIA,KK+KKL)-PRTM(KIDIA:KFDIA,KK))&
+                 /PDZZ(KIDIA:KFDIA,KK+KKL)) +   &
                  (1. - ZKIC_INIT)*PRT_UP(KIDIA:KFDIA)
   ELSEWHERE(OTEST(KIDIA:KFDIA))
     ZDZ(KIDIA:KFDIA)=0.5*(PZZ(KIDIA:KFDIA,KK+KKL)-PZZ(KIDIA:KFDIA,KK))-ZDZ_STOP(KIDIA:KFDIA)
@@ -332,7 +347,7 @@ INTEGER :: JI
   CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,ZFRAC_ICE,&
                ZPRE,ZMIXTHL,ZMIXRT,&
                ZTHMIX,ZRVMIX,PRC_MIX,PRI_MIX,&
-               ZRSATW, ZRSATI)
+               ZRSATW, ZRSATI,KSTPT,KSTSZ,PSTACK)
   ZTHVMIX(KIDIA:KFDIA) = ZTHMIX(KIDIA:KFDIA)*(1.+ZRVORD*ZRVMIX(KIDIA:KFDIA))/(1.+ZMIXRT(KIDIA:KFDIA))
 
   !  Compute cons then non cons. var. of mixture at the flux level KK+KKL  with initial ZKIC
@@ -341,7 +356,7 @@ INTEGER :: JI
   CALL TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,ZFRAC_ICE,&
                PPRE_PLUS_HALF,ZMIXTHL,ZMIXRT,&
                ZTHMIX,ZRVMIX,PRC_MIX,PRI_MIX,&
-               ZRSATW, ZRSATI)
+               ZRSATW, ZRSATI,KSTPT,KSTSZ,PSTACK)
   ZTHVMIX_F2(KIDIA:KFDIA) = ZTHMIX(KIDIA:KFDIA)*(1.+ZRVORD*ZRVMIX(KIDIA:KFDIA))/(1.+ZMIXRT(KIDIA:KFDIA))
 
   !Computation of mean ZKIC over the cloudy part

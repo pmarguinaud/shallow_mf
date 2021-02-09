@@ -4,7 +4,7 @@ INTERFACE
 
       SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                                         &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
-                                        &PRC_MF, PRI_MF, PCF_MF)
+                                        &PRC_MF, PRI_MF, PCF_MF,KSTPT,KSTSZ,PSTACK)
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA
@@ -18,6 +18,9 @@ REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   :: PFRAC_UP
 REAL, DIMENSION(KLON,KLEV),   INTENT(IN)   :: PRC_UP,PRI_UP  
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  :: PRC_MF, PRI_MF 
 REAL, DIMENSION(KLON,KLEV),   INTENT(OUT)  :: PCF_MF         
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
 END SUBROUTINE COMPUTE_MF_CLOUD_DIRECT
 

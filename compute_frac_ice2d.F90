@@ -1,5 +1,5 @@
 !     ######spl
-      SUBROUTINE COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,PFRAC_ICE,PT)
+      SUBROUTINE COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,PFRAC_ICE,PT,KSTPT,KSTSZ,PSTACK)
 !    ##########################################################
 !
 !
@@ -50,6 +50,9 @@ INTEGER             , INTENT(IN)    :: KLEV
 CHARACTER*1         , INTENT(IN)    :: HFRAC_ICE ! scheme to use
 REAL, DIMENSION(KLON,KLEV), INTENT(IN)    :: PT        ! Temperature
 REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) :: PFRAC_ICE ! Ice fraction (1 for ice only, 0 for liquid only)
+INTEGER             , INTENT(IN)    :: KSTSZ
+INTEGER             , INTENT(IN)    :: KSTPT
+REAL                , INTENT(INOUT) :: PSTACK (KSTSZ)
 !-------------------------------------------------------------------------
 !
 !       0.2  declaration of local variables
@@ -66,7 +69,7 @@ INTEGER :: JK
 !         ----------------
 !
 DO JK=1, KLEV
-  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK))
+  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK),KSTPT,KSTSZ,PSTACK)
 ENDDO
 
 

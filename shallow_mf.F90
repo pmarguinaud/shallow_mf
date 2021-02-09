@@ -15,7 +15,7 @@
                 PTHL_UP,PRT_UP,PRV_UP,PRC_UP,PRI_UP,                  &
                 PU_UP, PV_UP, PTHV_UP, PW_UP,                         &
                 PFRAC_UP,PEMF,PDETR,PENTR,                            &
-                KKLCL,KKETL,KKCTL                                     )
+                KKLCL,KKETL,KKCTL,KSTPT,KSTSZ,PSTACK                                     )
 
       USE PARKIND1, ONLY : JPRB
 !     #################################################################
@@ -141,6 +141,9 @@ REAL, DIMENSION(KLON,KLEV), INTENT(INOUT) ::  PEMF      ! updraft mass flux
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PDETR     ! updraft detrainment
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT) ::  PENTR     ! updraft entrainment
 INTEGER,DIMENSION(KLON), INTENT(OUT) :: KKLCL,KKETL,KKCTL ! level of LCL,ETL and CTL
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !                     0.2  Declaration of local variables
 !
@@ -189,12 +192,12 @@ ENDWHERE
 
 ZTHMXEXNM(KIDIA:KFDIA,:) = PTHM(KIDIA:KFDIA,:) * PEXNM(KIDIA:KFDIA,:)
 
-CALL COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM)
+CALL COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,ZFRAC_ICE,ZTHMXEXNM,KSTPT,KSTSZ,PSTACK)
 
 ! Conservative variables at t-dt
 CALL THL_RT_FROM_TH_R_MF(KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,    &
                          PTHM, PRM, PEXNM, &
-                         ZTHLM, ZRTM       )
+                         ZTHLM, ZRTM,KSTPT,KSTSZ,PSTACK       )
 
 ! Virtual potential temperature at t-dt
 ZTHVM(KIDIA:KFDIA,:) = PTHM(KIDIA:KFDIA,:)*((1.+XRV / XRD *PRM(KIDIA:KFDIA,:,1))/(1.+ZRTM(KIDIA:KFDIA,:))) 
@@ -214,7 +217,7 @@ IF (HMF_UPDRAFT == 'EDKF') THEN
                        PTHL_UP,PRT_UP,PRV_UP,PRC_UP,PRI_UP,      &
                        PTHV_UP, PW_UP, PU_UP, PV_UP, ZSV_UP,     &
                        PFRAC_UP,ZFRAC_ICE_UP,ZRSAT_UP,PEMF,PDETR,&
-                       PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH )
+                       PENTR,ZBUO_INTEG,KKLCL,KKETL,KKCTL,ZDEPTH,KSTPT,KSTSZ,PSTACK )
 ELSE
   WRITE(*,*) ' STOP'                                                     
   WRITE(*,*) ' NO UPDRAFT MODEL FOR EDKF : CMF_UPDRAFT =',HMF_UPDRAFT 
@@ -234,7 +237,7 @@ CALL COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,IKB,IKE,KKU,KKL,KRR,KRRL,KRRI,&
                       PTHM, ZTHVM, PRM,                 &
                       PDZZ,PZZ,KKLCL,                   &
                       PPABSM,PRHODREF,                  &
-                      PRC_MF,PRI_MF,PCF_MF,PSIGMF,ZDEPTH)
+                      PRC_MF,PRI_MF,PCF_MF,PSIGMF,ZDEPTH,KSTPT,KSTSZ,PSTACK)
 
 
 !!! 3. Compute fluxes of conservative variables and their divergence = tendency
@@ -252,7 +255,7 @@ CALL MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,         
              PDTHLDT_MF,PDRTDT_MF,PDUDT_MF,PDVDT_MF,PDSVDT_MF,        &
              ZEMF_O_RHODREF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP,ZSV_UP,&
              PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,         &
-             ZFLXZSVMF                                                )
+             ZFLXZSVMF,KSTPT,KSTSZ,PSTACK                                                )
 ELSE
   CALL ABORT
 ENDIF

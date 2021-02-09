@@ -1,7 +1,7 @@
 !     ######spl
       SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
-                                      PTHL, PRT                      )
+                                      PTHL, PRT,KSTPT,KSTSZ,PSTACK                      )
 !     #################################################################
 !
 !!
@@ -63,6 +63,9 @@ REAL, DIMENSION(KLON,KLEV), INTENT(IN)   :: PEXN    ! exner function
 
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PTHL     ! th_l
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT)  :: PRT      ! total non precip. water
+INTEGER,                INTENT(IN)   :: KSTSZ
+INTEGER,                INTENT(IN)   :: KSTPT
+REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 !
 !-------------------------------------------------------------------------------
 !

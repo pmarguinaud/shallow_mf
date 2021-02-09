@@ -1,5 +1,5 @@
 !     ###############################
-      SUBROUTINE MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PMZM)
+      SUBROUTINE MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PMZM,KSTPT,KSTSZ,PSTACK)
 !     ###############################
 !
 !!****  *MZM* -  SHUMAN_MF operator : mean operator in z direction for a
@@ -58,6 +58,9 @@ INTEGER,              INTENT(IN)       :: KKA, KKU ! near ground and uppest atmo
 INTEGER,              INTENT(IN)       :: KKL    ! +1 if grid goes from ground to atmosphere top, -1 otherwise
 REAL, DIMENSION(KLON,KLEV), INTENT(IN)       :: PA     ! variable at mass localization
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT)      :: PMZM   ! result at flux localization
+INTEGER,              INTENT(IN)       :: KSTSZ
+INTEGER,              INTENT(IN)       :: KSTPT
+REAL   ,              INTENT(INOUT)    :: PSTACK (KSTSZ)
 !
 !*       0.2   Declarations of local variables
 !              -------------------------------
@@ -80,7 +83,7 @@ PMZM(KIDIA:KFDIA,KKU) = 0.5*( PA(KIDIA:KFDIA,KKU)+PA(KIDIA:KFDIA,KKU-KKL) )
 !
 END SUBROUTINE MZM_MF
 !     ###############################
-      SUBROUTINE DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PDZM)
+      SUBROUTINE DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PDZM,KSTPT,KSTSZ,PSTACK)
 !     ###############################
 !
 !!****  *DZM* -  SHUMAN_MF operator : finite difference operator in z direction
@@ -140,7 +143,10 @@ INTEGER,              INTENT(IN)       :: KKL    ! +1 if grid goes from ground t
 REAL, DIMENSION(KLON,KLEV), INTENT(IN)       :: PA     ! variable at mass
                                                  ! localization
 REAL, DIMENSION(KLON,KLEV), INTENT(OUT)      :: PDZM   ! result at flux
-                                                 ! side
+                                                 INTEGER,              INTENT(IN)       :: KSTSZ
+INTEGER,              INTENT(IN)       :: KSTPT
+REAL   ,              INTENT(INOUT)    :: PSTACK (KSTSZ)
+! side
 !
 !*       0.2   Declarations of local variables
 !              -------------------------------
