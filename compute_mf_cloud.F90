@@ -125,8 +125,10 @@ IF (HMF_CLOUD == 'DIRE') THEN
   !
 ELSE
   WRITE(*,*) ' STOP'
-  WRITE(*,*) ' Shallow convection cloud scheme not valid : HMF_CLOUD =',TRIM(HMF_CLOUD)
+  WRITE(*,*) ' Shallow convection cloud scheme not valid : HMF_CLOUD =',HMF_CLOUD
+#ifndef USE_ACC
   CALL ABORT
+#endif
   STOP
 ENDIF
 

@@ -222,14 +222,20 @@ ALLOCATE (PSTACK_ALL (ISTSZ, ICOUNT))
 
 PDUDT_MF_ALL = 9999.
 
-!$OMP PARALLEL DO PRIVATE (IBL, JIDIA, JFDIA, JLON)
+#ifdef USE_ACC
+!$acc parallel loop gang vector private (IBL, JLON, JIDIA, JFDIA) collapse (2)
 DO IBL = 1, ICOUNT
-
   DO JLON = 1, KLON
-
     JIDIA = JLON
     JFDIA = JLON
-    
+#else
+!$OMP PARALLEL DO PRIVATE (IBL, JIDIA, JFDIA, JLON)
+DO IBL = 1, ICOUNT
+    JIDIA = 1
+    JFDIA = KLON
+#endif    
+
+
     CALL SHALLOW_MF(KLON,JIDIA,JFDIA,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
                     HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
                     ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
@@ -250,10 +256,18 @@ DO IBL = 1, ICOUNT
                     PDETR_ALL (:,:,IBL), PENTR_ALL (:,:,IBL), KKLCL_ALL (:,IBL),               &
                     KKETL_ALL (:,IBL), KKCTL_ALL (:,IBL), ISTPT_ALL, ISTSZ_ALL, PSTACK_ALL (:,IBL))
     
+#ifdef USE_ACC
   ENDDO
-  
+ENDDO
+!$acc end parallel loop 
+#else
 ENDDO
 !$OMP END PARALLEL DO
+#endif
+
+
+
+
 
 IF (LLDIFF .AND. KLON0 == KLON1) THEN
 

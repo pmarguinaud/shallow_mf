@@ -196,7 +196,9 @@ IF (OUPORDN.EQV..FALSE.) THEN
  IF(OFLUX) THEN
    WRITE(*,*) ' STOP'                                                     
    WRITE(*,*) ' OFLUX OPTION NOT CODED FOR DOWNWARD MIXING LENGTH' 
+#ifndef USE_ACC
    CALL ABORT
+#endif
    STOP
  ENDIF
  ZINTE(KIDIA:KFDIA)=PTKEM_DEP(KIDIA:KFDIA)

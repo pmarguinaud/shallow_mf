@@ -253,7 +253,9 @@ IF (HMF_UPDRAFT == 'EDKF') THEN
 ELSE
   WRITE(*,*) ' STOP'                                                     
   WRITE(*,*) ' NO UPDRAFT MODEL FOR EDKF : CMF_UPDRAFT =',HMF_UPDRAFT 
+#ifndef USE_ACC
   CALL ABORT
+#endif
   STOP
 ENDIF
 
@@ -289,7 +291,10 @@ CALL MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA, IKB, IKE, KKU, KKL, OMIXUV,         
              PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,         &
              ZFLXZSVMF,ISTPT,KSTSZ,PSTACK                                                )
 ELSE
+#ifndef USE_ACC
   CALL ABORT
+#endif
+  STOP
 ENDIF
 
 ! security in the case HMF_UPDRAFT = 'DUAL'
