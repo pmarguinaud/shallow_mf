@@ -1,4 +1,7 @@
 !     ######spl
+#ifdef USE_ACC
+!$acc routine (MF_TURB)
+#endif
       SUBROUTINE MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &

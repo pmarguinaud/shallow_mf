@@ -1,4 +1,7 @@
 !     ######spl
+#ifdef USE_ACC
+!$acc routine (THL_RT_FROM_TH_R_MF)
+#endif
       SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &
                                       PTHL, PRT,KSTPT,KSTSZ,PSTACK                      )

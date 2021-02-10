@@ -2,6 +2,9 @@ MODULE MODI_COMPUTE_MF_CLOUD
 
 INTERFACE
 
+#ifdef USE_ACC
+!$acc routine (COMPUTE_MF_CLOUD)
+#endif
       SUBROUTINE COMPUTE_MF_CLOUD(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,KRR,KRRL,KRRI,HMF_CLOUD,&
                                   PFRAC_ICE,                                            &
                                   PRC_UP,PRI_UP,PEMF,                                   &
@@ -11,6 +14,8 @@ INTERFACE
                                   PDZZ, PZZ, KKLCL,                                     &
                                   PPABSM, PRHODREF,                                     &
                                   PRC_MF, PRI_MF, PCF_MF, PSIGMF, PDEPTH,KSTPT,KSTSZ,PSTACK    )
+
+#include "temp.h"
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA

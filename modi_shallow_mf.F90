@@ -2,6 +2,9 @@ MODULE MODI_SHALLOW_MF
 
 INTERFACE
 
+#ifdef USE_ACC
+!$acc routine (SHALLOW_MF)
+#endif
       SUBROUTINE SHALLOW_MF(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
                 HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
@@ -19,6 +22,9 @@ INTERFACE
                 PU_UP, PV_UP, PTHV_UP, PW_UP,                         &
                 PFRAC_UP,PEMF,PDETR,PENTR,                            &
                 KKLCL,KKETL,KKCTL,KSTPT,KSTSZ,PSTACK                                     )
+
+      
+#include "temp.h"
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA

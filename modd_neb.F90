@@ -1,5 +1,8 @@
 !     ######spl
       MODULE MODD_NEB
+
+#include "create.h"
+
 !     #############################
 !
 !!****  *MODD_NEB* - Declaration of nebulosity constants
@@ -33,7 +36,9 @@
 IMPLICIT NONE
 !
 REAL,SAVE          :: XTMINMIX   ! minimum temperature of mixed phase
+create (XTMINMIX)
 REAL,SAVE          :: XTMAXMIX   ! maximum temperature of mixed phase
+create (XTMAXMIX)
 !
 !
 END MODULE MODD_NEB

@@ -2,6 +2,9 @@ MODULE MODI_COMPUTE_UPDRAFT
 
 INTERFACE
 
+#ifdef USE_ACC
+!$acc routine (COMPUTE_UPDRAFT)
+#endif
       SUBROUTINE COMPUTE_UPDRAFT(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,HFRAC_ICE, &
                                  OENTR_DETR,OMIXUV,               &
                                  ONOMIXLG,KSV_LGBEG,KSV_LGEND,    &
@@ -16,6 +19,9 @@ INTERFACE
                                  PEMF,PDETR,PENTR,                &
                                  PBUO_INTEG,KKLCL,KKETL,KKCTL,    &
                                  PDEPTH,KSTPT,KSTSZ,PSTACK     )
+
+      
+#include "temp.h"
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA

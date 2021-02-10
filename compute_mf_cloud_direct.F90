@@ -1,4 +1,7 @@
 !     ######spl
+#ifdef USE_ACC
+!$acc routine (COMPUTE_MF_CLOUD_DIRECT)
+#endif
       SUBROUTINE COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                                         &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
                                         &PRC_MF, PRI_MF, PCF_MF,KSTPT,KSTSZ,PSTACK)

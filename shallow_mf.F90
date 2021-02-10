@@ -1,4 +1,7 @@
 !     ######spl
+#ifdef USE_ACC
+!$acc routine (SHALLOW_MF)
+#endif
       SUBROUTINE SHALLOW_MF(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKU,KKL,KRR,KRRL,KRRI,  &
                 HMF_UPDRAFT, HMF_CLOUD, HFRAC_ICE, OMIXUV,            &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &

@@ -2,6 +2,9 @@ MODULE MODI_MF_TURB
 
 INTERFACE
 
+#ifdef USE_ACC
+!$acc routine (MF_TURB)
+#endif
       SUBROUTINE MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
                 PIMPL, PTSTEP, PTSTEP_MET, PTSTEP_SV,                 &
@@ -12,6 +15,9 @@ INTERFACE
                 PEMF,PTHL_UP,PTHV_UP,PRT_UP,PU_UP,PV_UP,PSV_UP,       &
                 PFLXZTHMF,PFLXZTHVMF,PFLXZRMF,PFLXZUMF,PFLXZVMF,      &
                 PFLXZSVMF,KSTPT,KSTSZ,PSTACK                                             )
+
+      
+#include "temp.h"
 
 INTEGER,                INTENT(IN)   :: KLON
 INTEGER,                INTENT(IN)   :: KIDIA

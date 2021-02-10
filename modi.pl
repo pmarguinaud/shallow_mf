@@ -1,4 +1,4 @@
-#!/home/gmap/mrpm/marguina/install/perl-5.32.0/bin/perl -w
+#!/usr/bin/perl -w
 #
 use strict;
 use FileHandle;
@@ -63,6 +63,7 @@ for my $pu (@pu)
 
 for (&f ('.//f:C', $doc))
   {
+    next if ($_->textContent =~ m/^!\$acc/o);
     $_->unbindNode ();
   }
 
@@ -75,6 +76,7 @@ $text =~ s/^\s*\n$//goms;
 
 $mod = lc ($mod);
 my $MOD = uc ($mod);
+
 
 'FileHandle'->new (">$mod.F90")->print (<< "EOF");
 MODULE $MOD

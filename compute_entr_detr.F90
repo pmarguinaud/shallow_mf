@@ -1,4 +1,7 @@
 !     ######spl
+#ifdef USE_ACC
+!$acc routine (COMPUTE_ENTR_DETR)
+#endif
           SUBROUTINE COMPUTE_ENTR_DETR(KLON,KIDIA,KFDIA,KLEV,KK,KKB,KKE,KKL,OTEST,OTESTLCL,&
                             HFRAC_ICE,PFRAC_ICE,PRHODREF,&
                             PPRE_MINUS_HALF,&

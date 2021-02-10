@@ -2,9 +2,14 @@ MODULE MODI_TH_R_FROM_THL_RT_1D
 
 INTERFACE
 
+#ifdef USE_ACC
+!$acc routine (TH_R_FROM_THL_RT_1D)
+#endif
       SUBROUTINE TH_R_FROM_THL_RT_1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PP,        &
                                   PTHL, PRT, PTH, PRV, PRL, PRI,         &
                                   PRSATW, PRSATI,KSTPT,KSTSZ,PSTACK)
+
+#include "temp.h"
 
 INTEGER             , INTENT(IN) :: KLON
 INTEGER             , INTENT(IN) :: KIDIA
