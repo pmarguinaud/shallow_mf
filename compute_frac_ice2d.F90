@@ -1,6 +1,9 @@
 !     ######spl
       SUBROUTINE COMPUTE_FRAC_ICE2D(KLON,KIDIA,KFDIA,KLEV,HFRAC_ICE,PFRAC_ICE,PT,KSTPT,KSTSZ,PSTACK)
 !    ##########################################################
+
+#include "temp.h"
+
 !
 !
 !!****  *COMPUTE_FRAC_ICE* - computes ice fraction
@@ -58,6 +61,9 @@ REAL                , INTENT(INOUT) :: PSTACK (KSTSZ)
 !       0.2  declaration of local variables
 !
 INTEGER :: JK
+
+init_stack ()
+
 !-------------------------------------------------------------------------
 !
 !       0.3  Initialisation
@@ -69,7 +75,7 @@ INTEGER :: JK
 !         ----------------
 !
 DO JK=1, KLEV
-  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK),KSTPT,KSTSZ,PSTACK)
+  CALL COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE(:,JK),PT(:,JK),ISTPT,KSTSZ,PSTACK)
 ENDDO
 
 

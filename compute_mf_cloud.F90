@@ -96,6 +96,8 @@ INTEGER,                INTENT(IN)   :: KSTSZ
 INTEGER,                INTENT(IN)   :: KSTPT
 REAL   ,                INTENT(INOUT):: PSTACK (KSTSZ)
 
+init_stack ()
+
 
 !
 !                       1.2  Declaration of local variables
@@ -116,7 +118,7 @@ IF (HMF_CLOUD == 'DIRE') THEN
   !Direct cloud scheme
   CALL COMPUTE_MF_CLOUD_DIRECT(KLON,KIDIA,KFDIA, KLEV, KKB, KKE, KKL, &
                               &KKLCL, PFRAC_UP, PRC_UP, PRI_UP,&
-                              &PRC_MF, PRI_MF, PCF_MF,KSTPT,KSTSZ,PSTACK)
+                              &PRC_MF, PRI_MF, PCF_MF,ISTPT,KSTSZ,PSTACK)
   !
 ELSE
   WRITE(*,*) ' STOP'
