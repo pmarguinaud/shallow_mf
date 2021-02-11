@@ -10,6 +10,7 @@ FC = /home/gmap/mrpm/marguina/install/gmkpack_support/wrapper/I185274/ifort $(FR
 
 FC = pgf90 -r8 -mp -byteswapio -Mlarge_arrays -Minfo=mp -mp -O0 -g -DUSE_STACK
 FC = pgf90 -r8 -acc -mp -byteswapio -Mlarge_arrays -fast -Minfo=accel,all,intensity,ccff -ta=tesla:managed -O3 -DUSE_STACK -DUSE_ACC
+FC = pgf90 -r8 -acc -mp -byteswapio -Mlarge_arrays -Minfo=accel,all,intensity,ccff -ta=tesla:managed -O0 -DUSE_STACK -DUSE_ACC
 
 all: wrap_shallow_mf.x
 
@@ -28,7 +29,7 @@ xrd_unix_env.o: xrd_unix_env.F90 parkind1.o
 load_mod.o: load_mod.F90 parkind1.o
 	$(FC) -c load_mod.F90
 
-wrap_shallow_mf.o: wrap_shallow_mf.F90 xrd_getoptions.o modi_shallow_mf.o load_mod.o
+wrap_shallow_mf.o: wrap_shallow_mf.F90 xrd_getoptions.o modi_shallow_mf.o load_mod.o modd_cst.o
 	$(FC) -c wrap_shallow_mf.F90
 
 shallow_mf_load_all.o: shallow_mf_load_all.F90 modd_cst.o modd_cmfshall.o modd_cturb.o load_mod.o modd_neb.o
