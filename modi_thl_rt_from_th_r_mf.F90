@@ -3,7 +3,7 @@ MODULE MODI_THL_RT_FROM_TH_R_MF
 INTERFACE
 
 #ifdef USE_ACC
-!$acc routine (THL_RT_FROM_TH_R_MF)
+!$acc routine (THL_RT_FROM_TH_R_MF) seq
 #endif
       SUBROUTINE THL_RT_FROM_TH_R_MF( KLON,KIDIA,KFDIA,KLEV,KRR,KRRL,KRRI,       &
                                       PTH, PR, PEXN, &

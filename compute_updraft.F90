@@ -1,6 +1,6 @@
 !     ######spl
 #ifdef USE_ACC
-!$acc routine (COMPUTE_UPDRAFT)
+!$acc routine (COMPUTE_UPDRAFT) seq
 #endif
       SUBROUTINE COMPUTE_UPDRAFT(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,HFRAC_ICE, &
                                  OENTR_DETR,OMIXUV,               &

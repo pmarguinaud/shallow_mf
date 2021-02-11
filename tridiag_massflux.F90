@@ -1,6 +1,6 @@
 !     ######spl
 #ifdef USE_ACC
-!$acc routine (TRIDIAG_MASSFLUX)
+!$acc routine (TRIDIAG_MASSFLUX) seq
 #endif
        SUBROUTINE TRIDIAG_MASSFLUX(KLON,KIDIA,KFDIA,KLEV,KKA,KKB,KKE,KKU,KKL,PVARM,PF,PDFDT,PTSTEP,PIMPL,  &
                                  PDZZ,PRHODJ,PVARP,KSTPT,KSTSZ,PSTACK             )

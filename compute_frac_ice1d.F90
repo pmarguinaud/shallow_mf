@@ -1,6 +1,6 @@
 !     ######spl
 #ifdef USE_ACC
-!$acc routine (COMPUTE_FRAC_ICE1D)
+!$acc routine (COMPUTE_FRAC_ICE1D) seq
 #endif
       SUBROUTINE COMPUTE_FRAC_ICE1D(KLON,KIDIA,KFDIA,HFRAC_ICE,PFRAC_ICE,PT,KSTPT,KSTSZ,PSTACK)
 

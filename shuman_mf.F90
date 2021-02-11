@@ -1,6 +1,6 @@
 !     ###############################
 #ifdef USE_ACC
-!$acc routine (MZM_MF)
+!$acc routine (MZM_MF) seq
 #endif
       SUBROUTINE MZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PMZM,KSTPT,KSTSZ,PSTACK)
 !     ###############################
@@ -87,7 +87,7 @@ PMZM(KIDIA:KFDIA,KKU) = 0.5*( PA(KIDIA:KFDIA,KKU)+PA(KIDIA:KFDIA,KKU-KKL) )
 END SUBROUTINE MZM_MF
 !     ###############################
 #ifdef USE_ACC
-!$acc routine (DZM_MF)
+!$acc routine (DZM_MF) seq
 #endif
       SUBROUTINE DZM_MF(KLON,KIDIA,KFDIA,KLEV,KKA,KKU,KKL,PA,PDZM,KSTPT,KSTSZ,PSTACK)
 !     ###############################

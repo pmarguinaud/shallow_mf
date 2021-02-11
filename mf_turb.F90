@@ -1,6 +1,6 @@
 !     ######spl
 #ifdef USE_ACC
-!$acc routine (MF_TURB)
+!$acc routine (MF_TURB) seq
 #endif
       SUBROUTINE MF_TURB(KLON,KIDIA,KFDIA,KLEV,KSV,KKA,KKB,KKE,KKU,KKL,OMIXUV,    &
                 ONOMIXLG,KSV_LGBEG,KSV_LGEND,                         &
