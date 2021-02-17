@@ -28,8 +28,8 @@ INTEGER,                INTENT(IN)   :: KK
 INTEGER,                INTENT(IN)   :: KKB          
 INTEGER,                INTENT(IN)   :: KKE          
 INTEGER,                INTENT(IN)   :: KKL          
-LOGICAL,DIMENSION(KLON),   INTENT(IN)   :: OTEST 
-LOGICAL,DIMENSION(KLON),   INTENT(IN)   :: OTESTLCL 
+LOGICAL,DIMENSION(KIDIA:KFDIA),   INTENT(IN)   :: OTEST 
+LOGICAL,DIMENSION(KIDIA:KFDIA),   INTENT(IN)   :: OTESTLCL 
 CHARACTER*1,            INTENT(IN)   :: HFRAC_ICE 
                                               
                                               

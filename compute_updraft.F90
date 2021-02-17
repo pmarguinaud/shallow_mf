@@ -174,10 +174,10 @@ temp (REAL, ZLUP     , (KLON))
 INTEGER  :: ISV                ! Number of scalar variables                               
 INTEGER  :: JK,JI,JSV          ! loop counters
 
+LOGICAL ::  GTESTETL (KIDIA:KFDIA)
+LOGICAL ::  GTESTLCL (KIDIA:KFDIA)
+LOGICAL ::  GTEST    (KIDIA:KFDIA)
 
-temp (LOGICAL, GTESTETL, (KLON))
-temp (LOGICAL, GTESTLCL, (KLON))
-temp (LOGICAL, GTEST   , (KLON))
 ! Test if the ascent continue, if LCL or ETL is reached
 LOGICAL                          ::  GLMIX 
                                ! To choose upward or downward mixing length
@@ -207,9 +207,6 @@ alloc (ZRI_UP)
 alloc (ZRC_UP)
 alloc (GWORK2)
 alloc (GWORK1)
-alloc (GTESTETL)
-alloc (GTESTLCL)
-alloc (GTEST)
 alloc (ZLUP)
 alloc (ZMIX2_CLD)
 alloc (ZMIX3_CLD)

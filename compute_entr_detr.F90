@@ -84,8 +84,8 @@ INTEGER,                INTENT(IN)   :: KK
 INTEGER,                INTENT(IN)   :: KKB          ! near ground physical index
 INTEGER,                INTENT(IN)   :: KKE          ! uppest atmosphere physical index
 INTEGER,                INTENT(IN)   :: KKL          ! +1 if grid goes from ground to atmosphere top, -1 otherwise
-LOGICAL,DIMENSION(KLON),   INTENT(IN)   :: OTEST ! test to see if updraft is running
-LOGICAL,DIMENSION(KLON),   INTENT(IN)   :: OTESTLCL !test of condensation 
+LOGICAL,DIMENSION(KIDIA:KFDIA),   INTENT(IN)   :: OTEST ! test to see if updraft is running
+LOGICAL,DIMENSION(KIDIA:KFDIA),   INTENT(IN)   :: OTESTLCL !test of condensation 
 CHARACTER*1,            INTENT(IN)   :: HFRAC_ICE ! frac_ice can be compute using
                                               ! Temperature (T) or prescribed
                                               ! (Y)
